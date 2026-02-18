@@ -189,6 +189,32 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .copy-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: 500;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -239,7 +265,7 @@
     </style>
 </head>
 <body>
-    <a href="canadian-tools.html" class="back-button">← Back to Tools</a>
+    <a href="../canadian-tools.html" class="back-button">← Back to Tools</a>
     
     <div class="container">
         <h1>🏛️ Canadian Financial Institution Directory</h1>
@@ -265,44 +291,69 @@
         </div>
 
         <div class="stats">
-            <span id="statsText">Showing all 116 financial institutions</span>
+            <span id="statsText">Loading financial institutions...</span>
         </div>
 
         <div class="institution-list" id="institutionList">
-            <!-- Institution items will be populated here -->
+            <div class="loading">
+                <p>Loading institution data...</p>
+            </div>
         </div>
     </div>
 
+    <!-- Copy notification -->
+    <div id="copyNotification" class="copy-notification">
+        Institution number copied to clipboard! 📋
+    </div>
+
     <script>
-
-// This will be loaded from the external file
-let institutionData = null;
-
-// Load data from external file
-fetch('../financial-institutions/major-banks-data/all-Institution-data.js')
-  .then(response => response.text())
-  .then(data => {
-    // Execute the JS file content to get the data
-    eval(data);
-    // Now institutionData should be available
-    renderInstitutions();
-    setupEventListeners();
-  })
-  .catch(error => {
-    console.error('Error loading institution data:', error);
-    document.getElementById('institutionList').innerHTML = 
-      '<div class="no-results">Error loading institution data. Please try again.</div>';
-  });
-
-        
-        let filteredData = institutionData.allInstitutionNumbers;
+        let institutionData = null;
+        let filteredData = [];
         let currentFilter = 'all';
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            renderInstitutions();
-            setupEventListeners();
-        });
+        // Load institution data from external file
+        async function loadInstitutionData() {
+            try {
+                // First, try to load the data file
+                const response = await fetch('../financial-institutions/major-banks-data/all-Institution-data.js');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const dataText = await response.text();
+                
+                // Execute the JavaScript to get the data
+                const scriptElement = document.createElement('script');
+                scriptElement.textContent = dataText;
+                document.head.appendChild(scriptElement);
+                
+                // The data should now be available as allInstitutionNumbers
+                if (typeof allInstitutionNumbers !== 'undefined') {
+                    institutionData = { allInstitutionNumbers: allInstitutionNumbers };
+                } else {
+                    throw new Error('Institution data not found in the loaded file');
+                }
+                
+                filteredData = institutionData.allInstitutionNumbers;
+                
+                // Initialize the app
+                renderInstitutions();
+                setupEventListeners();
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error loading institution data:', error);
+                document.getElementById('institutionList').innerHTML = `
+                    <div class="no-results">
+                        <p>❌ Error loading institution data</p>
+                        <p>Please check that the data file exists at:</p>
+                        <p><code>../financial-institutions/major-banks-data/all-Institution-data.js</code></p>
+                    </div>
+                `;
+                document.getElementById('statsText').textContent = 'Error loading data';
+            }
+        }
 
         function setupEventListeners() {
             // Search functionality
@@ -324,6 +375,8 @@ fetch('../financial-institutions/major-banks-data/all-Institution-data.js')
         }
 
         function filterInstitutions() {
+            if (!institutionData) return;
+            
             const searchTerm = document.getElementById('institutionSearch').value.toLowerCase().trim();
             
             // Start with all data
@@ -380,7 +433,7 @@ fetch('../financial-institutions/major-banks-data/all-Institution-data.js')
         function renderInstitutions() {
             const listContainer = document.getElementById('institutionList');
             
-            if (filteredData.length === 0) {
+            if (!filteredData || filteredData.length === 0) {
                 listContainer.innerHTML = `
                     <div class="no-results">
                         <p>No institutions found matching your search criteria.</p>
@@ -398,5 +451,67 @@ fetch('../financial-institutions/major-banks-data/all-Institution-data.js')
                     <div class="institution-info">
                         <div class="institution-name">${institution.financialInstitution}</div>
                         <div class="institution-details">ID: ${institution.id} • Category: ${getCategoryDisplayName(categorizeInstitution(institution))}</div>
-                    
+                    </div>
+                    <div class="institution-number">${institution.institutionNumber}</div>
+                </div>
+            `).join('');
+        }
 
+        function getCategoryDisplayName(category) {
+            const categories = {
+                'major-banks': 'Major Bank',
+                'trust-companies': 'Trust Company',
+                'credit-unions': 'Credit Union',
+                'foreign-banks': 'Foreign Bank'
+            };
+            return categories[category] || 'Other';
+        }
+
+        function updateStats() {
+            const statsElement = document.getElementById('statsText');
+            const total = filteredData.length;
+            const totalInstitutions = institutionData ? institutionData.allInstitutionNumbers.length : 0;
+            
+            if (currentFilter === 'all' && !document.getElementById('institutionSearch').value.trim()) {
+                statsElement.textContent = `Showing all ${total} financial institutions`;
+            } else {
+                statsElement.textContent = `Showing ${total} of ${totalInstitutions} financial institutions`;
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                showCopyNotification();
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                // Fallback method
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopyNotification();
+                } catch (err) {
+                    console.error('Fallback: Could not copy text: ', err);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function showCopyNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        // Initialize the application when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInstitutionData();
+        });
+    </script>
+</body>
+</html>
