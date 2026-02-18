@@ -1,87 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIN Generator</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="sin-styles.css">
-</head>
-<body>
-    <header class="header">
-        <button class="home-btn" onclick="window.location.href='index.html'">
-            <svg class="home-icon" viewBox="0 0 24 24">
-                <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
-            </svg>
-        </button>
-        <h1 class="page-title">SIN Generator</h1>
-        <button class="history-btn" onclick="toggleHistory()">History</button>
-    </header>
-
-    <main class="sin-content">
-        <!-- Generation Area -->
-        <div class="generation-area">
-            <div class="generate-row">
-                <button id="generateBtn" class="generate-btn" onclick="generateSIN()">Generate</button>
-                <input type="text" id="sinResult" class="sin-result" readonly placeholder="XXX-XXX-XXX">
-            </div>
-
-            <div class="advance-section">
-                <button id="advanceBtn" class="advance-btn" onclick="toggleAdvance()">
-                    Advance <span id="advanceArrow" class="arrow">▶</span>
-                </button>
-
-                <div id="advanceOptions" class="advance-options">
-                    <label class="option-label">
-                        <input type="checkbox" value="temp" onchange="updateAdvanceSelection()"> Temporary Residence
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="atlantic" onchange="updateAdvanceSelection()"> Atlantic Provinces: NB, NS, PEI, NF
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="ontario" onchange="updateAdvanceSelection()"> Ontario
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="quebec" onchange="updateAdvanceSelection()"> Quebec
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="bc" onchange="updateAdvanceSelection()"> British Columbia / Yukon
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="prairie" onchange="updateAdvanceSelection()"> Alberta / Manitoba / Saskatchewan / NT / NU
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <!-- History Modal -->
-        <div id="historyModal" class="history-modal">
-            <div class="history-content">
-                <div class="history-header">
-                    <h3>Generation History</h3>
-                    <button class="close-btn" onclick="toggleHistory()">&times;</button>
-                </div>
-                <div class="history-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>SIN Number</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Type</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- History entries will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script src="sin-library.js"></script>
-    <script src="sin-generator.js"></script>
-
-</body>
-</html>
+<div id="advanceOptions" class="advance-options">
+    <label class="option-label">
+        <input type="checkbox" value="temp" onchange="updateAdvanceSelection()"> Temporary Residence
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="AB" onchange="updateAdvanceSelection()"> Alberta
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="BC" onchange="updateAdvanceSelection()"> British Columbia
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="MB" onchange="updateAdvanceSelection()"> Manitoba
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="NB" onchange="updateAdvanceSelection()"> New Brunswick
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="NF" onchange="updateAdvanceSelection()"> Newfoundland
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="NS" onchange="updateAdvanceSelection()"> Nova Scotia
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="NT" onchange="updateAdvanceSelection()"> Northwest Territories
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="NU" onchange="updateAdvanceSelection()"> Nunavut
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="ON" onchange="updateAdvanceSelection()"> Ontario
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="PE" onchange="updateAdvanceSelection()"> Prince Edward Island
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="QC" onchange="updateAdvanceSelection()"> Quebec
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="SK" onchange="updateAdvanceSelection()"> Saskatchewan
+    </label>
+    <label class="option-label">
+        <input type="checkbox" value="YT" onchange="updateAdvanceSelection()"> Yukon
+    </label>
+</div>
