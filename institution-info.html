@@ -1,517 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canadian Financial Institution Info</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Institution Info</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.2rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .search-container {
-            margin-bottom: 30px;
-        }
-
-        .search-wrapper {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        #institutionSearch {
-            width: 100%;
-            padding: 15px 50px 15px 20px;
-            border: 2px solid #e1e8ed;
-            border-radius: 25px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        #institutionSearch:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #667eea;
-            font-size: 20px;
-            pointer-events: none;
-        }
-
-        .filter-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-tab {
-            padding: 8px 16px;
-            border: 2px solid #e1e8ed;
-            border-radius: 20px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .filter-tab.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-color: #667eea;
-        }
-
-        .stats {
-            text-align: center;
-            margin: 20px 0;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .institution-list {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 2px solid #e1e8ed;
-            border-radius: 15px;
-            background: #fafbfc;
-        }
-
-        .institution-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid #e1e8ed;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .institution-item:last-child {
-            border-bottom: none;
-        }
-
-        .institution-item:hover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            transform: translateX(5px);
-        }
-
-        .institution-info {
-            flex: 1;
-        }
-
-        .institution-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .institution-details {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .institution-number {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            min-width: 60px;
-            text-align: center;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-style: italic;
-        }
-
-        .back-button {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-style: italic;
-        }
-
-        .copy-notification {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 25px;
-            font-weight: 500;
-            z-index: 2000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .copy-notification.show {
-            opacity: 1;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                margin: 20px;
-                width: calc(100% - 40px);
-            }
-
-            h1 {
-                font-size: 1.8rem;
-                margin-bottom: 20px;
-            }
-
-            .institution-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .institution-number {
-                align-self: flex-end;
-            }
-
-            .filter-tabs {
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 10px;
-            }
-        }
-
-        /* Scrollbar styling */
-        .institution-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .institution-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .institution-list::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
-        }
-
-        .institution-list::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #5a6fd8, #6a4190);
-        }
-    </style>
+  <style>
+    :root { --bg:#f4f4f4; --card:#fff; --border:#ddd; --text:#111; --muted:#555; }
+    body { margin:0; font-family: Arial, Helvetica, sans-serif; background:var(--bg); color:var(--text); }
+    header {
+      background:#111; color:#fff; padding:14px 18px;
+      display:flex; align-items:center; gap:12px;
+    }
+    header a { color:#fff; text-decoration:none; font-weight:700; }
+    header h1 { margin:0; font-size:18px; flex:1; text-align:center; letter-spacing:1px; }
+    main { max-width: 980px; margin: 0 auto; padding: 18px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; }
+    .search { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    input[type="text"]{
+      flex: 1;
+      min-width: 240px;
+      padding: 12px 12px;
+      font-size: 16px;
+      border: 1px solid #bbb;
+      border-radius: 10px;
+      outline: none;
+    }
+    button{
+      padding: 12px 14px;
+      font-size: 14px;
+      border-radius: 10px;
+      border: 1px solid #bbb;
+      background: #fff;
+      cursor: pointer;
+    }
+    button:hover { background:#f1f1f1; }
+    .meta { margin-top:10px; color:var(--muted); font-size:13px; }
+    .error { margin-top:10px; color:#b00020; font-weight:700; font-size:13px; }
+    table { width:100%; border-collapse: collapse; margin-top:12px; }
+    th, td { text-align:left; padding: 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+    th { background:#fafafa; position: sticky; top: 0; z-index: 1; }
+    .pill {
+      display:inline-block; padding:4px 10px; border:1px solid #ddd;
+      border-radius:999px; background:#fff; font-size:12px;
+    }
+    .nowrap { white-space: nowrap; }
+  </style>
 </head>
+
 <body>
-    <a href="../canadian-tools.html" class="back-button">← Back to Tools</a>
-    
-    <div class="container">
-        <h1>🏛️ Canadian Financial Institution Directory</h1>
-        
-        <div class="search-container">
-            <div class="search-wrapper">
-                <input 
-                    type="text" 
-                    id="institutionSearch" 
-                    placeholder="Search by institution name or number..."
-                    autocomplete="off"
-                >
-                <span class="search-icon">🔍</span>
-            </div>
-            
-            <div class="filter-tabs">
-                <div class="filter-tab active" data-filter="all">All</div>
-                <div class="filter-tab" data-filter="major-banks">Major Banks</div>
-                <div class="filter-tab" data-filter="trust-companies">Trust Companies</div>
-                <div class="filter-tab" data-filter="credit-unions">Credit Unions</div>
-                <div class="filter-tab" data-filter="foreign-banks">Foreign Banks</div>
-            </div>
-        </div>
+  <header>
+    <a href="index.html">HOME</a>
+    <h1>INSTITUTION INFO</h1>
+    <span style="width:52px;"></span>
+  </header>
 
-        <div class="stats">
-            <span id="statsText">Loading financial institutions...</span>
-        </div>
+  <main>
+    <section class="card">
+      <div class="search">
+        <input id="q" type="text" placeholder="Search by bank name, institution number, or id..." />
+        <button id="clearBtn" type="button">Clear</button>
+      </div>
 
-        <div class="institution-list" id="institutionList">
-            <div class="loading">
-                <p>Loading institution data...</p>
-            </div>
-        </div>
-    </div>
+      <div id="meta" class="meta"></div>
+      <div id="err" class="error" style="display:none;"></div>
 
-    <!-- Copy notification -->
-    <div id="copyNotification" class="copy-notification">
-        Institution number copied to clipboard! 📋
-    </div>
+      <table aria-label="Institution list">
+        <thead>
+          <tr>
+            <th class="nowrap">Id</th>
+            <th>Financial Institution</th>
+            <th class="nowrap">Institution #</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+  </main>
 
-    <script>
-        let institutionData = null;
-        let filteredData = [];
-        let currentFilter = 'all';
+  <!-- Path changed because this HTML is now in repo root -->
+  <script src="financial-institutions/all-Institution-data.js"></script>
 
-        // Load institution data from external file
-        async function loadInstitutionData() {
-            try {
-                // First, try to load the data file
-                const response = await fetch('../financial-institutions/all-Institution-data.js');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const dataText = await response.text();
-                
-                // Execute the JavaScript to get the data
-                const scriptElement = document.createElement('script');
-                scriptElement.textContent = dataText;
-                document.head.appendChild(scriptElement);
-                
-                // The data should now be available as allInstitutionNumbers
-                if (typeof allInstitutionNumbers !== 'undefined') {
-                    institutionData = { allInstitutionNumbers: allInstitutionNumbers };
-                } else {
-                    throw new Error('Institution data not found in the loaded file');
-                }
-                
-                filteredData = institutionData.allInstitutionNumbers;
-                
-                // Initialize the app
-                renderInstitutions();
-                setupEventListeners();
-                updateStats();
-                
-            } catch (error) {
-                console.error('Error loading institution data:', error);
-                document.getElementById('institutionList').innerHTML = `
-                    <div class="no-results">
-                        <p>❌ Error loading institution data</p>
-                        <p>Please check that the data file exists at:</p>
-                        <p><code>../financial-institutions/all-Institution-data.js</code></p>
-                    </div>
-                `;
-                document.getElementById('statsText').textContent = 'Error loading data';
-            }
+  <script>
+    (function () {
+      const qEl = document.getElementById("q");
+      const rowsEl = document.getElementById("rows");
+      const metaEl = document.getElementById("meta");
+      const errEl = document.getElementById("err");
+      const clearBtn = document.getElementById("clearBtn");
+
+      const data = window.ALL_INSTITUTION_DATA && window.ALL_INSTITUTION_DATA.allInstitutionNumbers;
+
+      if (!Array.isArray(data)) {
+        errEl.style.display = "block";
+        errEl.textContent =
+          "ERROR: Institution data not loaded. Check that financial-institutions/all-Institution-data.js exists and defines window.ALL_INSTITUTION_DATA.";
+        console.error("Data not found. window.ALL_INSTITUTION_DATA =", window.ALL_INSTITUTION_DATA);
+        metaEl.textContent = "";
+        return;
+      }
+
+      const all = [...data].sort((a, b) => {
+        const an = Number(a.institutionNumber);
+        const bn = Number(b.institutionNumber);
+        if (an !== bn) return an - bn;
+        return String(a.financialInstitution).localeCompare(String(b.financialInstitution));
+      });
+
+      function norm(v) { return String(v ?? "").toLowerCase().trim(); }
+
+      function render(items) {
+        rowsEl.innerHTML = "";
+        metaEl.innerHTML =
+          `Showing <span class="pill">${items.length}</span> result(s) out of <span class="pill">${all.length}</span>`;
+
+        for (const x of items) {
+          const tr = document.createElement("tr");
+
+          const tdId = document.createElement("td");
+          tdId.className = "nowrap";
+          tdId.textContent = x.id;
+
+          const tdName = document.createElement("td");
+          tdName.textContent = x.financialInstitution;
+
+          const tdInst = document.createElement("td");
+          tdInst.className = "nowrap";
+          tdInst.textContent = x.institutionNumber;
+
+          tr.appendChild(tdId);
+          tr.appendChild(tdName);
+          tr.appendChild(tdInst);
+
+          rowsEl.appendChild(tr);
         }
+      }
 
-        function setupEventListeners() {
-            // Search functionality
-            const searchInput = document.getElementById('institutionSearch');
-            searchInput.addEventListener('input', function() {
-                filterInstitutions();
-            });
+      function search() {
+        const s = norm(qEl.value);
+        if (!s) return render(all);
 
-            // Filter tabs
-            const filterTabs = document.querySelectorAll('.filter-tab');
-            filterTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    filterTabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    currentFilter = this.dataset.filter;
-                    filterInstitutions();
-                });
-            });
-        }
-
-        function filterInstitutions() {
-            if (!institutionData) return;
-            
-            const searchTerm = document.getElementById('institutionSearch').value.toLowerCase().trim();
-            
-            // Start with all data
-            let filtered = institutionData.allInstitutionNumbers;
-
-            // Apply category filter
-            if (currentFilter !== 'all') {
-                filtered = filtered.filter(institution => {
-                    return categorizeInstitution(institution) === currentFilter;
-                });
-            }
-
-            // Apply search filter
-            if (searchTerm) {
-                filtered = filtered.filter(institution => {
-                    return institution.financialInstitution.toLowerCase().includes(searchTerm) ||
-                           institution.institutionNumber.toString().includes(searchTerm) ||
-                           institution.id.toString().includes(searchTerm);
-                });
-            }
-
-            filteredData = filtered;
-            renderInstitutions();
-            updateStats();
-        }
-
-        function categorizeInstitution(institution) {
-            const name = institution.financialInstitution.toLowerCase();
-            const number = institution.institutionNumber;
-
-            // Major Canadian Banks (Big 6)
-            if ([1, 2, 3, 4, 6, 10].includes(number)) {
-                return 'major-banks';
-            }
-
-            // Trust Companies (500-699 range)
-            if (number >= 500 && number < 700 || name.includes('trust') || name.includes('mortgage')) {
-                return 'trust-companies';
-            }
-
-            // Credit Unions (800-899 range)
-            if (number >= 800 && number < 900 || name.includes('credit union') || name.includes('caisse')) {
-                return 'credit-unions';
-            }
-
-            // Foreign Banks
-            if (number >= 240 && number < 400) {
-                return 'foreign-banks';
-            }
-
-            return 'major-banks'; // Default category
-        }
-
-        function renderInstitutions() {
-            const listContainer = document.getElementById('institutionList');
-            
-            if (!filteredData || filteredData.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="no-results">
-                        <p>No institutions found matching your search criteria.</p>
-                        <p>Try adjusting your search terms or filters.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Sort by institution number
-            const sortedData = [...filteredData].sort((a, b) => a.institutionNumber - b.institutionNumber);
-
-            listContainer.innerHTML = sortedData.map(institution => `
-                <div class="institution-item" onclick="copyToClipboard('${institution.institutionNumber}')">
-                    <div class="institution-info">
-                        <div class="institution-name">${institution.financialInstitution}</div>
-                        <div class="institution-details">ID: ${institution.id} • Category: ${getCategoryDisplayName(categorizeInstitution(institution))}</div>
-                    </div>
-                    <div class="institution-number">${institution.institutionNumber}</div>
-                </div>
-            `).join('');
-        }
-
-        function getCategoryDisplayName(category) {
-            const categories = {
-                'major-banks': 'Major Bank',
-                'trust-companies': 'Trust Company',
-                'credit-unions': 'Credit Union',
-                'foreign-banks': 'Foreign Bank'
-            };
-            return categories[category] || 'Other';
-        }
-
-        function updateStats() {
-            const statsElement = document.getElementById('statsText');
-            const total = filteredData.length;
-            const totalInstitutions = institutionData ? institutionData.allInstitutionNumbers.length : 0;
-            
-            if (currentFilter === 'all' && !document.getElementById('institutionSearch').value.trim()) {
-                statsElement.textContent = `Showing all ${total} financial institutions`;
-            } else {
-                statsElement.textContent = `Showing ${total} of ${totalInstitutions} financial institutions`;
-            }
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                showCopyNotification();
-            }).catch(function(err) {
-                console.error('Could not copy text: ', err);
-                // Fallback method
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showCopyNotification();
-                } catch (err) {
-                    console.error('Fallback: Could not copy text: ', err);
-                }
-                document.body.removeChild(textArea);
-            });
-        }
-
-        function showCopyNotification() {
-            const notification = document.getElementById('copyNotification');
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2000);
-        }
-
-        // Initialize the application when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            loadInstitutionData();
+        const filtered = all.filter((x) => {
+          const name = norm(x.financialInstitution);
+          const inst = norm(x.institutionNumber);
+          const id = norm(x.id);
+          return name.includes(s) || inst.includes(s) || id.includes(s);
         });
-    </script>
+
+        render(filtered);
+      }
+
+      qEl.addEventListener("input", search);
+      clearBtn.addEventListener("click", () => {
+        qEl.value = "";
+        qEl.focus();
+        render(all);
+      });
+
+      render(all);
+    })();
+  </script>
 </body>
 </html>
