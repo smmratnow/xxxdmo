@@ -5,58 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Institution Info</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .header h1 {
+        * {
             margin: 0;
-            font-size: 2.5em;
-            font-weight: bold;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .search-section {
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header matching your main page */
+        .header {
+            background-color: #2c3e50;
             padding: 20px;
-            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .home-icon {
+            color: white;
+            font-size: 24px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .title {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Search section */
+        .search-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
         }
 
         .search-input {
             width: 100%;
-            padding: 15px;
+            padding: 15px 20px;
             font-size: 16px;
-            border: 2px solid #ddd;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
-            box-sizing: border-box;
             outline: none;
             transition: border-color 0.3s;
         }
 
         .search-input:focus {
-            border-color: #667eea;
+            border-color: #3498db;
         }
 
-        .results-container {
-            padding: 20px;
-            max-height: 600px;
-            overflow-y: auto;
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Results section */
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
         }
 
         .results-table {
@@ -66,83 +108,113 @@
         }
 
         .results-table th {
-            background-color: #f8f9fa;
-            padding: 12px;
+            background-color: #34495e;
+            color: white;
+            padding: 15px;
             text-align: left;
-            border-bottom: 2px solid #dee2e6;
             font-weight: bold;
-            color: #495057;
+            font-size: 14px;
+        }
+
+        .results-table th:first-child {
+            border-top-left-radius: 8px;
+        }
+
+        .results-table th:last-child {
+            border-top-right-radius: 8px;
         }
 
         .results-table td {
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
         }
 
         .results-table tr:hover {
             background-color: #f8f9fa;
         }
 
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
         .no-results {
             text-align: center;
-            color: #6c757d;
+            color: #666;
             font-style: italic;
             padding: 40px;
+            font-size: 16px;
         }
 
-        .total-count {
-            color: #6c757d;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
+        /* Responsive design */
         @media (max-width: 768px) {
             .container {
-                margin: 10px;
-                border-radius: 0;
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+            
+            .search-section, .results-section {
+                padding: 20px;
             }
             
             .results-table {
-                font-size: 14px;
+                font-size: 12px;
             }
             
             .results-table th,
             .results-table td {
-                padding: 8px 4px;
+                padding: 10px 8px;
+            }
+
+            .clear-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header matching your main page -->
+    <div class="header">
+        <a href="index.html" class="home-icon">🏠</a>
+        <div class="title">INSTITUTION INFO</div>
+        <div style="width: 24px;"></div> <!-- Spacer for centering -->
+    </div>
+
     <div class="container">
-        <div class="header">
-            <h1>Institution Info</h1>
-        </div>
-        
+        <!-- Search Section -->
         <div class="search-section">
-            <input 
-                type="text" 
-                id="searchInput" 
-                class="search-input" 
-                placeholder="Search by bank name or institution number..."
-                autocomplete="off"
-            >
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Search by bank name, institution number, or id..."
+                    autocomplete="off"
+                    style="flex: 1; min-width: 250px;"
+                >
+                <button id="clearBtn" class="clear-btn">Clear</button>
+            </div>
         </div>
-        
-        <div class="results-container">
-            <div id="totalCount" class="total-count"></div>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <div id="resultsCount" class="results-count"></div>
+            
             <table class="results-table" id="resultsTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Bank Name</th>
-                        <th>Institution Number</th>
+                        <th>Id</th>
+                        <th>Financial Institution</th>
+                        <th>Institution #</th>
                     </tr>
                 </thead>
                 <tbody id="resultsBody">
                     <!-- Results will be populated here -->
                 </tbody>
             </table>
+            
             <div id="noResults" class="no-results" style="display: none;">
                 No institutions found matching your search.
             </div>
@@ -151,15 +223,15 @@
 
     <!-- Load the institution data -->
     <script src="financial-institutions/all-Institution-data.js"></script>
-
     
     <script>
         // Get references to DOM elements
         const searchInput = document.getElementById('searchInput');
         const resultsBody = document.getElementById('resultsBody');
-        const noResults = document.getElementById('noResults');
-        const totalCount = document.getElementById('totalCount');
         const resultsTable = document.getElementById('resultsTable');
+        const noResults = document.getElementById('noResults');
+        const resultsCount = document.getElementById('resultsCount');
+        const clearBtn = document.getElementById('clearBtn');
 
         // Get the institution data
         const institutionData = window.ALL_INSTITUTION_DATA.allInstitutionNumbers;
@@ -171,13 +243,13 @@
             if (results.length === 0) {
                 resultsTable.style.display = 'none';
                 noResults.style.display = 'block';
-                totalCount.textContent = '';
+                resultsCount.textContent = '';
                 return;
             }
             
             resultsTable.style.display = 'table';
             noResults.style.display = 'none';
-            totalCount.textContent = `Showing ${results.length} of ${institutionData.length} institutions`;
+            resultsCount.textContent = `Showing ${results.length} result(s) out of ${institutionData.length}`;
             
             results.forEach(institution => {
                 const row = document.createElement('tr');
@@ -205,7 +277,10 @@
                 // Search by institution number
                 const numberMatch = institution.institutionNumber.toString().includes(term);
                 
-                return nameMatch || numberMatch;
+                // Search by ID
+                const idMatch = institution.id.toString().includes(term);
+                
+                return nameMatch || numberMatch || idMatch;
             });
         }
 
@@ -214,6 +289,13 @@
             const searchTerm = e.target.value;
             const filteredResults = filterInstitutions(searchTerm);
             displayResults(filteredResults);
+        });
+
+        // Clear button functionality
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            displayResults(institutionData);
+            searchInput.focus();
         });
 
         // Initial load - show all institutions
