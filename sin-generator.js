@@ -19,8 +19,7 @@ const provinceNames = {
     "PE": "Prince Edward Island",
     "QC": "Quebec",
     "SK": "Saskatchewan",
-    "YT": "Yukon",
-    "temp": "Temporary Residence"
+    "YT": "Yukon"
 };
 
 // Initialize page
@@ -66,7 +65,7 @@ function updateAdvanceSelection() {
 }
 
 // Generate SIN using your library
-function generateSINNumber() {
+function generateSIN() {
     let sin;
     let sinProvince = "Random";
     
@@ -74,17 +73,13 @@ function generateSINNumber() {
         // Generate based on selected provinces
         if (selectedProvinces.includes('temp')) {
             // Generate temporary resident SIN (starts with 9)
-            const options = {
-                startsWith: 9
-            };
+            const options = { startsWith: 9 };
             sin = SocialInsuranceNumber.generate(options);
             sinProvince = "Temporary Residence";
         } else {
             // Generate for specific province
             const randomProvince = selectedProvinces[Math.floor(Math.random() * selectedProvinces.length)];
-            const options = {
-                province: randomProvince
-            };
+            const options = { province: randomProvince };
             sin = SocialInsuranceNumber.generate(options);
             sinProvince = provinceNames[randomProvince];
         }
@@ -94,7 +89,11 @@ function generateSINNumber() {
         // Determine province from generated SIN
         const sinObj = new SocialInsuranceNumber(sin);
         const provinces = sinObj.provinces();
-        sinProvince = provinces.length > 0 ? provinceNames[provinces[0]] : "Unknown";
+        if (sinObj.isTemporary()) {
+            sinProvince = "Temporary Residence";
+        } else if (provinces.length > 0) {
+            sinProvince = provinceNames[provinces[0]] || provinces[0];
+        }
     }
     
     // Format SIN with dashes
@@ -121,12 +120,12 @@ function formatSINInput(input) {
 }
 
 // Verify SIN using your library
-function verifySINNumber() {
+function verifySIN() {
     const sinInput = document.getElementById('sinInput').value;
     const resultDiv = document.getElementById('verificationResult');
     
     if (!sinInput.trim()) {
-        resultDiv.innerHTML = '<div class="error-result">Please enter a SIN number</div>';
+        showVerificationResult(false, 'Please enter a SIN number');
         return;
     }
     
@@ -134,7 +133,7 @@ function verifySINNumber() {
     const cleanSIN = sinInput.replace(/\D/g, '');
     
     if (cleanSIN.length !== 9) {
-        resultDiv.innerHTML = '<div class="error-result">SIN must be exactly 9 digits</div>';
+        showVerificationResult(false, 'SIN must be exactly 9 digits');
         return;
     }
     
@@ -147,30 +146,48 @@ function verifySINNumber() {
         const isTemp = sinObj.isTemporary();
         const isBusiness = sinObj.isBusinessNumber();
         
+        let categoryText = "Regular SIN";
         let provinceText = "Unknown";
+        
         if (isTemp) {
+            categoryText = "Temporary Resident SIN";
             provinceText = "Temporary Residence";
         } else if (isBusiness) {
-            provinceText = "Business Number";
+            categoryText = "Business Number";
+            provinceText = "Business Registration";
         } else if (provinces.length > 0) {
             provinceText = provinces.map(p => provinceNames[p] || p).join(", ");
         }
         
+        const message = `This SIN is classified as: ${categoryText}. Region: ${provinceText}`;
+        showVerificationResult(true, message);
+    } else {
+        showVerificationResult(false, `This SIN number is not valid according to the Luhn algorithm.`);
+    }
+}
+
+// Show verification result
+function showVerificationResult(isValid, message) {
+    const resultDiv = document.getElementById('verificationResult');
+    
+    if (isValid) {
         resultDiv.innerHTML = `
-            <div class="valid-result">
-                <h4>✅ Valid SIN</h4>
-                <div class="sin-details">
-                    <p><strong>SIN:</strong> ${sinInput}</p>
-                    <p><strong>Province(s):</strong> ${provinceText}</p>
-                    <p><strong>Type:</strong> ${isTemp ? 'Temporary Resident' : isBusiness ? 'Business Number' : 'Regular'}</p>
+            <div class="result-valid">
+                <div class="check-icon">✓</div>
+                <div class="result-text">
+                    <h3>Valid SIN Number</h3>
+                    <p>${message}</p>
                 </div>
             </div>
         `;
     } else {
         resultDiv.innerHTML = `
-            <div class="invalid-result">
-                <h4>❌ Invalid SIN</h4>
-                <p>The SIN number <strong>${sinInput}</strong> is not valid according to the Luhn algorithm.</p>
+            <div class="result-invalid">
+                <div class="cross-icon">✕</div>
+                <div class="result-text">
+                    <h3>Invalid SIN Number</h3>
+                    <p>${message}</p>
+                </div>
             </div>
         `;
     }
@@ -181,9 +198,10 @@ function addToHistory(sin, province) {
     const now = new Date();
     const entry = {
         sin: sin,
-        province: province,
         date: now.toLocaleDateString(),
-        time: now.toLocaleTimeString()
+        time: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        type: province,
+        timestamp: now.getTime()
     };
     
     generationHistory.unshift(entry); // Add to beginning
@@ -199,30 +217,42 @@ function addToHistory(sin, province) {
 
 // Toggle history modal
 function toggleHistory() {
-    const modal = document.getElementById('historyModal');
-    modal.classList.toggle('show');
+    const historyModal = document.getElementById('historyModal');
+    if (historyModal) {
+        historyModal.classList.toggle('show');
+    }
 }
 
 // Update history display
 function updateHistoryDisplay() {
-    const tbody = document.getElementById('historyTableBody');
-    if (!tbody) return; // Not on generator page
-    
-    tbody.innerHTML = '';
+    const historyTableBody = document.getElementById('historyTableBody');
+    if (!historyTableBody) return;
     
     if (generationHistory.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="no-history">No generation history yet</td></tr>';
+        historyTableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="no-history">No generation history available</td>
+            </tr>
+        `;
         return;
     }
     
-    generationHistory.forEach(entry => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td class="sin-cell">${entry.sin}</td>
-            <td>${entry.province}</td>
-            <td>${entry.date}</td>
-            <td>${entry.time}</td>
-        `;
-        tbody.appendChild(row);
-    });
+    historyTableBody.innerHTML = generationHistory
+        .map(entry => `
+            <tr>
+                <td>${entry.sin}</td>
+                <td>${entry.date}</td>
+                <td>${entry.time}</td>
+                <td>${entry.type}</td>
+            </tr>
+        `)
+        .join('');
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const historyModal = document.getElementById('historyModal');
+    if (event.target === historyModal) {
+        historyModal.classList.remove('show');
+    }
 }
