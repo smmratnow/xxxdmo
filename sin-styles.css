@@ -1,0 +1,373 @@
+/* SIN Generator & Verify Specific Styles */
+
+.sin-content {
+    background-color: #f5f5f5;
+    min-height: calc(100vh - 80px);
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* History Button */
+.history-btn {
+    background: none;
+    border: none;
+    color: #4CAF50;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.history-btn:hover {
+    color: #45a049;
+}
+
+/* Generation Area */
+.generation-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.generate-row, .verify-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.generate-btn, .verify-btn {
+    background-color: transparent;
+    color: #333;
+    border: 2px solid #333;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: normal;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-width: 120px;
+}
+
+.generate-btn:hover, .verify-btn:hover {
+    background-color: #333;
+    color: white;
+}
+
+.generate-btn:disabled {
+    background-color: #f0f0f0;
+    color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+.sin-result, .sin-input {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 24px;
+    font-weight: bold;
+    border: 3px solid #333;
+    background-color: white;
+    text-align: center;
+    letter-spacing: 2px;
+    color: #4CAF50;
+}
+
+.sin-input {
+    color: #333;
+    font-size: 20px;
+}
+
+.sin-result:focus, .sin-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Advance Section */
+.advance-section {
+    width: 100%;
+}
+
+.advance-btn {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.advance-btn:hover {
+    color: #666;
+}
+
+.arrow {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.arrow.down {
+    transform: rotate(90deg);
+}
+
+.advance-options {
+    margin-left: 20px;
+    margin-top: 15px;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.advance-options.show {
+    display: flex;
+}
+
+.option-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.option-label:hover {
+    background-color: #e8e8e8;
+}
+
+.option-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4CAF50;
+}
+
+/* Verification Area */
+.verification-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.verification-result {
+    width: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.result-valid {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 30px;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-radius: 8px;
+    border: 2px solid #4CAF50;
+}
+
+.result-invalid {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 30px;
+    background-color: rgba(244, 67, 54, 0.1);
+    border-radius: 8px;
+    border: 2px solid #f44336;
+}
+
+.check-icon, .cross-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.check-icon {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cross-icon {
+    background-color: #f44336;
+    color: white;
+}
+
+.result-text {
+    flex: 1;
+}
+
+.result-text h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+}
+
+.result-text p {
+    margin: 0;
+    font-size: 16px;
+    color: #666;
+}
+
+.result-valid .result-text h3 {
+    color: #4CAF50;
+}
+
+.result-invalid .result-text h3 {
+    color: #f44336;
+}
+
+/* History Modal */
+.history-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.history-modal.show {
+    display: block;
+}
+
+.history-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.history-header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-header h3 {
+    margin: 0;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.history-table {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.history-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th {
+    background-color: #f5f5f5;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    font-weight: bold;
+    color: #333;
+}
+
+.history-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    color: #666;
+}
+
+.history-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.no-history {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .generate-row, .verify-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .sin-result, .sin-input {
+        font-size: 20px;
+    }
+
+    .history-content {
+        width: 95%;
+        margin: 2% auto;
+        max-height: 90vh;
+    }
+
+    .history-table {
+        padding: 15px;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 8px 6px;
+        font-size: 14px;
+    }
+}
