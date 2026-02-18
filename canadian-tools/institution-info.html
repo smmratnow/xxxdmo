@@ -311,28 +311,21 @@
         let filteredData = [];
         let currentFilter = 'all';
 
-        // Load institution data from external file
+        // Load institution data from JSON file
         async function loadInstitutionData() {
             try {
-                // First, try to load the data file
-                const response = await fetch('../financial-institutions/major-banks-data/all-Institution-data.js');
+                // Load the JSON file
+                const response = await fetch('../financial-institutions/all-Institution-data.js');
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const dataText = await response.text();
+                // Parse JSON data
+                institutionData = await response.json();
                 
-                // Execute the JavaScript to get the data
-                const scriptElement = document.createElement('script');
-                scriptElement.textContent = dataText;
-                document.head.appendChild(scriptElement);
-                
-                // The data should now be available as allInstitutionNumbers
-                if (typeof allInstitutionNumbers !== 'undefined') {
-                    institutionData = { allInstitutionNumbers: allInstitutionNumbers };
-                } else {
-                    throw new Error('Institution data not found in the loaded file');
+                if (!institutionData || !institutionData.allInstitutionNumbers) {
+                    throw new Error('Invalid data format in institution file');
                 }
                 
                 filteredData = institutionData.allInstitutionNumbers;
@@ -348,7 +341,8 @@
                     <div class="no-results">
                         <p>❌ Error loading institution data</p>
                         <p>Please check that the data file exists at:</p>
-                        <p><code>../financial-institutions/major-banks-data/all-Institution-data.js</code></p>
+                        <p><code>../financial-institutions/all-Institution-data.js</code></p>
+                        <p>Error details: ${error.message}</p>
                     </div>
                 `;
                 document.getElementById('statsText').textContent = 'Error loading data';
@@ -422,7 +416,7 @@
                 return 'credit-unions';
             }
 
-            // Foreign Banks
+            // Foreign Banks (240-400 range)
             if (number >= 240 && number < 400) {
                 return 'foreign-banks';
             }
