@@ -1,18 +1,26 @@
-// SIN Generator & Verify JavaScript
+// SIN Generator & Verify using Professional SIN Library
 
 // Global variables
 let isAdvanceMode = false;
-let selectedOptions = [];
+let selectedProvinces = [];
 let generationHistory = JSON.parse(localStorage.getItem('sinHistory')) || [];
 
-// Province ranges for SIN generation
-const provinceRanges = {
-    temp: { ranges: [[900, 999]], name: "Temporary Residence" },
-    atlantic: { ranges: [[100, 199]], name: "Atlantic Provinces" },
-    ontario: { ranges: [[400, 499]], name: "Ontario" },
-    quebec: { ranges: [[200, 299]], name: "Quebec" },
-    bc: { ranges: [[700, 799]], name: "British Columbia / Yukon" },
-    prairie: { ranges: [[500, 699]], name: "Alberta / Manitoba / Saskatchewan / NT / NU" }
+// Province display names
+const provinceNames = {
+    "AB": "Alberta",
+    "BC": "British Columbia", 
+    "MB": "Manitoba",
+    "NB": "New Brunswick",
+    "NF": "Newfoundland",
+    "NS": "Nova Scotia",
+    "NT": "Northwest Territories",
+    "NU": "Nunavut",
+    "ON": "Ontario",
+    "PE": "Prince Edward Island",
+    "QC": "Quebec",
+    "SK": "Saskatchewan",
+    "YT": "Yukon",
+    "temp": "Temporary Residence"
 };
 
 // Initialize page
@@ -41,181 +49,141 @@ function toggleAdvance() {
         // Clear all checkboxes
         const checkboxes = advanceOptions.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(cb => cb.checked = false);
-        selectedOptions = [];
+        selectedProvinces = [];
     }
 }
 
 // Update advance selection
 function updateAdvanceSelection() {
     const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]:checked');
-    selectedOptions = Array.from(checkboxes).map(cb => cb.value);
+    selectedProvinces = Array.from(checkboxes).map(cb => cb.value);
     
     const generateBtn = document.getElementById('generateBtn');
     if (isAdvanceMode) {
-        generateBtn.disabled = selectedOptions.length === 0;
-        generateBtn.style.opacity = selectedOptions.length === 0 ? '0.5' : '1';
+        generateBtn.disabled = selectedProvinces.length === 0;
+        generateBtn.style.opacity = selectedProvinces.length === 0 ? '0.5' : '1';
     }
 }
 
-// Generate SIN number
-function generateSIN() {
-    let sinNumber;
-    let sinType = "Random";
+// Generate SIN using your library
+function generateSINNumber() {
+    let sin;
+    let sinProvince = "Random";
     
-    if (isAdvanceMode && selectedOptions.length > 0) {
-        // Generate based on selected province/territory
-        const randomOption = selectedOptions[Math.floor(Math.random() * selectedOptions.length)];
-        const provinceData = provinceRanges[randomOption];
-        const randomRange = provinceData.ranges[Math.floor(Math.random() * provinceData.ranges.length)];
-        const firstThree = Math.floor(Math.random() * (randomRange[1] - randomRange[0] + 1)) + randomRange[0];
-        
-        sinNumber = generateValidSIN(firstThree.toString().padStart(3, '0'));
-        sinType = provinceData.name;
+    if (isAdvanceMode && selectedProvinces.length > 0) {
+        // Generate based on selected provinces
+        if (selectedProvinces.includes('temp')) {
+            // Generate temporary resident SIN (starts with 9)
+            const options = {
+                startsWith: 9
+            };
+            sin = SocialInsuranceNumber.generate(options);
+            sinProvince = "Temporary Residence";
+        } else {
+            // Generate for specific province
+            const randomProvince = selectedProvinces[Math.floor(Math.random() * selectedProvinces.length)];
+            const options = {
+                province: randomProvince
+            };
+            sin = SocialInsuranceNumber.generate(options);
+            sinProvince = provinceNames[randomProvince];
+        }
     } else {
         // Generate random SIN
-        let firstThree;
-        do {
-            firstThree = Math.floor(Math.random() * 900) + 100; // 100-999
-        } while (firstThree.toString().startsWith('000') || firstThree.toString().startsWith('666') || firstThree.toString().startsWith('900'));
-        
-        sinNumber = generateValidSIN(firstThree.toString());
+        sin = SocialInsuranceNumber.generate();
+        // Determine province from generated SIN
+        const sinObj = new SocialInsuranceNumber(sin);
+        const provinces = sinObj.provinces();
+        sinProvince = provinces.length > 0 ? provinceNames[provinces[0]] : "Unknown";
     }
+    
+    // Format SIN with dashes
+    const formattedSIN = `${sin.slice(0,3)}-${sin.slice(3,6)}-${sin.slice(6,9)}`;
     
     // Display result
-    const resultField = document.getElementById('sinResult');
-    resultField.value = formatSIN(sinNumber);
+    document.getElementById('sinResult').value = formattedSIN;
     
     // Add to history
-    addToHistory(sinNumber, sinType);
+    addToHistory(formattedSIN, sinProvince);
 }
 
-// Generate valid SIN using Luhn algorithm
-function generateValidSIN(firstThree) {
-    let sin = firstThree;
-    
-    // Generate next 5 random digits
-    for (let i = 0; i < 5; i++) {
-        sin += Math.floor(Math.random() * 10);
-    }
-    
-    // Calculate check digit using Luhn algorithm
-    let sum = 0;
-    for (let i = 0; i < 8; i++) {
-        let digit = parseInt(sin[i]);
-        if (i % 2 === 1) { // Even position (0-indexed), so multiply by 2
-            digit *= 2;
-            if (digit > 9) digit = Math.floor(digit / 10) + (digit % 10);
-        }
-        sum += digit;
-    }
-    
-    const checkDigit = (10 - (sum % 10)) % 10;
-    return sin + checkDigit.toString();
-}
-
-// Verify SIN number
-function verifySIN() {
-    const sinInput = document.getElementById('sinInput').value.replace(/\D/g, '');
-    const resultDiv = document.getElementById('verificationResult');
-    
-    if (sinInput.length !== 9) {
-        showVerificationResult(false, 'Invalid SIN length. SIN must be 9 digits.');
-        return;
-    }
-    
-    // Validate using Luhn algorithm
-    let sum = 0;
-    for (let i = 0; i < 8; i++) {
-        let digit = parseInt(sinInput[i]);
-        if (i % 2 === 1) {
-            digit *= 2;
-            if (digit > 9) digit = Math.floor(digit / 10) + (digit % 10);
-        }
-        sum += digit;
-    }
-    
-    const calculatedCheckDigit = (10 - (sum % 10)) % 10;
-    const actualCheckDigit = parseInt(sinInput[8]);
-    
-    if (calculatedCheckDigit === actualCheckDigit) {
-        const sinType = getSINType(sinInput);
-        showVerificationResult(true, `This SIN number ${formatSIN(sinInput)} is valid. It is classified as a ${sinType} SIN.`);
-    } else {
-        showVerificationResult(false, `This SIN number ${formatSIN(sinInput)} is not valid.`);
-    }
-}
-
-// Show verification result
-function showVerificationResult(isValid, message) {
-    const resultDiv = document.getElementById('verificationResult');
-    
-    if (isValid) {
-        resultDiv.innerHTML = `
-            <div class="result-valid">
-                <div class="check-icon">✓</div>
-                <div class="result-text">
-                    <h3>Valid SIN Number</h3>
-                    <p>${message}</p>
-                </div>
-            </div>
-        `;
-    } else {
-        resultDiv.innerHTML = `
-            <div class="result-invalid">
-                <div class="cross-icon">✕</div>
-                <div class="result-text">
-                    <h3>Invalid SIN Number</h3>
-                    <p>${message}</p>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// Get SIN type based on first three digits
-function getSINType(sin) {
-    const firstThree = parseInt(sin.substring(0, 3));
-    
-    if (firstThree >= 900 && firstThree <= 999) return "Temporary Residence";
-    if (firstThree >= 100 && firstThree <= 199) return "Atlantic Provinces";
-    if (firstThree >= 200 && firstThree <= 299) return "Quebec";
-    if (firstThree >= 400 && firstThree <= 499) return "Ontario";
-    if (firstThree >= 500 && firstThree <= 699) return "Alberta / Manitoba / Saskatchewan / NT / NU";
-    if (firstThree >= 700 && firstThree <= 799) return "British Columbia / Yukon";
-    
-    return "Unknown Region";
-}
-
-// Format SIN number with dashes
-function formatSIN(sin) {
-    const cleanSIN = sin.replace(/\D/g, '');
-    if (cleanSIN.length === 9) {
-        return `${cleanSIN.substring(0, 3)}-${cleanSIN.substring(3, 6)}-${cleanSIN.substring(6, 9)}`;
-    }
-    return cleanSIN;
-}
-
-// Format SIN input as user types
+// Format SIN input in verify page
 function formatSINInput(input) {
     let value = input.value.replace(/\D/g, '');
-    if (value.length >= 3) {
-        value = value.substring(0, 3) + '-' + value.substring(3);
+    
+    if (value.length >= 6) {
+        value = value.slice(0,3) + '-' + value.slice(3,6) + '-' + value.slice(6,9);
+    } else if (value.length >= 3) {
+        value = value.slice(0,3) + '-' + value.slice(3,6);
     }
-    if (value.length >= 7) {
-        value = value.substring(0, 7) + '-' + value.substring(7, 10);
-    }
+    
     input.value = value;
 }
 
-// Add to history
-function addToHistory(sin, type) {
+// Verify SIN using your library
+function verifySINNumber() {
+    const sinInput = document.getElementById('sinInput').value;
+    const resultDiv = document.getElementById('verificationResult');
+    
+    if (!sinInput.trim()) {
+        resultDiv.innerHTML = '<div class="error-result">Please enter a SIN number</div>';
+        return;
+    }
+    
+    // Remove formatting and validate
+    const cleanSIN = sinInput.replace(/\D/g, '');
+    
+    if (cleanSIN.length !== 9) {
+        resultDiv.innerHTML = '<div class="error-result">SIN must be exactly 9 digits</div>';
+        return;
+    }
+    
+    // Use your SIN library for verification
+    const sinObj = new SocialInsuranceNumber(cleanSIN);
+    const isValid = sinObj.isValid();
+    
+    if (isValid) {
+        const provinces = sinObj.provinces();
+        const isTemp = sinObj.isTemporary();
+        const isBusiness = sinObj.isBusinessNumber();
+        
+        let provinceText = "Unknown";
+        if (isTemp) {
+            provinceText = "Temporary Residence";
+        } else if (isBusiness) {
+            provinceText = "Business Number";
+        } else if (provinces.length > 0) {
+            provinceText = provinces.map(p => provinceNames[p] || p).join(", ");
+        }
+        
+        resultDiv.innerHTML = `
+            <div class="valid-result">
+                <h4>✅ Valid SIN</h4>
+                <div class="sin-details">
+                    <p><strong>SIN:</strong> ${sinInput}</p>
+                    <p><strong>Province(s):</strong> ${provinceText}</p>
+                    <p><strong>Type:</strong> ${isTemp ? 'Temporary Resident' : isBusiness ? 'Business Number' : 'Regular'}</p>
+                </div>
+            </div>
+        `;
+    } else {
+        resultDiv.innerHTML = `
+            <div class="invalid-result">
+                <h4>❌ Invalid SIN</h4>
+                <p>The SIN number <strong>${sinInput}</strong> is not valid according to the Luhn algorithm.</p>
+            </div>
+        `;
+    }
+}
+
+// Add to generation history
+function addToHistory(sin, province) {
     const now = new Date();
     const entry = {
-        sin: formatSIN(sin),
+        sin: sin,
+        province: province,
         date: now.toLocaleDateString(),
-        time: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-        type: type,
-        timestamp: now.getTime()
+        time: now.toLocaleTimeString()
     };
     
     generationHistory.unshift(entry); // Add to beginning
@@ -231,42 +199,30 @@ function addToHistory(sin, type) {
 
 // Toggle history modal
 function toggleHistory() {
-    const historyModal = document.getElementById('historyModal');
-    if (historyModal) {
-        historyModal.classList.toggle('show');
-    }
+    const modal = document.getElementById('historyModal');
+    modal.classList.toggle('show');
 }
 
 // Update history display
 function updateHistoryDisplay() {
-    const historyTableBody = document.getElementById('historyTableBody');
-    if (!historyTableBody) return;
+    const tbody = document.getElementById('historyTableBody');
+    if (!tbody) return; // Not on generator page
+    
+    tbody.innerHTML = '';
     
     if (generationHistory.length === 0) {
-        historyTableBody.innerHTML = `
-            <tr>
-                <td colspan="4" class="no-history">No generation history available</td>
-            </tr>
-        `;
+        tbody.innerHTML = '<tr><td colspan="4" class="no-history">No generation history yet</td></tr>';
         return;
     }
     
-    historyTableBody.innerHTML = generationHistory
-        .map(entry => `
-            <tr>
-                <td>${entry.sin}</td>
-                <td>${entry.date}</td>
-                <td>${entry.time}</td>
-                <td>${entry.type}</td>
-            </tr>
-        `)
-        .join('');
-}
-
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const historyModal = document.getElementById('historyModal');
-    if (event.target === historyModal) {
-        historyModal.classList.remove('show');
-    }
+    generationHistory.forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="sin-cell">${entry.sin}</td>
+            <td>${entry.province}</td>
+            <td>${entry.date}</td>
+            <td>${entry.time}</td>
+        `;
+        tbody.appendChild(row);
+    });
 }
