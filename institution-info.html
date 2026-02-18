@@ -4,101 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Institution Info</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        /* Header matching your main page */
-        .header {
-            background-color: #2c3e50;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .home-icon {
-            color: white;
-            font-size: 24px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .title {
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        /* Main container */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* Search section */
+        /* Additional styles specific to Institution Info page */
         .search-section {
-            background: white;
-            border-radius: 12px;
+            background-color: white;
+            border: 3px solid #333;
+            border-radius: 8px;
             padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 30px;
+            max-width: 800px;
+            width: 100%;
         }
 
         .search-input {
             width: 100%;
             padding: 15px 20px;
             font-size: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border: 2px solid #333;
+            border-radius: 5px;
             outline: none;
-            transition: border-color 0.3s;
+            color: #333;
+            margin-bottom: 15px;
         }
 
         .search-input:focus {
-            border-color: #3498db;
+            border-color: #555;
         }
 
         .clear-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 8px;
+            background-color: transparent;
+            color: #333;
+            border: 2px solid #333;
+            padding: 10px 20px;
             font-size: 14px;
             cursor: pointer;
-            margin-left: 10px;
-            transition: background-color 0.3s;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .clear-btn:hover {
-            background: #c0392b;
+            background-color: #333;
+            color: white;
         }
 
-        /* Results section */
         .results-section {
-            background: white;
-            border-radius: 12px;
+            background-color: white;
+            border: 3px solid #333;
+            border-radius: 8px;
             padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            color: #333;
         }
 
         .results-count {
             color: #666;
             font-size: 14px;
             margin-bottom: 20px;
+            text-align: center;
         }
 
         .results-table {
@@ -108,30 +74,25 @@
         }
 
         .results-table th {
-            background-color: #34495e;
+            background-color: #333;
             color: white;
             padding: 15px;
             text-align: left;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .results-table th:first-child {
-            border-top-left-radius: 8px;
-        }
-
-        .results-table th:last-child {
-            border-top-right-radius: 8px;
+            font-weight: normal;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .results-table td {
             padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #ddd;
             font-size: 14px;
+            color: #333;
         }
 
         .results-table tr:hover {
-            background-color: #f8f9fa;
+            background-color: #f9f9f9;
         }
 
         .results-table tr:last-child td {
@@ -146,15 +107,11 @@
             font-size: 16px;
         }
 
-        /* Responsive design */
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .container {
-                margin: 20px auto;
-                padding: 0 10px;
-            }
-            
             .search-section, .results-section {
                 padding: 20px;
+                margin: 0 20px 20px 20px;
             }
             
             .results-table {
@@ -167,35 +124,42 @@
             }
 
             .clear-btn {
-                margin-left: 0;
-                margin-top: 10px;
                 width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-section, .results-section {
+                margin: 0 15px 20px 15px;
+                padding: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header matching your main page -->
-    <div class="header">
-        <a href="index.html" class="home-icon">🏠</a>
-        <div class="title">INSTITUTION INFO</div>
-        <div style="width: 24px;"></div> <!-- Spacer for centering -->
-    </div>
+    <!-- Header using your exact structure -->
+    <header class="header">
+        <button class="home-btn" onclick="window.location.href='index.html'">
+            <svg class="home-icon" viewBox="0 0 24 24">
+                <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
+            </svg>
+        </button>
+        <h1 class="page-title">Institution Info</h1>
+        <div style="width: 40px;"></div> <!-- Spacer for centering -->
+    </header>
 
-    <div class="container">
+    <main class="content">
         <!-- Search Section -->
         <div class="search-section">
-            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    class="search-input" 
-                    placeholder="Search by bank name, institution number, or id..."
-                    autocomplete="off"
-                    style="flex: 1; min-width: 250px;"
-                >
-                <button id="clearBtn" class="clear-btn">Clear</button>
-            </div>
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input" 
+                placeholder="Search by bank name, institution number, or id..."
+                autocomplete="off"
+            >
+            <button id="clearBtn" class="clear-btn">Clear</button>
         </div>
 
         <!-- Results Section -->
@@ -219,7 +183,7 @@
                 No institutions found matching your search.
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Load the institution data -->
     <script src="financial-institutions/all-Institution-data.js"></script>
