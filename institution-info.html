@@ -1,27 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Institution Info</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header class="header">
-        <button class="home-btn" onclick="window.location.href='index.html'">
-            <svg class="home-icon" viewBox="0 0 24 24">
-                <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
-            </svg>
-        </button>
-        <h1 class="page-title">Institution Info</h1>
-        <div style="width: 40px;"></div> <!-- Spacer for centering -->
-    </header>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Institution Info</title>
 
-    <main class="content">
-        <div style="color: #333; font-size: 18px; text-align: center;">
-            Institution Info functionality coming soon...
-        </div>
-    </main>
+  <style>
+    :root { --bg:#f4f4f4; --card:#fff; --border:#ddd; --text:#111; --muted:#555; }
+    body { margin:0; font-family: Arial, Helvetica, sans-serif; background:var(--bg); color:var(--text); }
+    header {
+      background:#111; color:#fff; padding:14px 18px;
+      display:flex; align-items:center; gap:12px;
+    }
+    header a { color:#fff; text-decoration:none; font-weight:700; }
+    header h1 { margin:0; font-size:18px; flex:1; text-align:center; letter-spacing:1px; }
+    main { max-width: 980px; margin: 0 auto; padding: 18px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; }
+    .search { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    input[type="text"]{
+      flex: 1;
+      min-width: 240px;
+      padding: 12px 12px;
+      font-size: 16px;
+      border: 1px solid #bbb;
+      border-radius: 10px;
+      outline: none;
+    }
+    button{
+      padding: 12px 14px;
+      font-size: 14px;
+      border-radius: 10px;
+      border: 1px solid #bbb;
+      background: #fff;
+      cursor: pointer;
+    }
+    button:hover { background:#f1f1f1; }
+    .meta { margin-top:10px; color:var(--muted); font-size:13px; }
+    .error { margin-top:10px; color:#b00020; font-weight:700; font-size:13px; }
+    table { width:100%; border-collapse: collapse; margin-top:12px; }
+    th, td { text-align:left; padding: 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+    th { background:#fafafa; position: sticky; top: 0; z-index: 1; }
+    .pill {
+      display:inline-block; padding:4px 10px; border:1px solid #ddd;
+      border-radius:999px; background:#fff; font-size:12px;
+    }
+    .nowrap { white-space: nowrap; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a href="index.html">HOME</a>
+    <h1>INSTITUTION INFO</h1>
+    <span style="width:52px;"></span>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="search">
+        <input id="q" type="text" placeholder="Search by bank name, institution number, or id..." />
+        <button id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div id="meta" class="meta"></div>
+      <div id="err" class="error" style="display:none;"></div>
+
+      <table aria-label="Institution list">
+        <thead>
+          <tr>
+            <th class="nowrap">Id</th>
+            <th>Financial Institution</th>
+            <th class="nowrap">Institution #</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Path changed because this HTML is now in repo root -->
+  <script src="financial-institutions/all-Institution-data.js"></script>
+
+  <script>
+    (function () {
+      const qEl = document.getElementById("q");
+      const rowsEl = document.getElementById("rows");
+      const metaEl = document.getElementById("meta");
+      const errEl = document.getElementById("err");
+      const clearBtn = document.getElementById("clearBtn");
+
+      const data = window.ALL_INSTITUTION_DATA && window.ALL_INSTITUTION_DATA.allInstitutionNumbers;
+
+      if (!Array.isArray(data)) {
+        errEl.style.display = "block";
+        errEl.textContent =
+          "ERROR: Institution data not loaded. Check that financial-institutions/all-Institution-data.js exists and defines window.ALL_INSTITUTION_DATA.";
+        console.error("Data not found. window.ALL_INSTITUTION_DATA =", window.ALL_INSTITUTION_DATA);
+        metaEl.textContent = "";
+        return;
+      }
+
+      const all = [...data].sort((a, b) => {
+        const an = Number(a.institutionNumber);
+        const bn = Number(b.institutionNumber);
+        if (an !== bn) return an - bn;
+        return String(a.financialInstitution).localeCompare(String(b.financialInstitution));
+      });
+
+      function norm(v) { return String(v ?? "").toLowerCase().trim(); }
+
+      function render(items) {
+        rowsEl.innerHTML = "";
+        metaEl.innerHTML =
+          `Showing <span class="pill">${items.length}</span> result(s) out of <span class="pill">${all.length}</span>`;
+
+        for (const x of items) {
+          const tr = document.createElement("tr");
+
+          const tdId = document.createElement("td");
+          tdId.className = "nowrap";
+          tdId.textContent = x.id;
+
+          const tdName = document.createElement("td");
+          tdName.textContent = x.financialInstitution;
+
+          const tdInst = document.createElement("td");
+          tdInst.className = "nowrap";
+          tdInst.textContent = x.institutionNumber;
+
+          tr.appendChild(tdId);
+          tr.appendChild(tdName);
+          tr.appendChild(tdInst);
+
+          rowsEl.appendChild(tr);
+        }
+      }
+
+      function search() {
+        const s = norm(qEl.value);
+        if (!s) return render(all);
+
+        const filtered = all.filter((x) => {
+          const name = norm(x.financialInstitution);
+          const inst = norm(x.institutionNumber);
+          const id = norm(x.id);
+          return name.includes(s) || inst.includes(s) || id.includes(s);
+        });
+
+        render(filtered);
+      }
+
+      qEl.addEventListener("input", search);
+      clearBtn.addEventListener("click", () => {
+        qEl.value = "";
+        qEl.focus();
+        render(all);
+      });
+
+      render(all);
+    })();
+  </script>
 </body>
 </html>
-
