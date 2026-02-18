@@ -1,6 +1,3 @@
-// financial-institutions/all-Institution-data.js
-// Fixed: was raw JSON; must be valid JS to load via <script src="..."></script>
-
 window.ALL_INSTITUTION_DATA = {
   allInstitutionNumbers: [
     { financialInstitution: "Bank of Montreal", institutionNumber: 1, id: 2 },
