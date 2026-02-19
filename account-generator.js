@@ -1,52 +1,89 @@
-// Account Generator - Complete Working Version with Missing Functions
+// Account Generator - Data Loading Fix
 
 let selectedAdvanceOptions = [];
 let accountHistory = JSON.parse(localStorage.getItem('accountHistory')) || [];
+let dataLoaded = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Account Generator loaded');
-    setTimeout(testDataAvailability, 100);
+    console.log('✅ DOM loaded, waiting for bank data...');
+    waitForBankData();
     loadHistory();
     updateGenerateButtonState();
 });
 
-function testDataAvailability() {
-    console.log('🔍 Testing with CORRECT key names...');
+function waitForBankData() {
+    const maxAttempts = 50;
+    let attempts = 0;
     
-    const bankConfigs = {
-        'td': { variable: 'tdBankData', key: 'tdBank' },
-        'rbc': { variable: 'rbcData', key: 'rbcBank' },
-        'bmo': { variable: 'bmoData', key: 'bmoBank' },
-        'cibc': { variable: 'cibcData', key: 'cibcBank' },
-        'scotia': { variable: 'scotiaData', key: 'scotiaBank' }
+    const checkData = () => {
+        attempts++;
+        console.log(`🔄 Checking data attempt ${attempts}...`);
+        
+        const dataVars = ['tdBankData', 'rbcData', 'bmoData', 'scotiaData', 'cibcData'];
+        const loadedData = dataVars.filter(varName => {
+            const data = window[varName];
+            if (data && typeof data === 'object') {
+                const keys = Object.keys(data);
+                return keys.some(key => Array.isArray(data[key]) && data[key].length > 0);
+            }
+            return false;
+        });
+        
+        console.log(`📊 Loaded data: [${loadedData.join(', ')}]`);
+        
+        if (loadedData.length > 0) {
+            dataLoaded = true;
+            console.log(`✅ Data loaded! Found ${loadedData.length} bank datasets`);
+            testDataStructure();
+            return;
+        }
+        
+        if (attempts < maxAttempts) {
+            console.log('⏳ Still waiting for data...');
+            setTimeout(checkData, 200);
+        } else {
+            console.error('❌ Timeout waiting for bank data');
+            alert('Error: Bank data failed to load. Please refresh the page.');
+        }
     };
     
-    Object.entries(bankConfigs).forEach(([bankCode, config]) => {
-        const data = window[config.variable];
-        if (data && data[config.key]) {
-            console.log(`✅ ${bankCode.toUpperCase()}: ${data[config.key].length} branches available`);
-        } else {
-            console.log(`❌ ${bankCode.toUpperCase()}: Data not found`);
+    checkData();
+}
+
+function testDataStructure() {
+    console.log('🔍 FINAL DATA STRUCTURE TEST:');
+    
+    const banks = {
+        'TD': { var: 'tdBankData', keys: ['tdBank'] },
+        'RBC': { var: 'rbcData', keys: ['rbcBank'] },
+        'BMO': { var: 'bmoData', keys: ['bmoBank'] },
+        'Scotia': { var: 'scotiaData', keys: ['scotiaBank'] },
+        'CIBC': { var: 'cibcData', keys: ['cibcBank'] }
+    };
+    
+    Object.entries(banks).forEach(([bankName, config]) => {
+        const data = window[config.var];
+        if (data) {
+            const actualKeys = Object.keys(data);
+            console.log(`📋 ${bankName} actual keys:`, actualKeys);
+            
+            for (const key of actualKeys) {
+                if (Array.isArray(data[key])) {
+                    console.log(`✅ ${bankName}.${key}: ${data[key].length} branches`);
+                }
+            }
         }
     });
 }
 
-// MISSING FUNCTION - Added here
-function updateBankSelection() {
-    console.log('🔄 updateBankSelection called');
-    selectedAdvanceOptions = [];
-    const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]:checked');
-    
-    checkboxes.forEach(checkbox => {
-        selectedAdvanceOptions.push(checkbox.value);
-    });
-    
-    console.log('📋 Selected banks:', selectedAdvanceOptions);
-    updateGenerateButtonState();
-}
-
 function generateAccount() {
-    console.log('🎯 Generate button clicked');
+    console.log('🎯 Generate clicked');
+    
+    if (!dataLoaded) {
+        alert('⏳ Please wait for data to load...');
+        waitForBankData();
+        return;
+    }
     
     try {
         const advanceOptions = document.getElementById('advanceOptions');
@@ -56,130 +93,95 @@ function generateAccount() {
         
         if (isAdvanceOpen && selectedAdvanceOptions.length > 0) {
             banksToUse = selectedAdvanceOptions;
-            console.log('🎯 Using selected banks:', banksToUse);
-        } else {
-            console.log('🌟 Using default bank: TD');
         }
+        
+        console.log('🎯 Generating for:', banksToUse);
         
         const accountData = generateCompleteAccount(banksToUse);
         
         if (!accountData) {
-            console.error('❌ Failed to generate account data');
-            alert('Failed to generate account. Check console for details.');
+            console.error('❌ No account data generated');
+            alert('Failed to generate account. Check console.');
             return;
         }
         
         displayAccountData(accountData);
         saveToHistory(accountData);
+        console.log('✅ Account generated successfully!');
         
     } catch (error) {
-        console.error('❌ Error in generateAccount:', error);
-        alert('Error generating account: ' + error.message);
+        console.error('❌ Generation error:', error);
+        alert('Error: ' + error.message);
     }
 }
 
 function generateCompleteAccount(selectedBanks) {
-    console.log('🏦 Generating for banks:', selectedBanks);
+    console.log('🏦 Starting generation for:', selectedBanks);
     
-    // Bank configurations with CORRECT key names
-    const bankConfigs = {
-        'td': { 
-            variable: 'tdBankData', 
-            key: 'tdBank', 
-            institution: '004', 
-            name: 'TD Bank' 
-        },
-        'rbc': { 
-            variable: 'rbcData', 
-            key: 'rbcBank', 
-            institution: '003', 
-            name: 'Royal Bank of Canada' 
-        },
-        'bmo': { 
-            variable: 'bmoData', 
-            key: 'bmoBank', 
-            institution: '001', 
-            name: 'BMO Bank of Montreal' 
-        },
-        'scotia': { 
-            variable: 'scotiaData', 
-            key: 'scotiaBank', 
-            institution: '002', 
-            name: 'Scotiabank' 
-        },
-        'cibc': { 
-            variable: 'cibcData', 
-            key: 'cibcBank', 
-            institution: '010', 
-            name: 'CIBC' 
-        }
-    };
+    // Try to find ANY working bank data
+    const possibleBanks = [
+        { code: 'td', variable: 'tdBankData', institution: '004', name: 'TD Bank' },
+        { code: 'rbc', variable: 'rbcData', institution: '003', name: 'Royal Bank of Canada' },
+        { code: 'bmo', variable: 'bmoData', institution: '001', name: 'BMO Bank of Montreal' },
+        { code: 'scotia', variable: 'scotiaData', institution: '002', name: 'Scotiabank' },
+        { code: 'cibc', variable: 'cibcData', institution: '010', name: 'CIBC' }
+    ];
     
     const availableBanks = [];
     
-    for (const bankCode of selectedBanks) {
-        const config = bankConfigs[bankCode];
-        if (!config) {
-            console.warn(`⚠️ Unknown bank code: ${bankCode}`);
+    for (const bankInfo of possibleBanks) {
+        if (!selectedBanks.includes(bankInfo.code)) continue;
+        
+        const data = window[bankInfo.variable];
+        if (!data) {
+            console.warn(`⚠️ ${bankInfo.code}: No variable ${bankInfo.variable}`);
             continue;
         }
         
-        try {
-            const bankData = window[config.variable];
-            
-            if (!bankData) {
-                console.warn(`⚠️ ${bankCode}: Variable ${config.variable} not found`);
-                continue;
+        // Find ANY array in the data
+        let branches = null;
+        const keys = Object.keys(data);
+        
+        for (const key of keys) {
+            if (Array.isArray(data[key]) && data[key].length > 0) {
+                branches = data[key];
+                console.log(`✅ ${bankInfo.code}: Using ${key} with ${branches.length} branches`);
+                break;
             }
-            
-            if (!bankData[config.key]) {
-                console.warn(`⚠️ ${bankCode}: Key ${config.key} not found in data`);
-                continue;
-            }
-            
-            const branches = bankData[config.key];
-            
-            if (!Array.isArray(branches) || branches.length === 0) {
-                console.warn(`⚠️ ${bankCode}: No branches in ${config.key}`);
-                continue;
-            }
-            
+        }
+        
+        if (branches) {
             availableBanks.push({
-                code: bankCode,
-                data: branches,
-                institution: config.institution,
-                name: config.name
+                code: bankInfo.code,
+                name: bankInfo.name,
+                institution: bankInfo.institution,
+                branches: branches
             });
-            
-            console.log(`✅ ${bankCode.toUpperCase()}: ${branches.length} branches loaded`);
-            
-        } catch (error) {
-            console.error(`❌ Error loading ${bankCode}:`, error);
         }
     }
     
     if (availableBanks.length === 0) {
-        console.error('❌ No banks available with data');
+        console.error('❌ No available banks found');
         return null;
     }
     
-    // Select random bank and branch
+    // Pick random bank and branch
     const selectedBank = availableBanks[Math.floor(Math.random() * availableBanks.length)];
-    const branches = selectedBank.data;
-    const selectedBranch = branches[Math.floor(Math.random() * branches.length)];
+    const selectedBranch = selectedBank.branches[Math.floor(Math.random() * selectedBank.branches.length)];
     
-    console.log('🏦 Selected bank:', selectedBank.name);
-    console.log('🏢 Selected branch:', selectedBranch.branch);
-    console.log('📍 Branch location:', `${selectedBranch.city}, ${selectedBranch.state}`);
+    console.log('🏦 Selected:', selectedBank.name);
+    console.log('🏢 Branch:', selectedBranch.branch || selectedBranch.name || 'Unknown');
     
-    // Extract transit number from transitNumber field (format: "00069-004")
+    // Extract transit
     let transit = '00000';
     if (selectedBranch.transitNumber) {
         const parts = selectedBranch.transitNumber.split('-');
-        transit = parts[0].padStart(5, '0');
+        if (parts.length > 0) {
+            transit = parts[0].padStart(5, '0');
+        }
     }
     
-    // Generate account number (7-12 digits)
+    // Generate account
     const accountLength = Math.floor(Math.random() * 6) + 7;
     let account = Math.floor(Math.random() * 9) + 1;
     for (let i = 1; i < accountLength; i++) {
@@ -196,9 +198,14 @@ function generateCompleteAccount(selectedBanks) {
 }
 
 function displayAccountData(data) {
-    document.getElementById('transitResult').value = data.transit;
-    document.getElementById('institutionResult').value = data.institution;
-    document.getElementById('accountResult').value = data.account;
+    // Fill the input fields
+    const transitEl = document.getElementById('transitResult');
+    const institutionEl = document.getElementById('institutionResult');
+    const accountEl = document.getElementById('accountResult');
+    
+    if (transitEl) transitEl.value = data.transit;
+    if (institutionEl) institutionEl.value = data.institution;
+    if (accountEl) accountEl.value = data.account;
     
     showBankInfo(data);
 }
@@ -210,8 +217,8 @@ function showBankInfo(data) {
     const bankAddress = document.getElementById('bankAddress');
     const bankLocation = document.getElementById('bankLocation');
     
-    if (!bankDetails || !bankName || !branchName || !bankAddress || !bankLocation) {
-        console.warn('⚠️ Bank info elements missing from HTML');
+    if (!bankDetails) {
+        console.warn('⚠️ No bankDetails element found');
         return;
     }
     
@@ -225,19 +232,14 @@ function showBankInfo(data) {
     
     const branch = data.branchData;
     
-    bankName.textContent = bankNames[data.bank] || data.bank;
-    branchName.textContent = branch.branch || 'Main Branch';
-    bankAddress.textContent = branch.address || 'Address not available';
-    bankLocation.textContent = `${branch.city || 'Unknown'}, ${branch.state || 'Unknown'}`;
+    if (bankName) bankName.textContent = bankNames[data.bank] || data.bank;
+    if (branchName) branchName.textContent = branch.branch || branch.name || 'Main Branch';
+    if (bankAddress) bankAddress.textContent = branch.address || 'Address not available';
+    if (bankLocation) bankLocation.textContent = `${branch.city || 'Unknown'}, ${branch.state || 'Unknown'}`;
     
     bankDetails.style.display = 'block';
     
-    console.log('📋 Bank info displayed:', {
-        bank: bankName.textContent,
-        branch: branchName.textContent,
-        address: bankAddress.textContent,
-        location: bankLocation.textContent
-    });
+    console.log('📋 Bank info displayed');
 }
 
 function saveToHistory(accountData) {
@@ -259,17 +261,28 @@ function saveToHistory(accountData) {
     }
     
     localStorage.setItem('accountHistory', JSON.stringify(accountHistory));
-    console.log('💾 Saved to history:', historyEntry);
+    console.log('💾 Saved to history');
+}
+
+// Missing function that HTML is calling
+function updateBankSelection() {
+    console.log('🔄 updateBankSelection called');
+    selectedAdvanceOptions = [];
+    const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]:checked');
+    
+    checkboxes.forEach(checkbox => {
+        selectedAdvanceOptions.push(checkbox.value);
+    });
+    
+    console.log('📋 Selected banks:', selectedAdvanceOptions);
+    updateGenerateButtonState();
 }
 
 function toggleAdvance() {
     const options = document.getElementById('advanceOptions');
     const arrow = document.getElementById('advanceArrow');
     
-    if (!options || !arrow) {
-        console.error('❌ Advance elements not found');
-        return;
-    }
+    if (!options || !arrow) return;
     
     if (options.classList.contains('show')) {
         options.classList.remove('show');
@@ -286,7 +299,6 @@ function toggleAdvance() {
     updateGenerateButtonState();
 }
 
-// Alternative function name that might be called
 function updateAdvanceSelection() {
     updateBankSelection();
 }
@@ -357,9 +369,4 @@ function closeHistory() {
     }
 }
 
-// Add any other missing functions that might be called from HTML
-function onchange() {
-    updateBankSelection();
-}
-
-console.log('🚀 All functions loaded successfully');
+console.log('🚀 Account Generator script loaded');
