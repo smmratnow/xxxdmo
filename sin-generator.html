@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Generator</title>
+    <title>SIN Generator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="sin-styles.css">
 </head>
-<body class="sin-generator">
+<body>
     <header class="header">
         <button class="home-btn" onclick="window.location.href='index.html'">
             <svg class="home-icon" viewBox="0 0 24 24">
                 <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
             </svg>
         </button>
-        <h1 class="page-title">Account Generator</h1>
+        <h1 class="page-title">SIN Generator</h1>
         <button class="history-btn" onclick="toggleHistory()">History</button>
     </header>
 
@@ -22,44 +22,59 @@
         <!-- Generation Area -->
         <div class="generation-area">
             <div class="generate-row">
-                <button id="generateBtn" class="generate-btn" onclick="generateAccount()">Generate</button>
-                <input type="text" id="transitResult" class="sin-result" readonly placeholder="Transit">
-                <input type="text" id="institutionResult" class="sin-result" readonly placeholder="Institution">
-                <input type="text" id="accountResult" class="sin-result" readonly placeholder="Account Number">
+                <button id="generateBtn" class="generate-btn" onclick="generateSIN()">Generate</button>
+                <input type="text" id="sinResult" class="sin-result" readonly placeholder="XXX-XXX-XXX">
             </div>
 
             <div class="advance-section">
                 <button id="advanceBtn" class="advance-btn" onclick="toggleAdvance()">
-                    <span>Advance</span>
-                    <span id="advanceArrow" class="arrow">▶</span>
+                    Advance <span id="advanceArrow" class="arrow">▶</span>
                 </button>
 
                 <div id="advanceOptions" class="advance-options">
                     <label class="option-label">
-                        <input type="checkbox" value="rbc" onchange="updateAdvanceSelection()"> RBC
+                        <input type="radio" name="province-choice" value="temp" onchange="updateAdvanceSelection()"> Temporary Residence
                     </label>
                     <label class="option-label">
-                        <input type="checkbox" value="scotia" onchange="updateAdvanceSelection()"> SCOTIA
+                        <input type="radio" name="province-choice" value="AB" onchange="updateAdvanceSelection()"> Alberta
                     </label>
                     <label class="option-label">
-                        <input type="checkbox" value="td" onchange="updateAdvanceSelection()"> TD
+                        <input type="radio" name="province-choice" value="BC" onchange="updateAdvanceSelection()"> British Columbia
                     </label>
                     <label class="option-label">
-                        <input type="checkbox" value="cibc" onchange="updateAdvanceSelection()"> CIBC
+                        <input type="radio" name="province-choice" value="MB" onchange="updateAdvanceSelection()"> Manitoba
                     </label>
                     <label class="option-label">
-                        <input type="checkbox" value="bmo" onchange="updateAdvanceSelection()"> BMO
+                        <input type="radio" name="province-choice" value="NB" onchange="updateAdvanceSelection()"> New Brunswick
                     </label>
-                </div>
-            </div>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="NF" onchange="updateAdvanceSelection()"> Newfoundland
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="NS" onchange="updateAdvanceSelection()"> Nova Scotia
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="NT" onchange="updateAdvanceSelection()"> Northwest Territories
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="NU" onchange="updateAdvanceSelection()"> Nunavut
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="ON" onchange="updateAdvanceSelection()"> Ontario
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="PE" onchange="updateAdvanceSelection()"> Prince Edward Island
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="QC" onchange="updateAdvanceSelection()"> Quebec
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="SK" onchange="updateAdvanceSelection()"> Saskatchewan
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="province-choice" value="YT" onchange="updateAdvanceSelection()"> Yukon
+                    </label>
 
-            <!-- Bank Details Section -->
-            <div id="bankDetails" class="bank-details" style="display: none;">
-                <div class="bank-info">
-                    <h3 id="bankName"></h3>
-                    <p id="branchName"></p>
-                    <p id="bankAddress"></p>
-                    <p id="bankLocation"></p>
                 </div>
             </div>
         </div>
@@ -75,12 +90,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Transit</th>
-                                <th>Institution</th>
-                                <th>Account</th>
-                                <th>Bank</th>
+                                <th>SIN Number</th>
                                 <th>Date</th>
                                 <th>Time</th>
+                                <th>Type</th>
                             </tr>
                         </thead>
                         <tbody id="historyTableBody">
@@ -92,13 +105,7 @@
         </div>
     </main>
 
-    <!-- Load your bank data files -->
-    <script src="bmo-data.js"></script>
-    <script src="cibc-data.js"></script>
-    <script src="rbc-data.js"></script>
-    <script src="scotia-data.js"></script>
-    <script src="td-bank-data.js"></script>
-    <script src="account-library.js"></script>
-    <script src="account-generator.js"></script>
+    <script src="sin-library.js"></script>
+    <script src="sin-generator.js"></script>
 </body>
 </html>
