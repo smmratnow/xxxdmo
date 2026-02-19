@@ -1,4 +1,4 @@
-{
+const tdBankData = {
   "tdBank": [
     {
       "routingNumber": "000400069",
@@ -22727,3 +22727,6 @@
     }
   ]
 }
+
+      ]
+};
