@@ -1,5 +1,5 @@
-{
-  "cibc": [
+const cibcData = {
+  "cibcBank": [
     {
       "routingNumber": "001002282",
       "transitNumber": "02282-010",
@@ -19315,4 +19315,4 @@
       "id": 2147
     }
   ]
-}
+};
