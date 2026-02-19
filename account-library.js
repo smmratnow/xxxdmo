@@ -37,28 +37,56 @@ function extractTransitNumber(branchData) {
     return Math.floor(Math.random() * 90000 + 10000).toString().padStart(5, '0');
 }
 
+// Get all bank data with proper error handling
+function getAllBankData() {
+    const bankData = {};
+    
+    // Check each bank data with multiple possible variable names
+    if (typeof bmoData !== 'undefined' && bmoData.bmo) {
+        bankData.bmo = bmoData.bmo;
+    }
+    
+    if (typeof cibcData !== 'undefined' && cibcData.cibc) {
+        bankData.cibc = cibcData.cibc;
+    }
+    
+    if (typeof rbcData !== 'undefined' && rbcData.rbc) {
+        bankData.rbc = rbcData.rbc;
+    }
+    
+    if (typeof scotiaData !== 'undefined' && scotiaData.scotia) {
+        bankData.scotia = scotiaData.scotia;
+    }
+    
+    if (typeof tdData !== 'undefined' && tdData.td) {
+        bankData.td = tdData.td;
+    }
+    
+    console.log('Available bank data:', Object.keys(bankData));
+    return bankData;
+}
+
 // Get random branch data from selected banks
 function getRandomBranchData(selectedBanks = []) {
-    const allBankData = {
-        bmo: window.bmoData?.bmo || [],
-        cibc: window.cibcData?.cibc || [],
-        rbc: window.rbcData?.rbc || [],
-        scotia: window.scotiaData?.scotia || [],
-        td: window.tdData?.td || []
-    };
+    const allBankData = getAllBankData();
     
     let availableBanks;
     
     if (selectedBanks.length > 0) {
         // Filter to selected banks only
-        availableBanks = selectedBanks.filter(bank => allBankData[bank] && allBankData[bank].length > 0);
+        availableBanks = selectedBanks.filter(bank => 
+            allBankData[bank] && allBankData[bank].length > 0
+        );
     } else {
         // Use all banks with data
-        availableBanks = Object.keys(allBankData).filter(bank => allBankData[bank] && allBankData[bank].length > 0);
+        availableBanks = Object.keys(allBankData).filter(bank => 
+            allBankData[bank] && allBankData[bank].length > 0
+        );
     }
     
     if (availableBanks.length === 0) {
-        console.error('No bank data available');
+        console.error('No bank data available. Available banks:', Object.keys(allBankData));
+        console.error('Selected banks:', selectedBanks);
         return null;
     }
     
@@ -68,6 +96,8 @@ function getRandomBranchData(selectedBanks = []) {
     
     // Select random branch
     const selectedBranch = bankBranches[Math.floor(Math.random() * bankBranches.length)];
+    
+    console.log('Selected bank:', selectedBank, 'Branch:', selectedBranch.branch);
     
     return {
         bank: selectedBank,
