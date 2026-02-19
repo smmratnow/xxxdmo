@@ -36,6 +36,10 @@
     gap: 20px;
     width: 100%;
     max-width: 600px;
+    background-color: white;
+    border: 3px solid #333;
+    border-radius: 8px;
+    padding: 40px;
 }
 
 .generate-row, .verify-row {
@@ -43,20 +47,23 @@
     align-items: center;
     gap: 20px;
     width: 100%;
+    justify-content: center;
+    margin-bottom: 30px;
 }
 
 .generate-btn, .verify-btn {
     background-color: transparent;
     color: #333;
-    border: 2px solid #333;
-    padding: 12px 24px;
+    border: 3px solid #333;
+    padding: 15px 30px;
     font-size: 18px;
     font-weight: normal;
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    min-width: 120px;
+    border-radius: 5px;
+    min-width: 150px;
 }
 
 .generate-btn:hover, .verify-btn:hover {
@@ -72,20 +79,22 @@
 }
 
 .sin-result, .sin-input {
-    flex: 1;
-    padding: 12px 16px;
-    font-size: 24px;
-    font-weight: bold;
-    border: 3px solid #333;
-    background-color: white;
+    padding: 15px 20px;
+    font-size: 18px;
+    border: 2px solid #333;
+    border-radius: 5px;
     text-align: center;
+    font-family: monospace;
+    font-weight: bold;
+    min-width: 200px;
+    background-color: #f9f9f9;
     letter-spacing: 2px;
     color: #4CAF50;
 }
 
 .sin-input {
     color: #333;
-    font-size: 20px;
+    background-color: white;
 }
 
 .sin-result:focus, .sin-input:focus {
@@ -93,26 +102,79 @@
     border-color: #4CAF50;
 }
 
-/* Advance Section */
-/* Advance Section - UPDATED */
+/* Advance Section - UPDATED WITH BIGGER BUTTON */
+.advance-section {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.advance-btn {
+    background-color: transparent;
+    color: #333;
+    border: 2px solid #333;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    border-radius: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.advance-btn:hover {
+    background-color: #333;
+    color: white;
+}
+
+.arrow {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.arrow.rotated {
+    transform: rotate(90deg);
+}
+
 .advance-options {
-    margin-left: 20px;
-    margin-top: 15px;
     display: none;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 280px;
-    overflow-y: auto;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    border: 2px solid #333;
+    border-radius: 5px;
     padding: 20px;
-    background-color: #f8f9fa;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: relative;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .advance-options.show {
-    display: flex;
+    display: block;
+}
+
+.option-label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.option-label:hover {
+    background-color: #e9e9e9;
+}
+
+.option-label input[type="checkbox"] {
+    margin-right: 12px;
+    transform: scale(1.2);
+    cursor: pointer;
+    accent-color: #4CAF50;
 }
 
 /* Custom scrollbar styles */
@@ -133,145 +195,6 @@
 .advance-options::-webkit-scrollbar-thumb:hover {
     background: #868e96;
 }
-
-/* Subtle gradient indicators */
-.advance-options::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background: linear-gradient(to bottom, rgba(248,249,250,0.9), transparent);
-    pointer-events: none;
-    z-index: 1;
-}
-
-.advance-options::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background: linear-gradient(to top, rgba(248,249,250,0.9), transparent);
-    pointer-events: none;
-    z-index: 1;
-}
-
-.option-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #333;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 10px 12px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    background-color: transparent;
-    position: relative;
-    z-index: 2;
-}
-
-.option-label:hover {
-    background-color: #ffffff;
-    transform: translateX(2px);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.option-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #4CAF50;
-    cursor: pointer;
-}
-
-.option-label input[type="checkbox"]:checked {
-    transform: scale(1.1);
-}
-
-
-/* Add scroll indicator styles */
-.advance-options::-webkit-scrollbar {
-    width: 8px;
-}
-
-.advance-options::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-.advance-options::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 4px;
-}
-
-.advance-options::-webkit-scrollbar-thumb:hover {
-    background: #a1a1a1;
-}
-
-/* Add a subtle gradient at top and bottom to indicate scrolling */
-.advance-options::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.9), transparent);
-    pointer-events: none;
-    z-index: 1;
-}
-
-.advance-options::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background: linear-gradient(to top, rgba(255,255,255,0.9), transparent);
-    pointer-events: none;
-    z-index: 1;
-}
-
-.option-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #333;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 10px 12px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    background-color: transparent;
-    position: relative;
-    z-index: 2;
-}
-
-.option-label:hover {
-    background-color: #f5f5f5;
-    transform: translateX(2px);
-}
-
-.option-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #4CAF50;
-    cursor: pointer;
-}
-
-.option-label input[type="checkbox"]:checked {
-    transform: scale(1.1);
-}
-
-/* Add a visual indicator when scrollable */
-.advance-options.scrollable {
-    border-color: #4CAF50;
-}
-
 
 /* Verification Area */
 .verification-area {
@@ -457,14 +380,36 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .sin-content {
+        padding: 40px 20px;
+    }
+
+    .generation-area {
+        padding: 30px 20px;
+    }
+
     .generate-row, .verify-row {
         flex-direction: column;
-        align-items: stretch;
         gap: 15px;
     }
 
+    .generate-btn, .verify-btn, .sin-result, .sin-input {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .advance-btn {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+
+    .option-label {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+
     .sin-result, .sin-input {
-        font-size: 20px;
+        font-size: 16px;
     }
 
     .history-content {
@@ -481,5 +426,20 @@
     .history-table td {
         padding: 8px 6px;
         font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sin-content {
+        padding: 30px 15px;
+    }
+
+    .generation-area {
+        padding: 25px 15px;
+    }
+
+    .history-content {
+        padding: 20px;
+        width: 95%;
     }
 }
