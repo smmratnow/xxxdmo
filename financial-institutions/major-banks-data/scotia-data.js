@@ -19946,3 +19946,5 @@ const scotiaData = {
     }
   ]
 };
+window.scotiaData = scotiaData;
+console.log('✅ Scotia data loaded:', scotiaData.scotia.length, 'branches');
