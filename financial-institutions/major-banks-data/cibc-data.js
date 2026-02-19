@@ -19316,3 +19316,5 @@ const cibcData = {
     }
   ]
 };
+window.cibcData = cibcData;
+console.log('✅ CIBC data loaded:', cibcData.cibc.length, 'branches');
