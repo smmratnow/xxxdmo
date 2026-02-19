@@ -72,7 +72,7 @@
                     <button class="close-btn" onclick="toggleHistory()">&times;</button>
                 </div>
                 <div class="history-table">
-                    <table>
+                    <table id="historyTable">
                         <thead>
                             <tr>
                                 <th>Transit</th>
@@ -95,16 +95,55 @@
         </div>
     </main>
 
-<!-- Bank Data Files - CORRECT PATHS -->
-<script src="financial-institutions/major-banks-data/td-bank-data.js"></script>
-<script src="financial-institutions/major-banks-data/rbc-data.js"></script>
-<script src="financial-institutions/major-banks-data/bmo-data.js"></script>
-<script src="financial-institutions/major-banks-data/scotia-data.js"></script>
-<script src="financial-institutions/major-banks-data/cibc-data.js"></script>
+    <!-- Bank Data Files - LOAD FIRST -->
+    <script src="financial-institutions/major-banks-data/td-bank-data.js"></script>
+    <script src="financial-institutions/major-banks-data/rbc-data.js"></script>
+    <script src="financial-institutions/major-banks-data/bmo-data.js"></script>
+    <script src="financial-institutions/major-banks-data/scotia-data.js"></script>
+    <script src="financial-institutions/major-banks-data/cibc-data.js"></script>
 
-<!-- Library and Main Scripts -->
-<script src="account-library.js"></script>
-<script src="account-generator-simple.js"></script>
+    <!-- DEBUG SCRIPT - SHOWS WHAT'S LOADED -->
+    <script>
+        console.log('🔍 DEBUG: Testing file paths and data loading...');
+        console.log('📍 Current location:', window.location.href);
+        
+        // Test file paths
+        fetch('financial-institutions/major-banks-data/td-bank-data.js')
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ TD data file found at correct path');
+                } else {
+                    console.error('❌ TD data file NOT found - Status:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('❌ Failed to reach TD data file:', error);
+            });
+
+        // Check data after scripts load
+        setTimeout(() => {
+            console.log('🔍 Checking loaded bank data variables...');
+            console.log('tdBankData exists?', typeof tdBankData !== 'undefined');
+            console.log('rbcData exists?', typeof rbcData !== 'undefined');
+            console.log('bmoData exists?', typeof bmoData !== 'undefined');
+            console.log('scotiaData exists?', typeof scotiaData !== 'undefined');
+            console.log('cibcData exists?', typeof cibcData !== 'undefined');
+            
+            // Show actual data if found
+            if (typeof tdBankData !== 'undefined') {
+                console.log('🏦 TD Data Keys:', Object.keys(tdBankData));
+                const keys = Object.keys(tdBankData);
+                keys.forEach(key => {
+                    if (Array.isArray(tdBankData[key])) {
+                        console.log(`📊 TD.${key}: ${tdBankData[key].length} items`);
+                    }
+                });
+            }
+        }, 1000);
+    </script>
+
+    <!-- Main Account Generator Script -->
+    <script src="account-generator-simple.js"></script>
 
 </body>
 </html>
