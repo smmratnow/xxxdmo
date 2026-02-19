@@ -22727,3 +22727,8 @@ const tdBankData = {
     }
   ]
 };
+// Make it available globally
+window.tdBankData = tdBankData;
+
+// Confirm it loaded
+console.log('✅ TD Bank data loaded:', tdBankData.tdBank.length, 'branches');
