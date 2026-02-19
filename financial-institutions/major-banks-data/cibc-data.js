@@ -1,5 +1,5 @@
 const cibcData = {
-  "cibcBank": [
+  cibc: [
     {
       "routingNumber": "001002282",
       "transitNumber": "02282-010",
