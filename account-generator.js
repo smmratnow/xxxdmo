@@ -1,4 +1,4 @@
-// Account Generator - Adaptive Data Structure Version
+// Account Generator - Working with Your Data Structure
 
 let selectedAdvanceOptions = [];
 let accountHistory = JSON.parse(localStorage.getItem('accountHistory')) || [];
@@ -8,23 +8,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
     setTimeout(() => {
         console.log('🔍 Testing data availability...');
-        inspectDataStructure();
+        testDataAvailability();
     }, 100);
     
     loadHistory();
     updateGenerateButtonState();
 });
 
-function inspectDataStructure() {
+function testDataAvailability() {
     const dataSources = ['tdBankData', 'rbcData', 'bmoData', 'scotiaData', 'cibcData'];
     
     dataSources.forEach(source => {
         if (window[source]) {
-            console.log(`📋 ${source} structure:`, Object.keys(window[source]));
-            const firstKey = Object.keys(window[source])[0];
-            if (firstKey) {
-                console.log(`📋 ${source} first key "${firstKey}" has ${window[source][firstKey]?.length || 0} items`);
-            }
+            const keys = Object.keys(window[source]);
+            console.log(`✅ ${source} loaded with keys:`, keys);
+            
+            keys.forEach(key => {
+                const data = window[source][key];
+                if (Array.isArray(data)) {
+                    console.log(`📋 ${source}.${key}: ${data.length} branches`);
+                }
+            });
+        } else {
+            console.log(`❌ ${source}: Not found`);
         }
     });
 }
@@ -65,61 +71,81 @@ function generateAccount() {
 function generateCompleteAccount(selectedBanks) {
     console.log('🏦 Generating for banks:', selectedBanks);
     
-    // Adaptive data mapping - we'll discover the actual structure
+    // Bank configurations matching your actual data structure
     const bankConfigs = {
-        'td': { variable: 'tdBankData', institution: '004', name: 'TD Bank' },
-        'rbc': { variable: 'rbcData', institution: '003', name: 'Royal Bank of Canada' },
-        'bmo': { variable: 'bmoData', institution: '001', name: 'BMO Bank of Montreal' },
-        'scotia': { variable: 'scotiaData', institution: '002', name: 'Scotiabank' },
-        'cibc': { variable: 'cibcData', institution: '010', name: 'CIBC' }
+        'td': { 
+            variable: 'tdBankData', 
+            dataKey: 'tdBank', 
+            institution: '004', 
+            name: 'TD Bank' 
+        },
+        'rbc': { 
+            variable: 'rbcData', 
+            dataKey: 'rbcBank', 
+            institution: '003', 
+            name: 'Royal Bank of Canada' 
+        },
+        'bmo': { 
+            variable: 'bmoData', 
+            dataKey: 'bmoBank', 
+            institution: '001', 
+            name: 'BMO Bank of Montreal' 
+        },
+        'scotia': { 
+            variable: 'scotiaData', 
+            dataKey: 'scotiaBank', 
+            institution: '002', 
+            name: 'Scotiabank' 
+        },
+        'cibc': { 
+            variable: 'cibcData', 
+            dataKey: 'cibcBank', 
+            institution: '010', 
+            name: 'CIBC' 
+        }
     };
     
     const availableBanks = [];
     
     for (const bankCode of selectedBanks) {
-        const bankConfig = bankConfigs[bankCode];
-        if (!bankConfig) continue;
+        const config = bankConfigs[bankCode];
+        if (!config) continue;
         
         try {
-            const bankData = window[bankConfig.variable];
+            const bankData = window[config.variable];
             console.log(`🔍 Checking ${bankCode}:`, typeof bankData);
             
             if (!bankData) {
-                console.warn(`⚠️ ${bankCode}: No data variable found`);
+                console.warn(`⚠️ ${bankCode}: Variable ${config.variable} not found`);
                 continue;
             }
             
-            // Discover the actual data structure
-            const keys = Object.keys(bankData);
-            console.log(`🔑 ${bankCode} available keys:`, keys);
-            
+            // Check if the expected data key exists
             let branches = null;
-            
-            // Try different possible key patterns
-            const possibleKeys = [
-                `${bankCode}Bank`,     // tdBank
-                `${bankCode}_bank`,    // td_bank  
-                `${bankCode}Data`,     // tdData
-                keys[0]                // First available key
-            ];
-            
-            for (const key of possibleKeys) {
-                if (bankData[key] && Array.isArray(bankData[key]) && bankData[key].length > 0) {
-                    branches = bankData[key];
-                    console.log(`✅ ${bankCode}: Found ${branches.length} branches in key "${key}"`);
-                    break;
+            if (bankData[config.dataKey] && Array.isArray(bankData[config.dataKey])) {
+                branches = bankData[config.dataKey];
+            } else {
+                // Fallback - try the first available array
+                const keys = Object.keys(bankData);
+                for (const key of keys) {
+                    if (Array.isArray(bankData[key]) && bankData[key].length > 0) {
+                        branches = bankData[key];
+                        console.log(`📋 ${bankCode}: Using fallback key "${key}"`);
+                        break;
+                    }
                 }
             }
             
-            if (branches) {
+            if (branches && branches.length > 0) {
                 availableBanks.push({
                     code: bankCode,
                     data: branches,
-                    institution: bankConfig.institution,
-                    name: bankConfig.name
+                    institution: config.institution,
+                    name: config.name
                 });
+                console.log(`✅ ${bankCode.toUpperCase()}: ${branches.length} branches loaded`);
             } else {
-                console.warn(`⚠️ ${bankCode}: No array data found in any key`);
+                console.warn(`⚠️ ${bankCode}: No branch data found`);
             }
             
         } catch (error) {
@@ -138,24 +164,14 @@ function generateCompleteAccount(selectedBanks) {
     const selectedBranch = branches[Math.floor(Math.random() * branches.length)];
     
     console.log('🏦 Selected bank:', selectedBank.name);
-    console.log('🏢 Selected branch:', selectedBranch);
+    console.log('🏢 Selected branch:', selectedBranch.branch);
+    console.log('📍 Branch location:', `${selectedBranch.city}, ${selectedBranch.state}`);
     
-    // Extract transit number (try multiple possible field names)
+    // Extract transit number from transitNumber field (format: "00069-004")
     let transit = '00000';
-    const transitFields = ['transitNumber', 'transit', 'routingNumber'];
-    
-    for (const field of transitFields) {
-        if (selectedBranch[field]) {
-            const value = selectedBranch[field];
-            if (typeof value === 'string' && value.includes('-')) {
-                const parts = value.split('-');
-                transit = parts[0].padStart(5, '0');
-                break;
-            } else if (typeof value === 'string' && value.length >= 5) {
-                transit = value.substring(0, 5);
-                break;
-            }
-        }
+    if (selectedBranch.transitNumber) {
+        const parts = selectedBranch.transitNumber.split('-');
+        transit = parts[0].padStart(5, '0');
     }
     
     // Generate account number (7-12 digits)
@@ -202,15 +218,21 @@ function showBankInfo(data) {
         'CIBC': 'CIBC'
     };
     
-    // Try multiple possible field names for branch info
     const branch = data.branchData;
     
     bankName.textContent = bankNames[data.bank] || data.bank;
-    branchName.textContent = branch.branch || branch.branchName || branch.name || 'Main Branch';
-    bankAddress.textContent = branch.address || branch.streetAddress || 'Address not available';
-    bankLocation.textContent = `${branch.city || 'Unknown'}, ${branch.state || branch.province || 'Unknown'}`;
+    branchName.textContent = branch.branch || 'Main Branch';
+    bankAddress.textContent = branch.address || 'Address not available';
+    bankLocation.textContent = `${branch.city || 'Unknown'}, ${branch.state || 'Unknown'}`;
     
     bankDetails.style.display = 'block';
+    
+    console.log('📋 Bank info displayed:', {
+        bank: bankName.textContent,
+        branch: branchName.textContent,
+        address: bankAddress.textContent,
+        location: bankLocation.textContent
+    });
 }
 
 function saveToHistory(accountData) {
@@ -313,7 +335,7 @@ function loadHistory() {
     } else {
         noHistoryMsg.style.display = 'none';
         const historyTable = document.getElementById('historyTable');
-        if (historyTable) historyTable.style.display = 'block';
+        if (historyTable) historyTable.style.display = 'table';
         
         accountHistory.forEach(entry => {
             const row = document.createElement('tr');
