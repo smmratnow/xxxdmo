@@ -1,4 +1,4 @@
-// Account Generator - FIXED with Correct Key Names
+// Account Generator - Complete Working Version with Missing Functions
 
 let selectedAdvanceOptions = [];
 let accountHistory = JSON.parse(localStorage.getItem('accountHistory')) || [];
@@ -29,6 +29,20 @@ function testDataAvailability() {
             console.log(`❌ ${bankCode.toUpperCase()}: Data not found`);
         }
     });
+}
+
+// MISSING FUNCTION - Added here
+function updateBankSelection() {
+    console.log('🔄 updateBankSelection called');
+    selectedAdvanceOptions = [];
+    const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]:checked');
+    
+    checkboxes.forEach(checkbox => {
+        selectedAdvanceOptions.push(checkbox.value);
+    });
+    
+    console.log('📋 Selected banks:', selectedAdvanceOptions);
+    updateGenerateButtonState();
 }
 
 function generateAccount() {
@@ -272,16 +286,9 @@ function toggleAdvance() {
     updateGenerateButtonState();
 }
 
+// Alternative function name that might be called
 function updateAdvanceSelection() {
-    selectedAdvanceOptions = [];
-    const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]:checked');
-    
-    checkboxes.forEach(checkbox => {
-        selectedAdvanceOptions.push(checkbox.value);
-    });
-    
-    console.log('📋 Selected banks:', selectedAdvanceOptions);
-    updateGenerateButtonState();
+    updateBankSelection();
 }
 
 function updateGenerateButtonState() {
@@ -349,3 +356,10 @@ function closeHistory() {
         modal.classList.remove('show');
     }
 }
+
+// Add any other missing functions that might be called from HTML
+function onchange() {
+    updateBankSelection();
+}
+
+console.log('🚀 All functions loaded successfully');
