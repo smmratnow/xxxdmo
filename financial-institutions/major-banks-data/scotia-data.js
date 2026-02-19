@@ -1,5 +1,5 @@
-{
-  "scotiabank": [
+const scotiaData = {
+  "scotiaBank": [
     {
       "routingNumber": "000211759",
       "transitNumber": "11759-002",
@@ -19945,4 +19945,4 @@
       "id": 2217
     }
   ]
-}
+};
