@@ -533,3 +533,106 @@
     }
 }
 
+/* ============================================ */
+/* ACCOUNT GENERATOR SPECIFIC STYLES */
+/* ============================================ */
+
+/* Only apply these styles to Account Generator page */
+body:has([title="Account Generator"]) .generate-row,
+.account-generator .generate-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Account Generator: Multiple input fields in a row */
+body:has([title="Account Generator"]) .generate-row .sin-result,
+.account-generator .generate-row .sin-result {
+    flex: 1;
+    min-width: 120px;
+    max-width: 200px;
+}
+
+/* SIN Generator: Single input field takes remaining space */
+body:has([title="SIN Generator"]) .generate-row .sin-result,
+.sin-generator .generate-row .sin-result {
+    flex: 1;
+}
+
+/* Bank Details Section - Only for Account Generator */
+.bank-details {
+    margin-top: 30px;
+    padding: 25px;
+    background-color: #f8f9fa;
+    border: 2px solid #333;
+    border-radius: 8px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bank-info h3 {
+    margin: 0 0 15px 0;
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.bank-info p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.bank-info p:first-of-type {
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+}
+
+.generate-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    background-color: #f0f0f0 !important;
+    color: #ccc !important;
+    border-color: #ccc !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body:has([title="Account Generator"]) .generate-row,
+    .account-generator .generate-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    body:has([title="Account Generator"]) .generate-row .sin-result,
+    .account-generator .generate-row .sin-result {
+        min-width: unset;
+        max-width: unset;
+    }
+    
+    .bank-details {
+        padding: 20px;
+        margin-top: 20px;
+    }
+    
+    .bank-info h3 {
+        font-size: 18px;
+    }
+}
+
+
