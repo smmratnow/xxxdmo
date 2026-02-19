@@ -35,21 +35,23 @@
                 </button>
 
                 <div id="advanceOptions" class="advance-options">
-                    <label class="option-label">
-                        <input type="checkbox" value="rbc" onchange="updateBankSelection()"> RBC
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="scotia" onchange="updateBankSelection()"> SCOTIA
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="td" onchange="updateBankSelection()"> TD
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="cibc" onchange="updateBankSelection()"> CIBC
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="bmo" onchange="updateBankSelection()"> BMO
-                    </label>
+                    <!-- NEW - ALLOWS ONLY ONE SELECTION -->
+    <label class="option-label">
+        <input type="radio" name="bank-choice" value="rbc" onchange="updateBankSelection()"> RBC
+    </label>
+    <label class="option-label">
+        <input type="radio" name="bank-choice" value="scotia" onchange="updateBankSelection()"> SCOTIA
+    </label>
+    <label class="option-label">
+        <input type="radio" name="bank-choice" value="td" onchange="updateBankSelection()"> TD
+    </label>
+    <label class="option-label">
+        <input type="radio" name="bank-choice" value="cibc" onchange="updateBankSelection()"> CIBC
+    </label>
+    <label class="option-label">
+        <input type="radio" name="bank-choice" value="bmo" onchange="updateBankSelection()"> BMO
+    </label>
+
                 </div>
             </div>
 
