@@ -460,12 +460,29 @@
     min-width: 120px;
     max-width: 200px;
 }
-
 /* ============================================ */
-/* ACCOUNT GENERATOR SPECIFIC STYLES */
+/* ACCOUNT GENERATOR ONLY - NO SIN INTERFERENCE */
 /* ============================================ */
 
-/* Bank Details Section - Only for Account Generator */
+/* Account Generator: 3 input fields side by side */
+.account-generator .generate-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.account-generator .generate-row .sin-result {
+    flex: 1;
+    min-width: 120px;
+    max-width: 180px;
+    font-size: 16px;
+    padding: 15px 10px;
+}
+
+/* Bank Details for Account Generator */
 .account-generator .bank-details {
     margin-top: 30px;
     padding: 25px;
@@ -474,17 +491,6 @@
     border-radius: 8px;
     animation: slideDown 0.3s ease-out;
     width: 100%;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .account-generator .bank-info h3 {
@@ -503,12 +509,6 @@
     line-height: 1.4;
 }
 
-.account-generator .bank-info p:first-of-type {
-    font-weight: bold;
-    color: #333;
-    font-size: 15px;
-}
-
 .account-generator .generate-btn.disabled {
     opacity: 0.5;
     cursor: not-allowed !important;
@@ -517,27 +517,44 @@
     border-color: #ccc !important;
 }
 
-/* Responsive adjustments for Account Generator */
+/* Mobile responsive for Account Generator */
 @media (max-width: 768px) {
     .account-generator .generate-row {
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
     }
     
     .account-generator .generate-row .sin-result {
-        min-width: unset;
-        max-width: unset;
+        min-width: auto;
+        max-width: none;
         width: 100%;
     }
-    
-    .account-generator .bank-details {
-        padding: 20px;
-        margin-top: 20px;
-    }
-    
-    .account-generator .bank-info h3 {
-        font-size: 18px;
-    }
+}
+
+/* ============================================ */
+/* EXPLICIT SIN GENERATOR PROTECTION */
+/* ============================================ */
+
+/* Force SIN Generator to keep original layout */
+.sin-generator .generate-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.sin-generator .generate-row .sin-result {
+    flex: 1;
+    min-width: 200px;
+    /* Remove any max-width constraints */
+    max-width: none;
+}
+
+/* Hide bank details on SIN Generator */
+.sin-generator .bank-details {
+    display: none !important;
 }
 
 
