@@ -22727,6 +22727,5 @@ const tdBankData = {
     }
   ]
 }
-
-      ]
+ ]
 };
