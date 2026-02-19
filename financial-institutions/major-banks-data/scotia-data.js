@@ -1,5 +1,5 @@
 const scotiaData = {
-  "scotiaBank": [
+  scotia: [
     {
       "routingNumber": "000211759",
       "transitNumber": "11759-002",
