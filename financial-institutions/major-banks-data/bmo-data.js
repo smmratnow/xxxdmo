@@ -14546,3 +14546,6 @@ const bmoData = {
     }
   ]
 };
+
+window.bmoData = bmoData;
+console.log('✅ BMO data loaded:', bmoData.bmo.length, 'branches');
