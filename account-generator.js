@@ -1,93 +1,79 @@
 // Account Generator Main Logic
 
-let selectedBanks = [];
+let selectedAdvanceOptions = [];
 let accountHistory = JSON.parse(localStorage.getItem('accountHistory') || '[]');
 
-// Initialize page
 document.addEventListener('DOMContentLoaded', function() {
     updateHistoryDisplay();
     updateGenerateButtonState();
     
-    // Test data loading
+    // Test data loading after page loads
     setTimeout(() => {
-        const testData = getAllBankData();
-        console.log('Data loaded:', Object.keys(testData));
+        console.log('Testing data loading...');
+        const testData = getRandomBranchData([]);
+        if (testData) {
+            console.log('✅ Data loading successful!');
+        } else {
+            console.log('❌ Data loading failed!');
+        }
     }, 100);
 });
 
-// Toggle advance options
 function toggleAdvance() {
     const options = document.getElementById('advanceOptions');
     const arrow = document.getElementById('advanceArrow');
     
-    if (options.style.display === 'none' || options.style.display === '') {
-        options.style.display = 'block';
-        arrow.innerHTML = '▼';
-        arrow.classList.add('rotated');
-        updateGenerateButtonState();
-    } else {
-        options.style.display = 'none';
+    if (options.classList.contains('show')) {
+        options.classList.remove('show');
         arrow.innerHTML = '▶';
         arrow.classList.remove('rotated');
         
-        // Clear selections when closing
-        selectedBanks = [];
-        const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]');
-        checkboxes.forEach(cb => cb.checked = false);
-        updateGenerateButtonState();
+        // Clear selections
+        selectedAdvanceOptions = [];
+        document.querySelectorAll('#advanceOptions input[type="checkbox"]').forEach(cb => cb.checked = false);
+    } else {
+        options.classList.add('show');
+        arrow.innerHTML = '▼';
+        arrow.classList.add('rotated');
     }
-}
-
-// Update bank selection
-function updateBankSelection() {
-    const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]');
-    selectedBanks = [];
-    
-    checkboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-            selectedBanks.push(checkbox.value);
-        }
-    });
     
     updateGenerateButtonState();
 }
 
-// Update generate button state
+function updateAdvanceSelection() {
+    selectedAdvanceOptions = [];
+    document.querySelectorAll('#advanceOptions input[type="checkbox"]').forEach(checkbox => {
+        if (checkbox.checked) {
+            selectedAdvanceOptions.push(checkbox.value);
+        }
+    });
+    updateGenerateButtonState();
+}
+
 function updateGenerateButtonState() {
     const generateBtn = document.getElementById('generateBtn');
     const advanceOptions = document.getElementById('advanceOptions');
-    const isAdvanceOpen = advanceOptions.style.display === 'block';
+    const isAdvanceOpen = advanceOptions.classList.contains('show');
     
-    if (isAdvanceOpen) {
-        // In advance mode: enable only if banks are selected
-        if (selectedBanks.length > 0) {
-            generateBtn.disabled = false;
-            generateBtn.classList.remove('disabled');
-        } else {
-            generateBtn.disabled = true;
-            generateBtn.classList.add('disabled');
-        }
+    if (isAdvanceOpen && selectedAdvanceOptions.length === 0) {
+        generateBtn.disabled = true;
+        generateBtn.classList.add('disabled');
     } else {
-        // Normal mode: always enabled
         generateBtn.disabled = false;
         generateBtn.classList.remove('disabled');
     }
 }
 
-// Generate account
 function generateAccount() {
-    const advanceOptions = document.getElementById('advanceOptions');
-    const isAdvanceMode = advanceOptions.style.display === 'block';
-    
-    // Use selected banks in advance mode, or empty array for random
-    const banksToUse = isAdvanceMode ? selectedBanks : [];
+    const isAdvanceMode = document.getElementById('advanceOptions').classList.contains('show');
+    const banksToUse = isAdvanceMode ? selectedAdvanceOptions : [];
     
     console.log('Generating account for banks:', banksToUse);
     
     const accountData = generateCompleteAccount(banksToUse);
     
     if (!accountData) {
-        alert('Error generating account. Please check console for details.');
+        alert('Error generating account. Please check the console for details.');
         return;
     }
     
@@ -101,39 +87,23 @@ function generateAccount() {
     
     // Save to history
     saveToHistory(accountData);
-    
-    // Update history display
     updateHistoryDisplay();
 }
 
-// Show bank details
 function showBankDetails(accountData) {
     const bankDetails = document.getElementById('bankDetails');
-    const bankName = document.getElementById('bankName');
-    const branchName = document.getElementById('branchName');
-    const bankAddress = document.getElementById('bankAddress');
-    const bankLocation = document.getElementById('bankLocation');
+    document.getElementById('bankName').textContent = getBankDisplayName(accountData.bank);
+    document.getElementById('branchName').textContent = accountData.branchData.branch || 'Main Branch';
+    document.getElementById('bankAddress').textContent = accountData.branchData.address || '';
     
-    // Set bank information
-    bankName.textContent = getBankDisplayName(accountData.bank);
-    branchName.textContent = accountData.branchData.branch || 'Main Branch';
-    bankAddress.textContent = accountData.branchData.address || '';
-    
-    // Format location
     let location = '';
-    if (accountData.branchData.city) {
-        location += accountData.branchData.city;
-    }
-    if (accountData.branchData.state) {
-        location += (location ? ', ' : '') + accountData.branchData.state;
-    }
-    bankLocation.textContent = location;
+    if (accountData.branchData.city) location += accountData.branchData.city;
+    if (accountData.branchData.state) location += (location ? ', ' : '') + accountData.branchData.state;
+    document.getElementById('bankLocation').textContent = location;
     
-    // Show the details section
     bankDetails.style.display = 'block';
 }
 
-// Save to history
 function saveToHistory(accountData) {
     const now = new Date();
     const historyEntry = {
@@ -147,37 +117,27 @@ function saveToHistory(accountData) {
     };
     
     accountHistory.unshift(historyEntry);
-    
-    // Keep only last 100 entries
     if (accountHistory.length > 100) {
         accountHistory = accountHistory.slice(0, 100);
     }
-    
     localStorage.setItem('accountHistory', JSON.stringify(accountHistory));
 }
 
-// Toggle history modal
 function toggleHistory() {
     const modal = document.getElementById('historyModal');
     modal.classList.toggle('show');
-    
     if (modal.classList.contains('show')) {
         updateHistoryDisplay();
     }
 }
 
-// Update history display
 function updateHistoryDisplay() {
     const tbody = document.getElementById('historyTableBody');
-    const noHistory = document.getElementById('noHistory');
     
     if (accountHistory.length === 0) {
-        tbody.innerHTML = '';
-        if (noHistory) noHistory.style.display = 'block';
+        tbody.innerHTML = '<tr><td colspan="6">No accounts generated yet.</td></tr>';
         return;
     }
-    
-    if (noHistory) noHistory.style.display = 'none';
     
     tbody.innerHTML = accountHistory.map(entry => `
         <tr>
@@ -191,7 +151,6 @@ function updateHistoryDisplay() {
     `).join('');
 }
 
-// Close modal when clicking outside
 document.addEventListener('click', function(event) {
     const modal = document.getElementById('historyModal');
     if (event.target === modal) {
