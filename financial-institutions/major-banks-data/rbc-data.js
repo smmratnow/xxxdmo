@@ -23716,4 +23716,7 @@ const rbcData = {
       "id": 2636
     }
   ]
-}
+};
+
+window.rbcData = rbcData;
+console.log('✅ RBC data loaded:', rbcData.rbc.length, 'branches');
