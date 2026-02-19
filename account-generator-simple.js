@@ -311,23 +311,28 @@ function saveToHistory(accountData) {
 }
 
 // HTML-called functions
-
 function updateBankSelection() {
     const selectedBank = document.querySelector('input[name="bank-choice"]:checked');
     const generateBtn = document.getElementById('generateBtn');
     
+    // Update the selected options array for the new radio button logic
     if (selectedBank) {
-        // A bank is selected - ENABLE the Generate button
+        selectedAdvanceOptions = [selectedBank.value]; // Single selection
         generateBtn.disabled = false;
         generateBtn.classList.remove('disabled');
         console.log('✅ Bank selected:', selectedBank.value, '- Generate button ENABLED');
     } else {
-        // No bank selected - DISABLE the Generate button  
-        generateBtn.disabled = true;
-        generateBtn.classList.add('disabled');
-        console.log('❌ No bank selected - Generate button DISABLED');
+        selectedAdvanceOptions = [];
+        // Only disable if advance is open
+        const advanceOptions = document.getElementById('advanceOptions');
+        if (advanceOptions && advanceOptions.classList.contains('show')) {
+            generateBtn.disabled = true;
+            generateBtn.classList.add('disabled');
+            console.log('❌ No bank selected - Generate button DISABLED');
+        }
     }
 }
+
 
 
 function toggleAdvance() {
@@ -370,17 +375,21 @@ function updateGenerateButtonState() {
     if (!generateBtn || !advanceOptions) return;
     
     const isAdvanceOpen = advanceOptions.classList.contains('show');
+    const selectedBank = document.querySelector('input[name="bank-choice"]:checked');
     
-    if (isAdvanceOpen && selectedAdvanceOptions.length === 0) {
-        // Advance is open but no banks selected - disable button
+    if (isAdvanceOpen && !selectedBank) {
+        // Advance is open but no bank selected - disable button
         generateBtn.disabled = true;
         generateBtn.classList.add('disabled');
+        console.log('❌ Advance open, no bank selected - DISABLED');
     } else {
-        // Either advance is closed (use default TD) or banks are selected
+        // Either advance is closed OR a bank is selected - enable button
         generateBtn.disabled = false;
         generateBtn.classList.remove('disabled');
+        console.log('✅ Generate button ENABLED');
     }
 }
+
 
 function toggleHistory() {
     const modal = document.getElementById('historyModal');
