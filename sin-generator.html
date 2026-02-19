@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIN Generator</title>
+    <title>Account Generator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="sin-styles.css">
 </head>
@@ -14,7 +14,7 @@
                 <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
             </svg>
         </button>
-        <h1 class="page-title">SIN Generator</h1>
+        <h1 class="page-title">Account Generator</h1>
         <button class="history-btn" onclick="toggleHistory()">History</button>
     </header>
 
@@ -22,8 +22,10 @@
         <!-- Generation Area -->
         <div class="generation-area">
             <div class="generate-row">
-                <button id="generateBtn" class="generate-btn" onclick="generateSIN()">Generate</button>
-                <input type="text" id="sinResult" class="sin-result" readonly placeholder="XXX-XXX-XXX">
+                <button id="generateBtn" class="generate-btn" onclick="generateAccount()">Generate</button>
+                <input type="text" id="transitResult" class="sin-result" readonly placeholder="Transit">
+                <input type="text" id="institutionResult" class="sin-result" readonly placeholder="Institution">
+                <input type="text" id="accountResult" class="sin-result" readonly placeholder="Account Number">
             </div>
 
             <div class="advance-section">
@@ -34,47 +36,30 @@
 
                 <div id="advanceOptions" class="advance-options">
                     <label class="option-label">
-                        <input type="checkbox" value="temp" onchange="updateAdvanceSelection()"> Temporary Residence
+                        <input type="checkbox" value="rbc" onchange="updateAdvanceSelection()"> RBC
                     </label>
                     <label class="option-label">
-                        <input type="checkbox" value="AB" onchange="updateAdvanceSelection()"> Alberta
+                        <input type="checkbox" value="scotia" onchange="updateAdvanceSelection()"> SCOTIA
                     </label>
                     <label class="option-label">
-                        <input type="checkbox" value="BC" onchange="updateAdvanceSelection()"> British Columbia
+                        <input type="checkbox" value="td" onchange="updateAdvanceSelection()"> TD
                     </label>
                     <label class="option-label">
-                        <input type="checkbox" value="MB" onchange="updateAdvanceSelection()"> Manitoba
+                        <input type="checkbox" value="cibc" onchange="updateAdvanceSelection()"> CIBC
                     </label>
                     <label class="option-label">
-                        <input type="checkbox" value="NB" onchange="updateAdvanceSelection()"> New Brunswick
+                        <input type="checkbox" value="bmo" onchange="updateAdvanceSelection()"> BMO
                     </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="NF" onchange="updateAdvanceSelection()"> Newfoundland
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="NS" onchange="updateAdvanceSelection()"> Nova Scotia
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="NT" onchange="updateAdvanceSelection()"> Northwest Territories
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="NU" onchange="updateAdvanceSelection()"> Nunavut
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="ON" onchange="updateAdvanceSelection()"> Ontario
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="PE" onchange="updateAdvanceSelection()"> Prince Edward Island
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="QC" onchange="updateAdvanceSelection()"> Quebec
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="SK" onchange="updateAdvanceSelection()"> Saskatchewan
-                    </label>
-                    <label class="option-label">
-                        <input type="checkbox" value="YT" onchange="updateAdvanceSelection()"> Yukon
-                    </label>
+                </div>
+            </div>
+
+            <!-- Bank Details Section -->
+            <div id="bankDetails" class="bank-details" style="display: none;">
+                <div class="bank-info">
+                    <h3 id="bankName"></h3>
+                    <p id="branchName"></p>
+                    <p id="bankAddress"></p>
+                    <p id="bankLocation"></p>
                 </div>
             </div>
         </div>
@@ -90,10 +75,12 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>SIN Number</th>
+                                <th>Transit</th>
+                                <th>Institution</th>
+                                <th>Account</th>
+                                <th>Bank</th>
                                 <th>Date</th>
                                 <th>Time</th>
-                                <th>Type</th>
                             </tr>
                         </thead>
                         <tbody id="historyTableBody">
@@ -105,7 +92,13 @@
         </div>
     </main>
 
-    <script src="sin-library.js"></script>
-    <script src="sin-generator.js"></script>
+    <!-- Load your bank data files -->
+    <script src="bmo-data.js"></script>
+    <script src="cibc-data.js"></script>
+    <script src="rbc-data.js"></script>
+    <script src="scotia-data.js"></script>
+    <script src="td-bank-data.js"></script>
+    <script src="account-library.js"></script>
+    <script src="account-generator.js"></script>
 </body>
 </html>
