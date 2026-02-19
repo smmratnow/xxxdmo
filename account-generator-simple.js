@@ -311,18 +311,24 @@ function saveToHistory(accountData) {
 }
 
 // HTML-called functions
+
 function updateBankSelection() {
-    console.log('🔄 updateBankSelection called');
-    selectedAdvanceOptions = [];
+    const selectedBank = document.querySelector('input[name="bank-choice"]:checked');
+    const generateBtn = document.getElementById('generateBtn');
     
-    const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]:checked');
-    checkboxes.forEach(checkbox => {
-        selectedAdvanceOptions.push(checkbox.value);
-    });
-    
-    console.log('📋 Selected banks:', selectedAdvanceOptions);
-    updateGenerateButtonState();
+    if (selectedBank) {
+        // A bank is selected - ENABLE the Generate button
+        generateBtn.disabled = false;
+        generateBtn.classList.remove('disabled');
+        console.log('✅ Bank selected:', selectedBank.value, '- Generate button ENABLED');
+    } else {
+        // No bank selected - DISABLE the Generate button  
+        generateBtn.disabled = true;
+        generateBtn.classList.add('disabled');
+        console.log('❌ No bank selected - Generate button DISABLED');
+    }
 }
+
 
 function toggleAdvance() {
     const options = document.getElementById('advanceOptions');
