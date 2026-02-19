@@ -1,36 +1,32 @@
-// Account Generator - Working with Your Data Structure
+// Account Generator - FIXED with Correct Key Names
 
 let selectedAdvanceOptions = [];
 let accountHistory = JSON.parse(localStorage.getItem('accountHistory')) || [];
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Account Generator loaded');
-    
-    setTimeout(() => {
-        console.log('🔍 Testing data availability...');
-        testDataAvailability();
-    }, 100);
-    
+    setTimeout(testDataAvailability, 100);
     loadHistory();
     updateGenerateButtonState();
 });
 
 function testDataAvailability() {
-    const dataSources = ['tdBankData', 'rbcData', 'bmoData', 'scotiaData', 'cibcData'];
+    console.log('🔍 Testing with CORRECT key names...');
     
-    dataSources.forEach(source => {
-        if (window[source]) {
-            const keys = Object.keys(window[source]);
-            console.log(`✅ ${source} loaded with keys:`, keys);
-            
-            keys.forEach(key => {
-                const data = window[source][key];
-                if (Array.isArray(data)) {
-                    console.log(`📋 ${source}.${key}: ${data.length} branches`);
-                }
-            });
+    const bankConfigs = {
+        'td': { variable: 'tdBankData', key: 'tdBank' },
+        'rbc': { variable: 'rbcData', key: 'rbcBank' },
+        'bmo': { variable: 'bmoData', key: 'bmoBank' },
+        'cibc': { variable: 'cibcData', key: 'cibcBank' },
+        'scotia': { variable: 'scotiaData', key: 'scotiaBank' }
+    };
+    
+    Object.entries(bankConfigs).forEach(([bankCode, config]) => {
+        const data = window[config.variable];
+        if (data && data[config.key]) {
+            console.log(`✅ ${bankCode.toUpperCase()}: ${data[config.key].length} branches available`);
         } else {
-            console.log(`❌ ${source}: Not found`);
+            console.log(`❌ ${bankCode.toUpperCase()}: Data not found`);
         }
     });
 }
@@ -71,35 +67,35 @@ function generateAccount() {
 function generateCompleteAccount(selectedBanks) {
     console.log('🏦 Generating for banks:', selectedBanks);
     
-    // Bank configurations matching your actual data structure
+    // Bank configurations with CORRECT key names
     const bankConfigs = {
         'td': { 
             variable: 'tdBankData', 
-            dataKey: 'tdBank', 
+            key: 'tdBank', 
             institution: '004', 
             name: 'TD Bank' 
         },
         'rbc': { 
             variable: 'rbcData', 
-            dataKey: 'rbcBank', 
+            key: 'rbcBank', 
             institution: '003', 
             name: 'Royal Bank of Canada' 
         },
         'bmo': { 
             variable: 'bmoData', 
-            dataKey: 'bmoBank', 
+            key: 'bmoBank', 
             institution: '001', 
             name: 'BMO Bank of Montreal' 
         },
         'scotia': { 
             variable: 'scotiaData', 
-            dataKey: 'scotiaBank', 
+            key: 'scotiaBank', 
             institution: '002', 
             name: 'Scotiabank' 
         },
         'cibc': { 
             variable: 'cibcData', 
-            dataKey: 'cibcBank', 
+            key: 'cibcBank', 
             institution: '010', 
             name: 'CIBC' 
         }
@@ -109,44 +105,39 @@ function generateCompleteAccount(selectedBanks) {
     
     for (const bankCode of selectedBanks) {
         const config = bankConfigs[bankCode];
-        if (!config) continue;
+        if (!config) {
+            console.warn(`⚠️ Unknown bank code: ${bankCode}`);
+            continue;
+        }
         
         try {
             const bankData = window[config.variable];
-            console.log(`🔍 Checking ${bankCode}:`, typeof bankData);
             
             if (!bankData) {
                 console.warn(`⚠️ ${bankCode}: Variable ${config.variable} not found`);
                 continue;
             }
             
-            // Check if the expected data key exists
-            let branches = null;
-            if (bankData[config.dataKey] && Array.isArray(bankData[config.dataKey])) {
-                branches = bankData[config.dataKey];
-            } else {
-                // Fallback - try the first available array
-                const keys = Object.keys(bankData);
-                for (const key of keys) {
-                    if (Array.isArray(bankData[key]) && bankData[key].length > 0) {
-                        branches = bankData[key];
-                        console.log(`📋 ${bankCode}: Using fallback key "${key}"`);
-                        break;
-                    }
-                }
+            if (!bankData[config.key]) {
+                console.warn(`⚠️ ${bankCode}: Key ${config.key} not found in data`);
+                continue;
             }
             
-            if (branches && branches.length > 0) {
-                availableBanks.push({
-                    code: bankCode,
-                    data: branches,
-                    institution: config.institution,
-                    name: config.name
-                });
-                console.log(`✅ ${bankCode.toUpperCase()}: ${branches.length} branches loaded`);
-            } else {
-                console.warn(`⚠️ ${bankCode}: No branch data found`);
+            const branches = bankData[config.key];
+            
+            if (!Array.isArray(branches) || branches.length === 0) {
+                console.warn(`⚠️ ${bankCode}: No branches in ${config.key}`);
+                continue;
             }
+            
+            availableBanks.push({
+                code: bankCode,
+                data: branches,
+                institution: config.institution,
+                name: config.name
+            });
+            
+            console.log(`✅ ${bankCode.toUpperCase()}: ${branches.length} branches loaded`);
             
         } catch (error) {
             console.error(`❌ Error loading ${bankCode}:`, error);
