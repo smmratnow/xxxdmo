@@ -1,5 +1,5 @@
-{
-  "bmo": [
+const bmoData = {
+  "bmoBank": [
     {
       "routingNumber": "000125039",
       "transitNumber": "25039-001",
@@ -14545,4 +14545,4 @@
       "id": 1617
     }
   ]
-}
+};
