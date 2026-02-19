@@ -1,160 +1,116 @@
-// Account Generator - Complete Working Version
+// Account Generator - Fixed Data Structure Version
 
-// Global variables
 let selectedAdvanceOptions = [];
 let accountHistory = JSON.parse(localStorage.getItem('accountHistory')) || [];
 
-// Document ready
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Account Generator loaded');
+    
+    // Test data availability immediately
+    setTimeout(() => {
+        console.log('🔍 Testing data availability...');
+        console.log('tdBankData:', typeof tdBankData, tdBankData ? 'LOADED' : 'MISSING');
+        console.log('rbcData:', typeof rbcData, rbcData ? 'LOADED' : 'MISSING');
+        console.log('bmoData:', typeof bmoData, bmoData ? 'LOADED' : 'MISSING');
+        console.log('scotiaData:', typeof scotiaData, scotiaData ? 'LOADED' : 'MISSING');
+        console.log('cibcData:', typeof cibcData, cibcData ? 'LOADED' : 'MISSING');
+    }, 100);
+    
     loadHistory();
     updateGenerateButtonState();
 });
 
-// Generate account function
 function generateAccount() {
-    console.log('🎯 Generating account...');
-    console.log('📋 Selected banks:', selectedAdvanceOptions);
+    console.log('🎯 Generate button clicked');
     
-    // Determine which banks to use
-    let banksToUse = [];
-    const advanceOptions = document.getElementById('advanceOptions');
-    const isAdvanceOpen = advanceOptions && advanceOptions.classList.contains('show');
-    
-    if (isAdvanceOpen && selectedAdvanceOptions.length > 0) {
-        banksToUse = selectedAdvanceOptions;
-        console.log('🎯 Using selected banks:', banksToUse);
-    } else {
-        // Use all available banks if no selection
-        banksToUse = ['td']; // Default to TD since we know it exists
-        console.log('🌟 Using default bank: TD');
+    try {
+        // Get selected banks
+        const advanceOptions = document.getElementById('advanceOptions');
+        const isAdvanceOpen = advanceOptions && advanceOptions.classList.contains('show');
+        
+        let banksToUse = ['td']; // Default to TD
+        
+        if (isAdvanceOpen && selectedAdvanceOptions.length > 0) {
+            banksToUse = selectedAdvanceOptions;
+            console.log('🎯 Using selected banks:', banksToUse);
+        } else {
+            console.log('🌟 Using default bank: TD');
+        }
+        
+        // Generate account data
+        const accountData = generateCompleteAccount(banksToUse);
+        
+        if (!accountData) {
+            console.error('❌ Failed to generate account data');
+            alert('Failed to generate account. Check console for details.');
+            return;
+        }
+        
+        // Display results
+        displayAccountData(accountData);
+        
+        // Save to history
+        saveToHistory(accountData);
+        
+    } catch (error) {
+        console.error('❌ Error in generateAccount:', error);
+        alert('Error generating account: ' + error.message);
     }
-    
-    // Generate account data
-    const accountData = generateCompleteAccount(banksToUse);
-    
-    if (!accountData) {
-        console.error('❌ Failed to generate account data');
-        alert('Failed to generate account. Please check console for details.');
-        return;
-    }
-    
-    // Display generated data
-    displayAccountData(accountData);
-    
-    // Save to history
-    saveToHistory(accountData);
-    
-    console.log('✅ Account generated successfully:', accountData);
 }
 
-function displayAccountData(data) {
-    // Update form fields
-    document.getElementById('transitResult').value = data.transit;
-    document.getElementById('institutionResult').value = data.institution;
-    document.getElementById('accountResult').value = data.account;
+function generateCompleteAccount(selectedBanks) {
+    console.log('🏦 Generating for banks:', selectedBanks);
     
-    // Show bank information
-    showBankInfo(data);
-}
-
-function showBankInfo(data) {
-    const bankDetails = document.getElementById('bankDetails');
-    const bankName = document.getElementById('bankName');
-    const branchName = document.getElementById('branchName');
-    const bankAddress = document.getElementById('bankAddress');
-    const bankLocation = document.getElementById('bankLocation');
-    
-    // Set bank information
-    bankName.textContent = getBankDisplayName(data.bank);
-    
-    if (data.branchData) {
-        branchName.textContent = data.branchData.branch || 'Main Branch';
-        bankAddress.textContent = data.branchData.address || 'Address not available';
-        bankLocation.textContent = `${data.branchData.city || 'Unknown'}, ${data.branchData.state || 'Unknown'}`;
-    } else {
-        branchName.textContent = 'Main Branch';
-        bankAddress.textContent = 'Address not available';
-        bankLocation.textContent = 'Location not available';
-    }
-    
-    // Show the bank details section
-    bankDetails.style.display = 'block';
-}
-
-function generateCompleteAccount(selectedBanks = []) {
-    console.log('🏦 Starting account generation for banks:', selectedBanks);
-    
-    // Bank data mapping
+    // Bank data mapping with CORRECT variable names
     const bankDataMap = {
-        'td': 'tdBankData',
-        'rbc': 'rbcData',
-        'bmo': 'bmoData',
-        'scotia': 'scotiaData',
-        'cibc': 'cibcData'
+        'td': { variable: 'tdBankData', property: 'tdBank', institution: '004', name: 'TD Bank' },
+        'rbc': { variable: 'rbcData', property: 'rbcBank', institution: '003', name: 'Royal Bank of Canada' },
+        'bmo': { variable: 'bmoData', property: 'bmoBank', institution: '001', name: 'BMO Bank of Montreal' },
+        'scotia': { variable: 'scotiaData', property: 'scotiaBank', institution: '002', name: 'Scotiabank' },
+        'cibc': { variable: 'cibcData', property: 'cibcBank', institution: '010', name: 'CIBC' }
     };
     
-    const institutionMap = {
-        'td': '004',
-        'rbc': '003',
-        'bmo': '001',
-        'scotia': '002',
-        'cibc': '010'
-    };
-    
-    const bankNameMap = {
-        'td': 'TD Bank',
-        'rbc': 'Royal Bank of Canada',
-        'bmo': 'BMO Bank of Montreal',
-        'scotia': 'Scotiabank',
-        'cibc': 'CIBC'
-    };
-    
-    // Find available banks with data
     const availableBanks = [];
     
-    selectedBanks.forEach(bankCode => {
-        const dataVarName = bankDataMap[bankCode];
-        console.log(`🔍 Checking ${bankCode} data (${dataVarName})...`);
+    for (const bankCode of selectedBanks) {
+        const bankConfig = bankDataMap[bankCode];
+        if (!bankConfig) {
+            console.warn(`⚠️ Unknown bank code: ${bankCode}`);
+            continue;
+        }
         
         try {
-            const bankData = window[dataVarName];
-            if (bankData && bankData[bankCode + 'Bank'] && bankData[bankCode + 'Bank'].length > 0) {
+            const bankData = window[bankConfig.variable];
+            console.log(`🔍 Checking ${bankCode}:`, typeof bankData, bankData ? 'EXISTS' : 'MISSING');
+            
+            if (bankData && bankData[bankConfig.property] && bankData[bankConfig.property].length > 0) {
                 availableBanks.push({
                     code: bankCode,
-                    data: bankData[bankCode + 'Bank'],
-                    institution: institutionMap[bankCode],
-                    name: bankNameMap[bankCode]
+                    data: bankData[bankConfig.property],
+                    institution: bankConfig.institution,
+                    name: bankConfig.name
                 });
-                console.log(`✅ ${bankCode.toUpperCase()} data found: ${bankData[bankCode + 'Bank'].length} branches`);
-            } else if (bankData && bankData.tdBank && bankCode === 'td') {
-                // Special case for TD Bank data structure
-                availableBanks.push({
-                    code: bankCode,
-                    data: bankData.tdBank,
-                    institution: institutionMap[bankCode],
-                    name: bankNameMap[bankCode]
-                });
-                console.log(`✅ TD data found: ${bankData.tdBank.length} branches`);
+                console.log(`✅ ${bankCode.toUpperCase()}: ${bankData[bankConfig.property].length} branches loaded`);
             } else {
-                console.warn(`⚠️ No data found for ${bankCode}`);
+                console.warn(`⚠️ ${bankCode.toUpperCase()}: No data found`);
             }
         } catch (error) {
-            console.error(`❌ Error accessing ${bankCode} data:`, error);
+            console.error(`❌ Error loading ${bankCode}:`, error);
         }
-    });
+    }
     
     if (availableBanks.length === 0) {
-        console.error('❌ No bank data available for selected banks:', selectedBanks);
+        console.error('❌ No banks available with data');
         return null;
     }
     
     // Select random bank and branch
     const selectedBank = availableBanks[Math.floor(Math.random() * availableBanks.length)];
-    const selectedBranch = selectedBank.data[Math.floor(Math.random() * selectedBank.data.length)];
+    const branches = selectedBank.data;
+    const selectedBranch = branches[Math.floor(Math.random() * branches.length)];
     
-    console.log('🏦 Selected bank:', selectedBank.name);
-    console.log('🏢 Selected branch:', selectedBranch.branch);
+    console.log('🏦 Selected:', selectedBank.name);
+    console.log('🏢 Branch:', selectedBranch.branch);
     
     // Extract transit number
     let transit = '00000';
@@ -163,8 +119,8 @@ function generateCompleteAccount(selectedBanks = []) {
         transit = parts[0].padStart(5, '0');
     }
     
-    // Generate account number
-    const accountLength = Math.floor(Math.random() * 6) + 7; // 7-12 digits
+    // Generate account number (7-12 digits)
+    const accountLength = Math.floor(Math.random() * 6) + 7;
     let account = Math.floor(Math.random() * 9) + 1; // First digit 1-9
     for (let i = 1; i < accountLength; i++) {
         account = account * 10 + Math.floor(Math.random() * 10);
@@ -179,15 +135,42 @@ function generateCompleteAccount(selectedBanks = []) {
     };
 }
 
-function getBankDisplayName(bankCode) {
-    const names = {
+function displayAccountData(data) {
+    document.getElementById('transitResult').value = data.transit;
+    document.getElementById('institutionResult').value = data.institution;
+    document.getElementById('accountResult').value = data.account;
+    
+    showBankInfo(data);
+}
+
+function showBankInfo(data) {
+    const bankDetails = document.getElementById('bankDetails');
+    const bankName = document.getElementById('bankName');
+    const branchName = document.getElementById('branchName');
+    const bankAddress = document.getElementById('bankAddress');
+    const bankLocation = document.getElementById('bankLocation');
+    
+    // Check if elements exist
+    if (!bankDetails || !bankName || !branchName || !bankAddress || !bankLocation) {
+        console.warn('⚠️ Bank info elements missing from HTML');
+        return;
+    }
+    
+    // Set bank information
+    const bankNames = {
         'TD': 'TD Bank',
         'RBC': 'Royal Bank of Canada',
         'BMO': 'BMO Bank of Montreal',
         'SCOTIA': 'Scotiabank',
         'CIBC': 'CIBC'
     };
-    return names[bankCode.toUpperCase()] || bankCode.toUpperCase();
+    
+    bankName.textContent = bankNames[data.bank] || data.bank;
+    branchName.textContent = data.branchData.branch || 'Main Branch';
+    bankAddress.textContent = data.branchData.address || 'Address not available';
+    bankLocation.textContent = `${data.branchData.city || 'Unknown'}, ${data.branchData.state || 'Unknown'}`;
+    
+    bankDetails.style.display = 'block';
 }
 
 function saveToHistory(accountData) {
@@ -196,7 +179,7 @@ function saveToHistory(accountData) {
         transit: accountData.transit,
         institution: accountData.institution,
         account: accountData.account,
-        bank: accountData.bank.toUpperCase(),
+        bank: accountData.bank,
         date: now.toLocaleDateString(),
         time: now.toLocaleTimeString(),
         timestamp: now.getTime()
@@ -204,7 +187,6 @@ function saveToHistory(accountData) {
     
     accountHistory.unshift(historyEntry);
     
-    // Keep only last 100 entries
     if (accountHistory.length > 100) {
         accountHistory = accountHistory.slice(0, 100);
     }
@@ -213,17 +195,20 @@ function saveToHistory(accountData) {
     console.log('💾 Saved to history:', historyEntry);
 }
 
-// Advance section functions
 function toggleAdvance() {
-    console.log('🔧 Toggle advance clicked');
     const options = document.getElementById('advanceOptions');
     const arrow = document.getElementById('advanceArrow');
+    
+    if (!options || !arrow) {
+        console.error('❌ Advance elements not found');
+        return;
+    }
     
     if (options.classList.contains('show')) {
         options.classList.remove('show');
         arrow.innerHTML = '▶';
         selectedAdvanceOptions = [];
-        // Uncheck all checkboxes
+        // Clear all checkboxes
         document.querySelectorAll('#advanceOptions input[type="checkbox"]').forEach(cb => {
             cb.checked = false;
         });
@@ -243,7 +228,7 @@ function updateAdvanceSelection() {
         selectedAdvanceOptions.push(checkbox.value);
     });
     
-    console.log('📋 Updated selection:', selectedAdvanceOptions);
+    console.log('📋 Selected banks:', selectedAdvanceOptions);
     updateGenerateButtonState();
 }
 
@@ -258,21 +243,19 @@ function updateGenerateButtonState() {
     if (isAdvanceOpen && selectedAdvanceOptions.length === 0) {
         generateBtn.disabled = true;
         generateBtn.classList.add('disabled');
-        console.log('🚫 Generate button disabled - no banks selected');
     } else {
         generateBtn.disabled = false;
         generateBtn.classList.remove('disabled');
-        console.log('✅ Generate button enabled');
     }
 }
 
-// History functions
 function toggleHistory() {
-    console.log('📜 Toggle history clicked');
     const modal = document.getElementById('historyModal');
-    modal.classList.toggle('show');
-    if (modal.classList.contains('show')) {
-        loadHistory();
+    if (modal) {
+        modal.classList.toggle('show');
+        if (modal.classList.contains('show')) {
+            loadHistory();
+        }
     }
 }
 
@@ -286,10 +269,12 @@ function loadHistory() {
     
     if (accountHistory.length === 0) {
         noHistoryMsg.style.display = 'block';
-        document.getElementById('historyTable').style.display = 'none';
+        const historyTable = document.getElementById('historyTable');
+        if (historyTable) historyTable.style.display = 'none';
     } else {
         noHistoryMsg.style.display = 'none';
-        document.getElementById('historyTable').style.display = 'block';
+        const historyTable = document.getElementById('historyTable');
+        if (historyTable) historyTable.style.display = 'block';
         
         accountHistory.forEach(entry => {
             const row = document.createElement('tr');
@@ -307,13 +292,8 @@ function loadHistory() {
 }
 
 function closeHistory() {
-    document.getElementById('historyModal').classList.remove('show');
-}
-
-// Close modal when clicking outside
-document.addEventListener('click', function(event) {
     const modal = document.getElementById('historyModal');
-    if (event.target === modal) {
-        closeHistory();
+    if (modal) {
+        modal.classList.remove('show');
     }
-});
+}
