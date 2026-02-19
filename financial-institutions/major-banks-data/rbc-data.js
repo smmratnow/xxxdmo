@@ -1,5 +1,5 @@
 const rbcData = {
-  "rbcBank": [
+  rbc: [
     {
       "routingNumber": "000301372",
       "transitNumber": "01372-003",
