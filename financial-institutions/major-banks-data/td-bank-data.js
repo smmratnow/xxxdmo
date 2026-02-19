@@ -1,5 +1,5 @@
 const tdBankData = {
-  "tdBank": [
+  td: [
     {
       "routingNumber": "000400069",
       "transitNumber": "00069-004",
