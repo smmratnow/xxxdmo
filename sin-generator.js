@@ -2,7 +2,7 @@
 
 // Global variables
 let isAdvanceMode = false;
-let selectedProvinces = [];
+let selectedProvince = null; // CHANGED: Single selection instead of array
 let generationHistory = JSON.parse(localStorage.getItem('sinHistory')) || [];
 
 // Province display names
@@ -45,22 +45,29 @@ function toggleAdvance() {
         advanceArrow.classList.remove('down');
         generateBtn.disabled = false;
         generateBtn.style.opacity = '1';
-        // Clear all checkboxes
-        const checkboxes = advanceOptions.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(cb => cb.checked = false);
-        selectedProvinces = [];
+        // Clear all radio buttons
+        const radios = advanceOptions.querySelectorAll('input[name="province-choice"]');
+        radios.forEach(radio => radio.checked = false);
+        selectedProvince = null; // CHANGED: Clear selection
     }
 }
 
-// Update advance selection
+// Update advance selection - NOW ACTUALLY SAVES THE SELECTION
 function updateAdvanceSelection() {
-    const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]:checked');
-    selectedProvinces = Array.from(checkboxes).map(cb => cb.value);
-    
+    const selectedRadio = document.querySelector('input[name="province-choice"]:checked');
     const generateBtn = document.getElementById('generateBtn');
-    if (isAdvanceMode) {
-        generateBtn.disabled = selectedProvinces.length === 0;
-        generateBtn.style.opacity = selectedProvinces.length === 0 ? '0.5' : '1';
+    
+    if (selectedRadio) {
+        // Save the selected province value - THIS WAS MISSING!
+        selectedProvince = selectedRadio.value;
+        generateBtn.disabled = false;
+        generateBtn.style.opacity = '1';
+        console.log('✅ Province selected:', selectedProvince, '- Generate button ENABLED');
+    } else {
+        selectedProvince = null;
+        generateBtn.disabled = true;
+        generateBtn.style.opacity = '0.5';
+        console.log('❌ No province selected - Generate button DISABLED');
     }
 }
 
@@ -69,22 +76,24 @@ function generateSIN() {
     let sin;
     let sinProvince = "Random";
     
-    if (isAdvanceMode && selectedProvinces.length > 0) {
-        // Generate based on selected provinces
-        if (selectedProvinces.includes('temp')) {
+    // CHANGED: Check if advance is open AND a province is selected
+    if (isAdvanceMode && selectedProvince) {
+        console.log('🎯 Generating SIN for province:', selectedProvince);
+        
+        if (selectedProvince === 'temp') {
             // Generate temporary resident SIN (starts with 9)
             const options = { startsWith: 9 };
             sin = SocialInsuranceNumber.generate(options);
             sinProvince = "Temporary Residence";
         } else {
             // Generate for specific province
-            const randomProvince = selectedProvinces[Math.floor(Math.random() * selectedProvinces.length)];
-            const options = { province: randomProvince };
+            const options = { province: selectedProvince };
             sin = SocialInsuranceNumber.generate(options);
-            sinProvince = provinceNames[randomProvince];
+            sinProvince = provinceNames[selectedProvince];
         }
     } else {
         // Generate random SIN
+        console.log('🎯 Generating random SIN');
         sin = SocialInsuranceNumber.generate();
         // Determine province from generated SIN
         const sinObj = new SocialInsuranceNumber(sin);
@@ -104,6 +113,8 @@ function generateSIN() {
     
     // Add to history
     addToHistory(formattedSIN, sinProvince);
+    
+    console.log('📋 Generated:', formattedSIN, 'for', sinProvince);
 }
 
 // Format SIN input in verify page
