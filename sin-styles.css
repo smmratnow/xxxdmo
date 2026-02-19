@@ -463,28 +463,44 @@
 
 
 /* ============================================ */
-/* ACCOUNT GENERATOR ONLY - NO SIN INTERFERENCE */
+/* ACCOUNT GENERATOR ONLY - CLEAN SEPARATION */
 /* ============================================ */
 
-/* Account Generator: 3 input fields side by side */
+/* Account Generator: Force 3 input fields layout */
 .account-generator .generate-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 30px;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    margin-bottom: 30px !important;
+    flex-wrap: wrap !important;
 }
 
 .account-generator .generate-row .sin-result {
-    flex: 1;
-    min-width: 120px;
-    max-width: 180px;
-    font-size: 16px;
-    padding: 15px 10px;
+    flex: 1 !important;
+    min-width: 120px !important;
+    max-width: 180px !important;
+    font-size: 16px !important;
 }
 
-/* Bank Details for Account Generator */
+/* SIN Generator: Force 1 input field layout */
+.sin-generator .generate-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    margin-bottom: 30px !important;
+}
+
+.sin-generator .generate-row .sin-result {
+    flex: 1 !important;
+    min-width: 200px !important;
+    max-width: none !important;
+}
+
+/* Bank Details - Account Generator Only */
 .account-generator .bank-details {
     margin-top: 30px;
     padding: 25px;
@@ -512,51 +528,30 @@
 }
 
 .account-generator .generate-btn.disabled {
-    opacity: 0.5;
+    opacity: 0.5 !important;
     cursor: not-allowed !important;
     background-color: #f0f0f0 !important;
     color: #ccc !important;
     border-color: #ccc !important;
 }
 
-/* Mobile responsive for Account Generator */
-@media (max-width: 768px) {
-    .account-generator .generate-row {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .account-generator .generate-row .sin-result {
-        min-width: auto;
-        max-width: none;
-        width: 100%;
-    }
-}
-
-/* ============================================ */
-/* EXPLICIT SIN GENERATOR PROTECTION */
-/* ============================================ */
-
-/* Force SIN Generator to keep original layout */
-.sin-generator .generate-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 30px;
-}
-
-.sin-generator .generate-row .sin-result {
-    flex: 1;
-    min-width: 200px;
-    /* Remove any max-width constraints */
-    max-width: none;
-}
-
 /* Hide bank details on SIN Generator */
 .sin-generator .bank-details {
     display: none !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .account-generator .generate-row {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    
+    .account-generator .generate-row .sin-result {
+        min-width: unset !important;
+        max-width: unset !important;
+        width: 100% !important;
+    }
 }
 
 
