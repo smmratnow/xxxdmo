@@ -7,6 +7,12 @@ let accountHistory = JSON.parse(localStorage.getItem('accountHistory') || '[]');
 document.addEventListener('DOMContentLoaded', function() {
     updateHistoryDisplay();
     updateGenerateButtonState();
+    
+    // Test data loading
+    setTimeout(() => {
+        const testData = getAllBankData();
+        console.log('Data loaded:', Object.keys(testData));
+    }, 100);
 });
 
 // Toggle advance options
@@ -14,9 +20,12 @@ function toggleAdvance() {
     const options = document.getElementById('advanceOptions');
     const arrow = document.getElementById('advanceArrow');
     
-    if (options.classList.contains('show') || options.style.display === 'block') {
-        // Close advance options
-        options.classList.remove('show');
+    if (options.style.display === 'none' || options.style.display === '') {
+        options.style.display = 'block';
+        arrow.innerHTML = '▼';
+        arrow.classList.add('rotated');
+        updateGenerateButtonState();
+    } else {
         options.style.display = 'none';
         arrow.innerHTML = '▶';
         arrow.classList.remove('rotated');
@@ -25,17 +34,6 @@ function toggleAdvance() {
         selectedBanks = [];
         const checkboxes = document.querySelectorAll('#advanceOptions input[type="checkbox"]');
         checkboxes.forEach(cb => cb.checked = false);
-        
-        // Enable generate button when advance is closed
-        updateGenerateButtonState();
-    } else {
-        // Open advance options
-        options.classList.add('show');
-        options.style.display = 'block';
-        arrow.innerHTML = '▼';
-        arrow.classList.add('rotated');
-        
-        // Update generate button state
         updateGenerateButtonState();
     }
 }
@@ -58,7 +56,7 @@ function updateBankSelection() {
 function updateGenerateButtonState() {
     const generateBtn = document.getElementById('generateBtn');
     const advanceOptions = document.getElementById('advanceOptions');
-    const isAdvanceOpen = advanceOptions.classList.contains('show') || advanceOptions.style.display === 'block';
+    const isAdvanceOpen = advanceOptions.style.display === 'block';
     
     if (isAdvanceOpen) {
         // In advance mode: enable only if banks are selected
@@ -79,15 +77,17 @@ function updateGenerateButtonState() {
 // Generate account
 function generateAccount() {
     const advanceOptions = document.getElementById('advanceOptions');
-    const isAdvanceMode = advanceOptions.classList.contains('show') || advanceOptions.style.display === 'block';
+    const isAdvanceMode = advanceOptions.style.display === 'block';
     
     // Use selected banks in advance mode, or empty array for random
     const banksToUse = isAdvanceMode ? selectedBanks : [];
     
+    console.log('Generating account for banks:', banksToUse);
+    
     const accountData = generateCompleteAccount(banksToUse);
     
     if (!accountData) {
-        alert('Error generating account. Please try again.');
+        alert('Error generating account. Please check console for details.');
         return;
     }
     
