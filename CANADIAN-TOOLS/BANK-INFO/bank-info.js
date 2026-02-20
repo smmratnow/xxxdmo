@@ -1,16 +1,13 @@
-// Bank Info Generator - Cascading Selection System
-// Uses uploaded bank data files: TD, CIBC, SCOTIA, RBC, BMO
-
-// Global variables
+// Bank Info Generator - Fixed for TD Data Structure
 let selectedBank = null;
 let selectedProvince = null;
 let selectedCity = null;
 let currentBankData = null;
 let searchHistory = JSON.parse(localStorage.getItem('bankInfoHistory')) || [];
 
-// Bank data mapping - Check if data exists with fallback
+// Fixed Bank Data Mapping - Corrected TD structure
 const bankDataMap = {
-    'TD': (typeof tdBankData !== 'undefined' && tdBankData?.td) ? tdBankData.td : [],
+    'TD': (typeof tdBankData !== 'undefined' && tdBankData?.tdBank) ? tdBankData.tdBank : [],
     'CIBC': (typeof cibcData !== 'undefined' && cibcData?.cibc) ? cibcData.cibc : [],
     'SCOTIA': (typeof scotiaData !== 'undefined' && scotiaData?.scotia) ? scotiaData.scotia : [],
     'RBC': (typeof rbcData !== 'undefined' && rbcData?.rbc) ? rbcData.rbc : [],
@@ -43,30 +40,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     updateHistoryDisplay();
-    
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!event.target.closest('.dropdown-container')) {
-            closeAllDropdowns();
-        }
-    });
 });
-
-// Toggle Bank Dropdown
-function toggleBankDropdown() {
-    const dropdown = document.getElementById('bankDropdown');
-    const isOpen = dropdown.classList.contains('show');
-    
-    closeAllDropdowns();
-    
-    if (!isOpen) {
-        dropdown.classList.add('show');
-    }
-}
 
 // Select Bank
 function selectBank(bank) {
     console.log('🏦 Bank selected:', bank);
+    
+    // Clear previous selections
+    document.querySelectorAll('.selection-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
     
     selectedBank = bank;
     selectedProvince = null;
@@ -79,29 +62,17 @@ function selectBank(bank) {
         return;
     }
     
-    // Update bank button
-    document.getElementById('bankBtn').textContent = bank + ' ▶';
+    // Highlight selected bank
+    document.getElementById(`bankBtn-${bank}`).classList.add('selected');
     
-    // Reset and enable province button
-    const provinceBtn = document.getElementById('provinceBtn');
-    provinceBtn.textContent = 'Province ▶';
-    provinceBtn.classList.remove('disabled');
-    
-    // Reset and disable city button
-    const cityBtn = document.getElementById('cityBtn');
-    cityBtn.textContent = 'CITY ▶';
-    cityBtn.classList.add('disabled');
-    
-    // Disable generate button
-    const generateBtn = document.getElementById('generateBtn');
-    generateBtn.classList.add('disabled');
-    
-    // Clear bank info display
-    document.getElementById('bankInfoDisplay').innerHTML = '';
+    // Reset other sections
+    resetProvinceSection();
+    resetCitySection();
+    resetGenerateButton();
+    clearBankInfoDisplay();
     
     // Populate provinces
     populateProvinces();
-    closeAllDropdowns();
 }
 
 // Populate Provinces for Selected Bank
@@ -115,53 +86,37 @@ function populateProvinces() {
     const provinces = [...new Set(currentBankData.map(branch => branch.state))];
     provinces.sort();
     
-    const provinceDropdown = document.getElementById('provinceDropdown');
-    provinceDropdown.innerHTML = provinces.map(province => 
-        `<div class="option-item" onclick="selectProvince('${province}')">${provinceNames[province] || province}</div>`
+    const provinceContainer = document.getElementById('provinceButtons');
+    provinceContainer.classList.remove('disabled');
+    provinceContainer.innerHTML = provinces.map(province => 
+        `<button class="selection-btn" onclick="selectProvince('${province}')">${provinceNames[province] || province} ▶</button>`
     ).join('');
     
     console.log('🗺️ Populated provinces for', selectedBank, ':', provinces);
-}
-
-// Toggle Province Dropdown
-function toggleProvinceDropdown() {
-    if (document.getElementById('provinceBtn').classList.contains('disabled')) return;
-    
-    const dropdown = document.getElementById('provinceDropdown');
-    const isOpen = dropdown.classList.contains('show');
-    
-    closeAllDropdowns();
-    
-    if (!isOpen) {
-        dropdown.classList.add('show');
-    }
 }
 
 // Select Province
 function selectProvince(province) {
     console.log('🗺️ Province selected:', province);
     
+    // Clear previous province selections
+    document.querySelectorAll('#provinceButtons .selection-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
     selectedProvince = province;
     selectedCity = null;
     
-    // Update province button
-    document.getElementById('provinceBtn').textContent = (provinceNames[province] || province) + ' ▶';
+    // Highlight selected province
+    event.target.classList.add('selected');
     
-    // Reset and enable city button
-    const cityBtn = document.getElementById('cityBtn');
-    cityBtn.textContent = 'CITY ▶';
-    cityBtn.classList.remove('disabled');
-    
-    // Disable generate button
-    const generateBtn = document.getElementById('generateBtn');
-    generateBtn.classList.add('disabled');
-    
-    // Clear bank info display
-    document.getElementById('bankInfoDisplay').innerHTML = '';
+    // Reset other sections
+    resetCitySection();
+    resetGenerateButton();
+    clearBankInfoDisplay();
     
     // Populate cities
     populateCities();
-    closeAllDropdowns();
 }
 
 // Populate Cities for Selected Bank and Province
@@ -181,48 +136,40 @@ function populateCities() {
     // Sort alphabetically
     cities.sort();
     
-    const cityDropdown = document.getElementById('cityDropdown');
-    cityDropdown.innerHTML = cities.map(city => 
-        `<div class="option-item" onclick="selectCity('${city}')">${city}</div>`
+    const cityContainer = document.getElementById('cityButtons');
+    cityContainer.classList.remove('disabled');
+    cityContainer.innerHTML = cities.map(city => 
+        `<button class="selection-btn" onclick="selectCity('${city}')">${city} ▶</button>`
     ).join('');
     
     console.log('🏙️ Populated', cities.length, 'cities for', selectedBank, 'in', selectedProvince);
-}
-
-// Toggle City Dropdown
-function toggleCityDropdown() {
-    if (document.getElementById('cityBtn').classList.contains('disabled')) return;
-    
-    const dropdown = document.getElementById('cityDropdown');
-    const isOpen = dropdown.classList.contains('show');
-    
-    closeAllDropdowns();
-    
-    if (!isOpen) {
-        dropdown.classList.add('show');
-    }
 }
 
 // Select City
 function selectCity(city) {
     console.log('🏙️ City selected:', city);
     
+    // Clear previous city selections
+    document.querySelectorAll('#cityButtons .selection-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
     selectedCity = city;
     
-    // Update city button
-    document.getElementById('cityBtn').textContent = city + ' ▶';
+    // Highlight selected city
+    event.target.classList.add('selected');
     
     // Enable generate button
     const generateBtn = document.getElementById('generateBtn');
     generateBtn.classList.remove('disabled');
     
-    closeAllDropdowns();
+    clearBankInfoDisplay();
 }
 
 // Generate Bank Info
 function generateBankInfo() {
     if (!selectedBank || !selectedProvince || !selectedCity) {
-        console.error('❌ Missing selections - Bank:', selectedBank, 'Province:', selectedProvince, 'City:', selectedCity);
+        console.error('❌ Missing selections');
         return;
     }
     
@@ -232,18 +179,18 @@ function generateBankInfo() {
     );
     
     if (matchingBranches.length === 0) {
-        console.error('❌ No branches found for', selectedBank, 'in', selectedCity, selectedProvince);
+        console.error('❌ No branches found');
         alert(`No ${selectedBank} branches found in ${selectedCity}, ${provinceNames[selectedProvince] || selectedProvince}`);
         return;
     }
     
-    // Select random branch from matching ones
+    // Select random branch
     const selectedBranch = matchingBranches[Math.floor(Math.random() * matchingBranches.length)];
     
     displayBankInfo(selectedBranch);
     addToHistory(selectedBank, selectedCity, selectedProvince);
     
-    console.log('✅ Bank info generated for:', selectedBranch.branch, 'in', selectedCity);
+    console.log('✅ Bank info generated for:', selectedBranch.branch);
 }
 
 // Display Bank Information
@@ -302,11 +249,26 @@ function getBankFullName(bankCode) {
     return names[bankCode] || bankCode;
 }
 
-// Close All Dropdowns
-function closeAllDropdowns() {
-    document.querySelectorAll('.dropdown-options').forEach(dropdown => {
-        dropdown.classList.remove('show');
-    });
+// Reset Functions
+function resetProvinceSection() {
+    const provinceContainer = document.getElementById('provinceButtons');
+    provinceContainer.classList.add('disabled');
+    provinceContainer.innerHTML = '';
+}
+
+function resetCitySection() {
+    const cityContainer = document.getElementById('cityButtons');
+    cityContainer.classList.add('disabled');
+    cityContainer.innerHTML = '';
+}
+
+function resetGenerateButton() {
+    const generateBtn = document.getElementById('generateBtn');
+    generateBtn.classList.add('disabled');
+}
+
+function clearBankInfoDisplay() {
+    document.getElementById('bankInfoDisplay').innerHTML = '';
 }
 
 // Add to History
@@ -330,8 +292,6 @@ function addToHistory(bank, city, province) {
     
     localStorage.setItem('bankInfoHistory', JSON.stringify(searchHistory));
     updateHistoryDisplay();
-    
-    console.log('📝 Added to history:', bank, city, province);
 }
 
 // Toggle History Modal
@@ -376,4 +336,3 @@ window.onclick = function(event) {
         historyModal.classList.remove('show');
     }
 }
-
