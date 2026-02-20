@@ -6,7 +6,6 @@
     <title>Bank Info</title>
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="../../sin-styles.css">
-    <link rel="stylesheet" href="bank-info-styles.css">
 </head>
 <body>
     <header class="header">
@@ -20,48 +19,54 @@
     </header>
 
     <main class="sin-content">
-        <div class="bank-info-container">
-            <!-- Left Side - Controls -->
-            <div class="controls-section">
-                <!-- Bank Selection Buttons -->
-                <div class="selection-buttons">
-                    <button id="bankBtn-RBC" class="selection-btn" onclick="selectBank('RBC')">RBC ▶</button>
-                    <button id="bankBtn-SCOTIA" class="selection-btn" onclick="selectBank('SCOTIA')">SCOTIA ▶</button>
-                    <button id="bankBtn-TD" class="selection-btn" onclick="selectBank('TD')">TD ▶</button>
-                    <button id="bankBtn-CIBC" class="selection-btn" onclick="selectBank('CIBC')">CIBC ▶</button>
-                    <button id="bankBtn-BMO" class="selection-btn" onclick="selectBank('BMO')">BMO ▶</button>
-                </div>
-
-                <!-- Province Selection -->
-                <div class="selection-section">
-                    <h3>Province</h3>
-                    <div id="provinceButtons" class="selection-buttons disabled">
-                        <!-- Province buttons will be populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- City Selection -->
-                <div class="selection-section">
-                    <h3>CITY</h3>
-                    <div id="cityButtons" class="selection-buttons disabled">
-                        <!-- City buttons will be populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Generate Button -->
-                <div class="generate-section">
-                    <button id="generateBtn" class="generate-btn disabled" onclick="generateBankInfo()">
-                        Generate ▶
-                    </button>
+        <div class="generation-area">
+            
+            <!-- Bank Selection Row -->
+            <div class="bank-selection-row">
+                <button id="bankBtn" class="dropdown-btn" onclick="toggleBankDropdown()">
+                    <span id="bankBtnText">Bank</span> ▶
+                </button>
+                <div id="bankDropdown" class="dropdown-options">
+                    <div class="option-item" onclick="selectBank('TD')">TD</div>
+                    <div class="option-item" onclick="selectBank('CIBC')">CIBC</div>
+                    <div class="option-item" onclick="selectBank('SCOTIA')">SCOTIA</div>
+                    <div class="option-item" onclick="selectBank('RBC')">RBC</div>
+                    <div class="option-item" onclick="selectBank('BMO')">BMO</div>
                 </div>
             </div>
 
-            <!-- Right Side - Bank Info Display -->
-            <div class="display-section">
-                <div id="bankInfoDisplay" class="bank-info-display">
-                    <!-- Bank information will be displayed here -->
+            <!-- Province Selection Row -->
+            <div class="bank-selection-row">
+                <button id="provinceBtn" class="dropdown-btn disabled" onclick="toggleProvinceDropdown()">
+                    <span id="provinceBtnText">Province</span> ▶
+                </button>
+                <div id="provinceDropdown" class="dropdown-options">
+                    <!-- Provinces will be populated dynamically -->
                 </div>
             </div>
+
+            <!-- City Selection Row -->
+            <div class="bank-selection-row">
+                <button id="cityBtn" class="dropdown-btn disabled" onclick="toggleCityDropdown()">
+                    <span id="cityBtnText">CITY</span> ▶
+                </button>
+                <div id="cityDropdown" class="dropdown-options">
+                    <!-- Cities will be populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="generate-section">
+                <button id="generateBtn" class="generate-btn-large disabled" onclick="generateBankInfo()">
+                    Generate ▶
+                </button>
+            </div>
+
+            <!-- Bank Info Display -->
+            <div id="bankInfoDisplay" class="result-display">
+                <!-- Bank information will be displayed here -->
+            </div>
+
         </div>
 
         <!-- History Modal -->
