@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank Info</title>
-    <link rel="stylesheet" href="../../styles.css">
+    <title>SIN Verify</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="sin-styles.css">
 </head>
 <body>
     <header class="header">
@@ -13,14 +14,25 @@
                 <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
             </svg>
         </button>
-        <h1 class="page-title">Bank Info</h1>
-        <div style="width: 40px;"></div> <!-- Spacer for centering -->
+        <h1 class="page-title">SIN Verify</h1>
+        <div style="width: 40px;"></div>
     </header>
 
-    <main class="content">
-        <div style="color: #333; font-size: 18px; text-align: center;">
-            Bank Info functionality coming soon...
+    <main class="sin-content">
+        <div class="verification-area">
+            <div class="verify-row">
+                <button class="verify-btn" onclick="verifySIN()">Verify</button>
+                <input type="text" id="sinInput" class="sin-input" placeholder="Enter SIN number" maxlength="11" oninput="formatSINInput(this)">
+            </div>
+
+            <div id="verificationResult" class="verification-result">
+                <!-- Verification result will be displayed here -->
+            </div>
         </div>
     </main>
+
+    <script src="sin-library.js"></script>
+    <script src="sin-generator.js"></script>
+
 </body>
 </html>
