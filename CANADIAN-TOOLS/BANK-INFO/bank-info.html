@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Info</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../sin-styles.css">
+    <link rel="stylesheet" href="bank-info-styles.css">
+</head>
+<body>
+    <header class="header">
+        <button class="home-btn" onclick="window.location.href='../../index.html'">
+            <svg class="home-icon" viewBox="0 0 24 24">
+                <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
+            </svg>
+        </button>
+        <h1 class="page-title">BANK INFO</h1>
+        <button class="history-btn" onclick="toggleHistory()">HISTORY</button>
+    </header>
+
+    <main class="sin-content">
+        <!-- Bank Selection Area -->
+        <div class="generation-area">
+            <div class="bank-selection-row">
+                <!-- Bank Dropdown -->
+                <div class="dropdown-container">
+                    <button id="bankBtn" class="dropdown-btn" onclick="toggleBankDropdown()">
+                        Bank ▶
+                    </button>
+                    <div id="bankDropdown" class="dropdown-options">
+                        <div class="option-item" onclick="selectBank('TD')">TD</div>
+                        <div class="option-item" onclick="selectBank('CIBC')">CIBC</div>
+                        <div class="option-item" onclick="selectBank('SCOTIA')">SCOTIA</div>
+                        <div class="option-item" onclick="selectBank('RBC')">RBC</div>
+                        <div class="option-item" onclick="selectBank('BMO')">BMO</div>
+                    </div>
+                </div>
+
+                <!-- Province Dropdown -->
+                <div class="dropdown-container">
+                    <button id="provinceBtn" class="dropdown-btn disabled" onclick="toggleProvinceDropdown()">
+                        Province ▶
+                    </button>
+                    <div id="provinceDropdown" class="dropdown-options">
+                        <!-- Provinces will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- City Dropdown -->
+                <div class="dropdown-container">
+                    <button id="cityBtn" class="dropdown-btn disabled" onclick="toggleCityDropdown()">
+                        CITY ▶
+                    </button>
+                    <div id="cityDropdown" class="dropdown-options">
+                        <!-- Cities will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="generate-section">
+                <button id="generateBtn" class="generate-btn-large disabled" onclick="generateBankInfo()">
+                    Generate ▶
+                </button>
+            </div>
+
+            <!-- Bank Info Display -->
+            <div id="bankInfoDisplay" class="bank-info-display">
+                <!-- Bank information will be displayed here -->
+            </div>
+        </div>
+
+        <!-- History Modal -->
+        <div id="historyModal" class="history-modal">
+            <div class="history-content">
+                <div class="history-header">
+                    <h3>Search History</h3>
+                    <button class="close-btn" onclick="toggleHistory()">&times;</button>
+                </div>
+                <div class="history-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bank</th>
+                                <th>City</th>
+                                <th>Province</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- History entries will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Load Bank Data Scripts with correct paths -->
+    <script src="../../financial-institutions/major-banks-data/td-bank-data.js"></script>
+    <script src="../../financial-institutions/major-banks-data/scotia-data.js"></script>
+    <script src="../../financial-institutions/major-banks-data/rbc-data.js"></script>
+    <script src="../../financial-institutions/major-banks-data/bmo-data.js"></script>
+    <script src="../../financial-institutions/major-banks-data/cibc-data.js"></script>
+    
+    <!-- Bank Info JavaScript -->
+    <script src="bank-info.js"></script>
+</body>
+</html>
