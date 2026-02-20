@@ -1,4 +1,4 @@
-// Bank Info Generator - Fixed for TD Data Structure
+// Bank Info Generator - Using SIN Generator Style
 let selectedBank = null;
 let selectedProvince = null;
 let selectedCity = null;
@@ -42,14 +42,57 @@ document.addEventListener('DOMContentLoaded', function() {
     updateHistoryDisplay();
 });
 
+// Toggle Bank Dropdown
+function toggleBankDropdown() {
+    const dropdown = document.getElementById('bankDropdown');
+    const isOpen = dropdown.classList.contains('show');
+    
+    // Close all dropdowns first
+    closeAllDropdowns();
+    
+    if (!isOpen) {
+        dropdown.classList.add('show');
+    }
+}
+
+// Toggle Province Dropdown
+function toggleProvinceDropdown() {
+    if (document.getElementById('provinceBtn').classList.contains('disabled')) return;
+    
+    const dropdown = document.getElementById('provinceDropdown');
+    const isOpen = dropdown.classList.contains('show');
+    
+    closeAllDropdowns();
+    
+    if (!isOpen) {
+        dropdown.classList.add('show');
+    }
+}
+
+// Toggle City Dropdown
+function toggleCityDropdown() {
+    if (document.getElementById('cityBtn').classList.contains('disabled')) return;
+    
+    const dropdown = document.getElementById('cityDropdown');
+    const isOpen = dropdown.classList.contains('show');
+    
+    closeAllDropdowns();
+    
+    if (!isOpen) {
+        dropdown.classList.add('show');
+    }
+}
+
+// Close all dropdowns
+function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-options').forEach(dropdown => {
+        dropdown.classList.remove('show');
+    });
+}
+
 // Select Bank
 function selectBank(bank) {
     console.log('🏦 Bank selected:', bank);
-    
-    // Clear previous selections
-    document.querySelectorAll('.selection-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
     
     selectedBank = bank;
     selectedProvince = null;
@@ -62,17 +105,58 @@ function selectBank(bank) {
         return;
     }
     
-    // Highlight selected bank
-    document.getElementById(`bankBtn-${bank}`).classList.add('selected');
+    // Update button text
+    document.getElementById('bankBtnText').textContent = bank;
+    document.getElementById('provinceBtnText').textContent = 'Province';
+    document.getElementById('cityBtnText').textContent = 'CITY';
     
     // Reset other sections
     resetProvinceSection();
     resetCitySection();
     resetGenerateButton();
     clearBankInfoDisplay();
+    closeAllDropdowns();
     
     // Populate provinces
     populateProvinces();
+}
+
+// Select Province
+function selectProvince(province) {
+    console.log('🗺️ Province selected:', province);
+    
+    selectedProvince = province;
+    selectedCity = null;
+    
+    // Update button text
+    document.getElementById('provinceBtnText').textContent = provinceNames[province] || province;
+    document.getElementById('cityBtnText').textContent = 'CITY';
+    
+    // Reset other sections
+    resetCitySection();
+    resetGenerateButton();
+    clearBankInfoDisplay();
+    closeAllDropdowns();
+    
+    // Populate cities
+    populateCities();
+}
+
+// Select City
+function selectCity(city) {
+    console.log('🏙️ City selected:', city);
+    
+    selectedCity = city;
+    
+    // Update button text
+    document.getElementById('cityBtnText').textContent = city;
+    
+    // Enable generate button
+    const generateBtn = document.getElementById('generateBtn');
+    generateBtn.classList.remove('disabled');
+    
+    clearBankInfoDisplay();
+    closeAllDropdowns();
 }
 
 // Populate Provinces for Selected Bank
@@ -86,37 +170,15 @@ function populateProvinces() {
     const provinces = [...new Set(currentBankData.map(branch => branch.state))];
     provinces.sort();
     
-    const provinceContainer = document.getElementById('provinceButtons');
-    provinceContainer.classList.remove('disabled');
-    provinceContainer.innerHTML = provinces.map(province => 
-        `<button class="selection-btn" onclick="selectProvince('${province}')">${provinceNames[province] || province} ▶</button>`
+    const provinceDropdown = document.getElementById('provinceDropdown');
+    provinceDropdown.innerHTML = provinces.map(province => 
+        `<div class="option-item" onclick="selectProvince('${province}')">${provinceNames[province] || province}</div>`
     ).join('');
     
+    // Enable province button
+    document.getElementById('provinceBtn').classList.remove('disabled');
+    
     console.log('🗺️ Populated provinces for', selectedBank, ':', provinces);
-}
-
-// Select Province
-function selectProvince(province) {
-    console.log('🗺️ Province selected:', province);
-    
-    // Clear previous province selections
-    document.querySelectorAll('#provinceButtons .selection-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    
-    selectedProvince = province;
-    selectedCity = null;
-    
-    // Highlight selected province
-    event.target.classList.add('selected');
-    
-    // Reset other sections
-    resetCitySection();
-    resetGenerateButton();
-    clearBankInfoDisplay();
-    
-    // Populate cities
-    populateCities();
 }
 
 // Populate Cities for Selected Bank and Province
@@ -136,34 +198,15 @@ function populateCities() {
     // Sort alphabetically
     cities.sort();
     
-    const cityContainer = document.getElementById('cityButtons');
-    cityContainer.classList.remove('disabled');
-    cityContainer.innerHTML = cities.map(city => 
-        `<button class="selection-btn" onclick="selectCity('${city}')">${city} ▶</button>`
+    const cityDropdown = document.getElementById('cityDropdown');
+    cityDropdown.innerHTML = cities.map(city => 
+        `<div class="option-item" onclick="selectCity('${city}')">${city}</div>`
     ).join('');
     
+    // Enable city button
+    document.getElementById('cityBtn').classList.remove('disabled');
+    
     console.log('🏙️ Populated', cities.length, 'cities for', selectedBank, 'in', selectedProvince);
-}
-
-// Select City
-function selectCity(city) {
-    console.log('🏙️ City selected:', city);
-    
-    // Clear previous city selections
-    document.querySelectorAll('#cityButtons .selection-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    
-    selectedCity = city;
-    
-    // Highlight selected city
-    event.target.classList.add('selected');
-    
-    // Enable generate button
-    const generateBtn = document.getElementById('generateBtn');
-    generateBtn.classList.remove('disabled');
-    
-    clearBankInfoDisplay();
 }
 
 // Generate Bank Info
@@ -207,30 +250,31 @@ function displayBankInfo(branch) {
     const institutionNumber = branch.routingNumber.substring(0, 3);
     
     display.innerHTML = `
-        <div class="bank-info-card">
-            <div class="bank-title">${getBankFullName(selectedBank)}</div>
+        <div class="result-card">
+            <div class="result-title">${getBankFullName(selectedBank)}</div>
+            <div class="result-divider"></div>
             
-            <div class="info-section">
-                <div class="info-label">ACCOUNT NUMBER</div>
-                <div class="info-value">${accountNumber}</div>
+            <div class="result-item">
+                <div class="result-label">ACCOUNT NUMBER</div>
+                <div class="result-value">${accountNumber}</div>
             </div>
             
-            <div class="info-section">
-                <div class="info-label">TRANSIT NUMBER</div>
-                <div class="info-value">${transitNumber}</div>
+            <div class="result-item">
+                <div class="result-label">TRANSIT NUMBER</div>
+                <div class="result-value">${transitNumber}</div>
             </div>
             
-            <div class="info-section">
-                <div class="info-label">INSTITUTION NUMBER</div>
-                <div class="info-value">${institutionNumber}</div>
+            <div class="result-item">
+                <div class="result-label">INSTITUTION NUMBER</div>
+                <div class="result-value">${institutionNumber}</div>
             </div>
             
-            <div class="info-section">
-                <div class="info-label">ADDRESS</div>
-                <div class="info-address">
-                    <div><strong>${branch.branch}</strong></div>
-                    <div>${branch.address}</div>
-                    <div>${branch.city}, ${branch.state}</div>
+            <div class="result-item">
+                <div class="result-label">ADDRESS</div>
+                <div class="result-address">
+                    ${branch.branch}<br>
+                    ${branch.address}<br>
+                    ${branch.city}, ${branch.state}
                 </div>
             </div>
         </div>
@@ -251,20 +295,17 @@ function getBankFullName(bankCode) {
 
 // Reset Functions
 function resetProvinceSection() {
-    const provinceContainer = document.getElementById('provinceButtons');
-    provinceContainer.classList.add('disabled');
-    provinceContainer.innerHTML = '';
+    document.getElementById('provinceBtn').classList.add('disabled');
+    document.getElementById('provinceDropdown').innerHTML = '';
 }
 
 function resetCitySection() {
-    const cityContainer = document.getElementById('cityButtons');
-    cityContainer.classList.add('disabled');
-    cityContainer.innerHTML = '';
+    document.getElementById('cityBtn').classList.add('disabled');
+    document.getElementById('cityDropdown').innerHTML = '';
 }
 
 function resetGenerateButton() {
-    const generateBtn = document.getElementById('generateBtn');
-    generateBtn.classList.add('disabled');
+    document.getElementById('generateBtn').classList.add('disabled');
 }
 
 function clearBankInfoDisplay() {
@@ -329,8 +370,12 @@ function updateHistoryDisplay() {
         .join('');
 }
 
-// Close modal when clicking outside
+// Close dropdowns when clicking outside
 window.onclick = function(event) {
+    if (!event.target.matches('.dropdown-btn')) {
+        closeAllDropdowns();
+    }
+    
     const historyModal = document.getElementById('historyModal');
     if (event.target === historyModal) {
         historyModal.classList.remove('show');
