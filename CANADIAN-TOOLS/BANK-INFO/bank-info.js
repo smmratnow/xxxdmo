@@ -1,91 +1,6 @@
-// Bank Info Generator - Exact Account Generator Style
-let selectedBank = null;
-let selectedProvince = null;
-let selectedCity = null;
-let currentBankData = null;
-let bankInfoHistory = JSON.parse(localStorage.getItem('bankInfoHistory')) || [];
-let dataReady = false;
+// Add these functions to existing bank-info.js
 
-// Province name mapping
-const provinceNames = {
-    'AB': 'ALBERTA',
-    'BC': 'BC', 
-    'MB': 'MANITOBA',
-    'NB': 'NEW BRUNSWICK',
-    'NL': 'NEWFOUNDLAND',
-    'NS': 'NOVA SCOTIA',
-    'NT': 'NW TERRITORIES',
-    'NU': 'NUNAVUT',
-    'ON': 'ONTARIO',
-    'PE': 'PEI',
-    'QC': 'QUEBEC',
-    'SK': 'SASKATCHEWAN',
-    'YT': 'YUKON'
-};
-
-// Bank Data Mapping - Corrected structure
-const bankDataMap = {
-    'TD': (typeof tdBankData !== 'undefined' && tdBankData?.tdBank) ? tdBankData.tdBank : [],
-    'CIBC': (typeof cibcData !== 'undefined' && cibcData?.cibc) ? cibcData.cibc : [],
-    'SCOTIA': (typeof scotiaData !== 'undefined' && scotiaData?.scotia) ? scotiaData.scotia : [],
-    'RBC': (typeof rbcData !== 'undefined' && rbcData?.rbc) ? rbcData.rbc : [],
-    'BMO': (typeof bmoData !== 'undefined' && bmoData?.bmo) ? bmoData.bmo : []
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏦 Bank Info page loaded');
-    
-    // Give data files time to load
-    setTimeout(() => {
-        checkDataAvailability();
-        loadHistory();
-    }, 1500);
-});
-
-function checkDataAvailability() {
-    console.log('🔍 Checking bank data availability...');
-    
-    let foundData = [];
-    Object.keys(bankDataMap).forEach(bank => {
-        const data = bankDataMap[bank];
-        if (data && data.length > 0) {
-            foundData.push(bank);
-            console.log(`✅ ${bank}: ${data.length} branches available`);
-        } else {
-            console.warn(`⚠️ ${bank}: No data found`);
-        }
-    });
-    
-    dataReady = foundData.length > 0;
-    console.log(`📊 Bank Info ready: ${dataReady} (${foundData.length} banks available)`);
-}
-
-// Toggle Bank Selection
-function toggleBankSelection() {
-    hideAllOptions();
-    const bankOptions = document.getElementById('bankOptions');
-    bankOptions.classList.toggle('show');
-}
-
-// Toggle Province Selection
-function toggleProvinceSelection() {
-    if (document.getElementById('provinceBtn').classList.contains('disabled')) return;
-    
-    hideAllOptions();
-    const provinceOptions = document.getElementById('provinceOptions');
-    provinceOptions.classList.toggle('show');
-}
-
-// Toggle City Selection
-function toggleCitySelection() {
-    if (document.getElementById('cityBtn').classList.contains('disabled')) return;
-    
-    hideAllOptions();
-    const cityOptions = document.getElementById('cityOptions');
-    cityOptions.classList.toggle('show');
-}
-
-// Select Bank
+// Update selectBank function to add visual states
 function selectBank(bank) {
     console.log('🏦 Bank selected:', bank);
     
@@ -100,10 +15,15 @@ function selectBank(bank) {
         return;
     }
     
-    // Update button text and states
+    // Update visual states
     document.getElementById('bankText').textContent = bank;
-    document.getElementById('provinceText').textContent = 'PROVINCE';
+    document.getElementById('bankBtn').classList.add('selected');
+    
+    document.getElementById('provinceText').textContent = 'Province';
+    document.getElementById('provinceBtn').classList.remove('selected');
+    
     document.getElementById('cityText').textContent = 'CITY';
+    document.getElementById('cityBtn').classList.remove('selected');
     
     // Reset other sections
     resetProvinceSection();
@@ -118,16 +38,19 @@ function selectBank(bank) {
     console.log(`✅ ${bank} selected with ${currentBankData.length} branches`);
 }
 
-// Select Province
+// Update selectProvince function
 function selectProvince(province) {
     console.log('🗺️ Province selected:', province);
     
     selectedProvince = province;
     selectedCity = null;
     
-    // Update button text
+    // Update visual states
     document.getElementById('provinceText').textContent = provinceNames[province] || province;
+    document.getElementById('provinceBtn').classList.add('selected');
+    
     document.getElementById('cityText').textContent = 'CITY';
+    document.getElementById('cityBtn').classList.remove('selected');
     
     // Reset city section
     resetCitySection();
@@ -139,14 +62,15 @@ function selectProvince(province) {
     populateCities();
 }
 
-// Select City
+// Update selectCity function
 function selectCity(city) {
     console.log('🏙️ City selected:', city);
     
     selectedCity = city;
     
-    // Update button text
+    // Update visual states
     document.getElementById('cityText').textContent = city.toUpperCase();
+    document.getElementById('cityBtn').classList.add('selected');
     
     // Enable generate button
     document.getElementById('generateBtn').classList.remove('disabled');
@@ -155,157 +79,44 @@ function selectCity(city) {
     hideAllOptions();
 }
 
-// Populate Provinces
-function populateProvinces() {
-    if (!currentBankData || currentBankData.length === 0) return;
-    
-    // Get unique provinces from current bank data
-    const provinces = [...new Set(currentBankData.map(branch => branch.state))].sort();
-    
-    const container = document.getElementById('provinceOptionsContent');
-    container.innerHTML = provinces.map(province => 
-        `<label class="option-label">
-            <input type="radio" name="province-choice" value="${province}" onchange="selectProvince('${province}')"> 
-            ${provinceNames[province] || province}
-        </label>`
-    ).join('');
-    
-    // Enable province button
-    document.getElementById('provinceBtn').classList.remove('disabled');
-    
-    console.log(`🗺️ Populated ${provinces.length} provinces for ${selectedBank}`);
-}
-
-// Populate Cities
-function populateCities() {
-    if (!currentBankData || !selectedProvince) return;
-    
-    // Get unique cities for selected bank and province
-    const cities = [...new Set(
-        currentBankData
-            .filter(branch => branch.state === selectedProvince)
-            .map(branch => branch.city)
-    )].sort();
-    
-    const container = document.getElementById('cityOptionsContent');
-    container.innerHTML = cities.map(city => 
-        `<label class="option-label">
-            <input type="radio" name="city-choice" value="${city}" onchange="selectCity('${city}')"> 
-            ${city.toUpperCase()}
-        </label>`
-    ).join('');
-    
-    // Enable city button
-    document.getElementById('cityBtn').classList.remove('disabled');
-    
-    console.log(`🏙️ Populated ${cities.length} cities for ${selectedBank} in ${selectedProvince}`);
-}
-
-// Generate Bank Info
-function generateBankInfo() {
-    console.log('🎯 Generate Bank Info clicked');
-    
-    if (!selectedBank || !selectedProvince || !selectedCity) {
-        console.error('❌ Missing selections:', {selectedBank, selectedProvince, selectedCity});
-        return;
-    }
-    
-    if (!dataReady) {
-        alert('❌ Bank data is not loaded yet. Please wait and try again.');
-        return;
-    }
-    
-    // Find matching branches
-    const matchingBranches = currentBankData.filter(branch => 
-        branch.state === selectedProvince && 
-        branch.city === selectedCity
-    );
-    
-    if (matchingBranches.length === 0) {
-        console.error('❌ No branches found');
-        alert(`No ${selectedBank} branches found in ${selectedCity}, ${provinceNames[selectedProvince]}`);
-        return;
-    }
-    
-    // Select random branch
-    const selectedBranch = matchingBranches[Math.floor(Math.random() * matchingBranches.length)];
-    
-    displayBankInfo(selectedBranch);
-    saveToHistory(selectedBank, selectedCity, selectedProvince, selectedBranch);
-    
-    console.log('✅ Bank info generated successfully');
-}
-
-// Display Bank Information
+// Updated displayBankInfo function - Image 2 Format
 function displayBankInfo(branch) {
     const display = document.getElementById('bankInfoDisplay');
     const bankName = document.getElementById('displayBankName');
+    const accountNumber = document.getElementById('displayAccountNumber');
+    const transitNumber = document.getElementById('displayTransitNumber');
+    const institutionNumber = document.getElementById('displayInstitutionNumber');
     const branchName = document.getElementById('displayBranchName');
     const bankAddress = document.getElementById('displayBankAddress');
     const bankLocation = document.getElementById('displayBankLocation');
-    const accountInfo = document.getElementById('displayAccountInfo');
     
-    // Generate sample account details
-    const accountNumber = Math.floor(1000000 + Math.random() * 9000000).toString();
-    const transitNumber = branch.transitNumber ? branch.transitNumber.split('-')[0] : '00000';
-    const institutionNumber = branch.routingNumber ? branch.routingNumber.substring(0, 3) : '000';
+    // Generate account details
+    const generatedAccount = Math.floor(1000000 + Math.random() * 9000000).toString();
+    const generatedTransit = branch.transitNumber ? branch.transitNumber.split('-')[0] : String(Math.floor(10000 + Math.random() * 90000));
+    const generatedInstitution = branch.routingNumber ? branch.routingNumber.substring(0, 3) : getInstitutionNumber(selectedBank);
     
-    // Update display
+    // Update display - Image 2 Format
     if (bankName) bankName.textContent = getBankFullName(selectedBank);
+    if (accountNumber) accountNumber.textContent = generatedAccount;
+    if (transitNumber) transitNumber.textContent = generatedTransit;
+    if (institutionNumber) institutionNumber.textContent = generatedInstitution;
     if (branchName) branchName.textContent = branch.branch || branch.name || 'Main Branch';
     if (bankAddress) bankAddress.textContent = branch.address || 'Address not available';
     if (bankLocation) bankLocation.textContent = `${branch.city}, ${branch.state}`;
-    if (accountInfo) {
-        accountInfo.innerHTML = `
-            <strong>Sample Account:</strong> ${accountNumber}<br>
-            <strong>Transit:</strong> ${transitNumber} | 
-            <strong>Institution:</strong> ${institutionNumber}
-        `;
-    }
     
     display.style.display = 'block';
     
     console.log('🏦 Bank info displayed for:', branch.branch);
-}
-
-// Get Full Bank Name
-function getBankFullName(bankCode) {
-    const names = {
-        'TD': 'TD CANADA TRUST',
-        'CIBC': 'CANADIAN IMPERIAL BANK OF COMMERCE',
-        'SCOTIA': 'SCOTIABANK',
-        'RBC': 'ROYAL BANK OF CANADA',
-        'BMO': 'BANK OF MONTREAL'
+    
+    // Store generated data for history
+    currentGeneratedData = {
+        account: generatedAccount,
+        transit: generatedTransit,
+        institution: generatedInstitution
     };
-    return names[bankCode] || bankCode;
 }
 
-// Helper Functions
-function hideAllOptions() {
-    document.querySelectorAll('.advance-options').forEach(option => {
-        option.classList.remove('show');
-    });
-}
-
-function resetProvinceSection() {
-    document.getElementById('provinceBtn').classList.add('disabled');
-    document.getElementById('provinceOptionsContent').innerHTML = '';
-}
-
-function resetCitySection() {
-    document.getElementById('cityBtn').classList.add('disabled');
-    document.getElementById('cityOptionsContent').innerHTML = '';
-}
-
-function resetGenerateButton() {
-    document.getElementById('generateBtn').classList.add('disabled');
-}
-
-function hideBankInfo() {
-    document.getElementById('bankInfoDisplay').style.display = 'none';
-}
-
-// Save to History
+// Updated saveToHistory function
 function saveToHistory(bank, city, province, branch) {
     const now = new Date();
     const historyEntry = {
@@ -313,6 +124,9 @@ function saveToHistory(bank, city, province, branch) {
         city: city,
         province: provinceNames[province] || province,
         branch: branch.branch || branch.name || 'Main Branch',
+        account: currentGeneratedData.account,
+        transit: currentGeneratedData.transit,
+        institution: currentGeneratedData.institution,
         date: now.toLocaleDateString(),
         time: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
         timestamp: now.getTime()
@@ -329,18 +143,7 @@ function saveToHistory(bank, city, province, branch) {
     console.log('💾 Saved to history');
 }
 
-// Toggle History
-function toggleHistory() {
-    const modal = document.getElementById('historyModal');
-    if (modal) {
-        modal.classList.toggle('show');
-        if (modal.classList.contains('show')) {
-            loadHistory();
-        }
-    }
-}
-
-// Load History
+// Updated loadHistory function for new columns
 function loadHistory() {
     const tableBody = document.getElementById('historyTableBody');
     const noHistoryMsg = document.getElementById('noHistory');
@@ -364,6 +167,9 @@ function loadHistory() {
                 <td>${entry.city}</td>
                 <td>${entry.province}</td>
                 <td>${entry.branch}</td>
+                <td>${entry.account || 'N/A'}</td>
+                <td>${entry.transit || 'N/A'}</td>
+                <td>${entry.institution || 'N/A'}</td>
                 <td>${entry.date}</td>
                 <td>${entry.time}</td>
             `;
@@ -374,16 +180,17 @@ function loadHistory() {
     console.log(`📚 History loaded: ${bankInfoHistory.length} entries`);
 }
 
-// Close options when clicking outside
-window.onclick = function(event) {
-    if (!event.target.closest('.bank-selection-btn') && !event.target.closest('.advance-options')) {
-        hideAllOptions();
-    }
-    
-    const historyModal = document.getElementById('historyModal');
-    if (event.target === historyModal) {
-        historyModal.classList.remove('show');
-    }
+// Helper function for institution numbers
+function getInstitutionNumber(bank) {
+    const institutionNumbers = {
+        'TD': '004',
+        'CIBC': '010', 
+        'SCOTIA': '002',
+        'RBC': '003',
+        'BMO': '001'
+    };
+    return institutionNumbers[bank] || '000';
 }
 
-console.log('🚀 Bank Info script fully loaded');
+// Add global variable for generated data
+let currentGeneratedData = null;
