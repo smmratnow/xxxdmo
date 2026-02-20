@@ -22,20 +22,25 @@
     <main class="sin-content">
         <!-- Generation Area -->
         <div class="generation-area">
-            <div class="generate-row">
-                <button id="generateBtn" class="generate-btn disabled" onclick="generateBankInfo()">Generate</button>
-                <button id="bankBtn" class="sin-result bank-selection-btn" onclick="toggleBankSelection()">
-                    <span id="bankText">BANK</span> ▶
+            <!-- Selection Row -->
+            <div class="bank-selection-row">
+                <button id="bankBtn" class="bank-selection-btn" onclick="toggleBankSelection()">
+                    <span id="bankText">Bank</span> <span>▶</span>
                 </button>
-                <button id="provinceBtn" class="sin-result bank-selection-btn disabled" onclick="toggleProvinceSelection()">
-                    <span id="provinceText">PROVINCE</span> ▶
+                <button id="provinceBtn" class="bank-selection-btn disabled" onclick="toggleProvinceSelection()">
+                    <span id="provinceText">Province</span> <span>▶</span>
                 </button>
-                <button id="cityBtn" class="sin-result bank-selection-btn disabled" onclick="toggleCitySelection()">
-                    <span id="cityText">CITY</span> ▶
+                <button id="cityBtn" class="bank-selection-btn disabled" onclick="toggleCitySelection()">
+                    <span id="cityText">CITY</span> <span>▶</span>
                 </button>
             </div>
 
-            <!-- Bank Selection -->
+            <!-- Generate Button - Positioned lower -->
+            <div class="generate-button-section">
+                <button id="generateBtn" class="generate-btn disabled" onclick="generateBankInfo()">Generate</button>
+            </div>
+
+            <!-- Bank Selection Options -->
             <div class="advance-section">
                 <div id="bankOptions" class="advance-options">
                     <label class="option-label">
@@ -56,7 +61,7 @@
                 </div>
             </div>
 
-            <!-- Province Selection -->
+            <!-- Province Selection Options -->
             <div class="advance-section">
                 <div id="provinceOptions" class="advance-options">
                     <div id="provinceOptionsContent">
@@ -65,7 +70,7 @@
                 </div>
             </div>
 
-            <!-- City Selection -->
+            <!-- City Selection Options -->
             <div class="advance-section">
                 <div id="cityOptions" class="advance-options">
                     <div id="cityOptionsContent">
@@ -74,14 +79,32 @@
                 </div>
             </div>
 
-            <!-- Bank Info Display -->
+            <!-- Bank Info Display - Image 2 Format -->
             <div id="bankInfoDisplay" class="bank-details" style="display: none;">
-                <div class="bank-info">
-                    <h3 id="displayBankName"></h3>
-                    <p id="displayBranchName"></p>
-                    <p id="displayBankAddress"></p>
-                    <p id="displayBankLocation"></p>
-                    <p id="displayAccountInfo"></p>
+                <div class="bank-info-formatted">
+                    <h3 id="displayBankName" class="bank-title"></h3>
+                    
+                    <div class="info-section">
+                        <div class="info-label">ACCOUNT NUMBER</div>
+                        <div id="displayAccountNumber" class="info-value"></div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-label">TRANSIT NUMBER</div>
+                        <div id="displayTransitNumber" class="info-value"></div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-label">INSTITUTION NUMBER</div>
+                        <div id="displayInstitutionNumber" class="info-value"></div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-label">ADDRESS</div>
+                        <div id="displayBranchName" class="info-value"></div>
+                        <div id="displayBankAddress" class="info-value"></div>
+                        <div id="displayBankLocation" class="info-value"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,6 +124,9 @@
                                 <th>City</th>
                                 <th>Province</th>
                                 <th>Branch</th>
+                                <th>Account</th>
+                                <th>Transit</th>
+                                <th>Institution</th>
                                 <th>Date</th>
                                 <th>Time</th>
                             </tr>
