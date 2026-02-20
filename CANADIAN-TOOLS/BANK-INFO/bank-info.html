@@ -20,39 +20,17 @@
 
     <main class="sin-content">
         <div class="generation-area">
-            
-            <!-- Bank Selection Row -->
-            <div class="bank-selection-row">
-                <button id="bankBtn" class="dropdown-btn" onclick="toggleBankDropdown()">
-                    <span id="bankBtnText">Bank</span> ▶
+            <!-- Bank, Province, City Selection Row -->
+            <div class="bank-info-selection">
+                <button id="bankBtn" class="bank-info-btn" onclick="toggleBankSelection()">
+                    <span id="bankText">BANK</span> ▶
                 </button>
-                <div id="bankDropdown" class="dropdown-options">
-                    <div class="option-item" onclick="selectBank('TD')">TD</div>
-                    <div class="option-item" onclick="selectBank('CIBC')">CIBC</div>
-                    <div class="option-item" onclick="selectBank('SCOTIA')">SCOTIA</div>
-                    <div class="option-item" onclick="selectBank('RBC')">RBC</div>
-                    <div class="option-item" onclick="selectBank('BMO')">BMO</div>
-                </div>
-            </div>
-
-            <!-- Province Selection Row -->
-            <div class="bank-selection-row">
-                <button id="provinceBtn" class="dropdown-btn disabled" onclick="toggleProvinceDropdown()">
-                    <span id="provinceBtnText">Province</span> ▶
+                <button id="provinceBtn" class="bank-info-btn disabled" onclick="toggleProvinceSelection()">
+                    <span id="provinceText">PROVINCE</span> ▶
                 </button>
-                <div id="provinceDropdown" class="dropdown-options">
-                    <!-- Provinces will be populated dynamically -->
-                </div>
-            </div>
-
-            <!-- City Selection Row -->
-            <div class="bank-selection-row">
-                <button id="cityBtn" class="dropdown-btn disabled" onclick="toggleCityDropdown()">
-                    <span id="cityBtnText">CITY</span> ▶
+                <button id="cityBtn" class="bank-info-btn disabled" onclick="toggleCitySelection()">
+                    <span id="cityText">CITY</span> ▶
                 </button>
-                <div id="cityDropdown" class="dropdown-options">
-                    <!-- Cities will be populated dynamically -->
-                </div>
             </div>
 
             <!-- Generate Button -->
@@ -64,9 +42,48 @@
 
             <!-- Bank Info Display -->
             <div id="bankInfoDisplay" class="result-display">
-                <!-- Bank information will be displayed here -->
+                <!-- Results will show here -->
             </div>
+        </div>
 
+        <!-- Bank Selection Options (Hidden by default) -->
+        <div id="bankOptions" class="advance-options">
+            <div class="option-row">
+                <label class="option-checkbox">
+                    <input type="radio" name="bank-choice" value="RBC" onchange="selectBank('RBC')">
+                    <span class="checkmark">RBC</span>
+                </label>
+                <label class="option-checkbox">
+                    <input type="radio" name="bank-choice" value="SCOTIA" onchange="selectBank('SCOTIA')">
+                    <span class="checkmark">SCOTIA</span>
+                </label>
+                <label class="option-checkbox">
+                    <input type="radio" name="bank-choice" value="TD" onchange="selectBank('TD')">
+                    <span class="checkmark">TD</span>
+                </label>
+                <label class="option-checkbox">
+                    <input type="radio" name="bank-choice" value="CIBC" onchange="selectBank('CIBC')">
+                    <span class="checkmark">CIBC</span>
+                </label>
+                <label class="option-checkbox">
+                    <input type="radio" name="bank-choice" value="BMO" onchange="selectBank('BMO')">
+                    <span class="checkmark">BMO</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Province Selection Options (Hidden by default) -->
+        <div id="provinceOptions" class="advance-options">
+            <div id="provinceOptionsContent" class="option-row">
+                <!-- Province options will be populated dynamically -->
+            </div>
+        </div>
+
+        <!-- City Selection Options (Hidden by default) -->
+        <div id="cityOptions" class="advance-options">
+            <div id="cityOptionsContent" class="option-row">
+                <!-- City options will be populated dynamically -->
+            </div>
         </div>
 
         <!-- History Modal -->
