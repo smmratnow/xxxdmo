@@ -1,80 +1,78 @@
-/* Bank Info Page - Specific Styles Only */
-.bank-selection-row {
+/* Bank Info - Layout matching your images */
+.bank-info-container {
     display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.controls-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.display-section {
+    flex: 1;
+    min-width: 400px;
+}
+
+/* Selection Buttons */
+.selection-buttons {
+    display: flex;
     flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-.dropdown-container {
-    position: relative;
+.selection-buttons.disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
-.dropdown-btn {
+.selection-btn {
     background: white;
     border: 2px solid #333;
     padding: 12px 20px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
     border-radius: 4px;
+    transition: all 0.2s;
     min-width: 120px;
-    text-align: left;
-    transition: background-color 0.2s;
 }
 
-.dropdown-btn:hover:not(.disabled) {
+.selection-btn:hover:not(.disabled) {
     background-color: #f0f0f0;
 }
 
-.dropdown-btn.disabled {
+.selection-btn.selected {
+    background-color: #333;
+    color: white;
+}
+
+.selection-btn.disabled {
     background-color: #f5f5f5;
     color: #999;
     cursor: not-allowed;
     border-color: #ddd;
 }
 
-.dropdown-options {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border: 2px solid #333;
-    border-top: none;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+/* Section Headers */
+.selection-section h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    text-transform: uppercase;
 }
 
-.dropdown-options.show {
-    display: block;
-}
-
-.option-item {
-    padding: 12px 15px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-    transition: background-color 0.2s;
-}
-
-.option-item:hover {
-    background-color: #f0f0f0;
-}
-
-.option-item:last-child {
-    border-bottom: none;
-}
-
+/* Generate Button */
 .generate-section {
-    text-align: center;
-    margin-bottom: 30px;
+    margin: 30px 0;
 }
 
-.generate-btn-large {
+.generate-btn {
     background: white;
     border: 3px solid #333;
     padding: 15px 40px;
@@ -86,88 +84,93 @@
     transition: background-color 0.2s;
 }
 
-.generate-btn-large:hover:not(.disabled) {
+.generate-btn:hover:not(.disabled) {
     background-color: #f0f0f0;
 }
 
-.generate-btn-large.disabled {
+.generate-btn.disabled {
     background-color: #f5f5f5;
     color: #999;
     cursor: not-allowed;
     border-color: #ddd;
 }
 
+/* Bank Info Display - Always Large */
 .bank-info-display {
-    max-width: 600px;
-    margin: 0 auto;
+    width: 100%;
+    min-height: 400px;
 }
 
 .bank-info-card {
     background: white;
     border: 3px solid #333;
     border-radius: 8px;
-    padding: 25px;
+    padding: 30px;
     text-align: left;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 100%;
+    min-height: 350px;
 }
 
 .bank-title {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
     border-bottom: 2px solid #333;
     color: #333;
 }
 
 .info-section {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .info-label {
     font-weight: bold;
     font-size: 12px;
     color: #666;
-    margin-bottom: 3px;
+    margin-bottom: 5px;
     letter-spacing: 0.5px;
 }
 
 .info-value {
-    font-size: 16px;
+    font-size: 18px;
     font-family: 'Courier New', monospace;
     color: #333;
     font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .info-address div {
-    font-size: 14px;
+    font-size: 16px;
     color: #333;
-    line-height: 1.4;
-    margin-bottom: 2px;
+    line-height: 1.5;
+    margin-bottom: 3px;
 }
 
 .info-address div:last-child {
     margin-bottom: 0;
 }
 
-/* Responsive design */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .bank-selection-row {
+    .bank-info-container {
         flex-direction: column;
-        align-items: center;
+        padding: 10px;
     }
     
-    .dropdown-btn {
-        min-width: 200px;
+    .selection-buttons {
+        justify-content: center;
     }
     
-    .generate-btn-large {
-        min-width: 250px;
+    .selection-btn {
+        min-width: 100px;
+        font-size: 12px;
     }
     
     .bank-info-card {
-        margin: 0 10px;
         padding: 20px;
+        min-height: 300px;
     }
 }
