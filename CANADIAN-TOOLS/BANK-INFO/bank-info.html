@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="../../sin-styles.css">
 </head>
-<body>
+<body class="account-generator">
     <header class="header">
         <button class="home-btn" onclick="window.location.href='../../index.html'">
             <svg class="home-icon" viewBox="0 0 24 24">
@@ -19,70 +19,69 @@
     </header>
 
     <main class="sin-content">
+        <!-- Generation Area -->
         <div class="generation-area">
-            <!-- Bank, Province, City Selection Row -->
-            <div class="bank-info-selection">
-                <button id="bankBtn" class="bank-info-btn" onclick="toggleBankSelection()">
+            <div class="generate-row">
+                <button id="generateBtn" class="generate-btn disabled" onclick="generateBankInfo()">Generate</button>
+                <button id="bankBtn" class="sin-result bank-selection-btn" onclick="toggleBankSelection()">
                     <span id="bankText">BANK</span> ▶
                 </button>
-                <button id="provinceBtn" class="bank-info-btn disabled" onclick="toggleProvinceSelection()">
+                <button id="provinceBtn" class="sin-result bank-selection-btn disabled" onclick="toggleProvinceSelection()">
                     <span id="provinceText">PROVINCE</span> ▶
                 </button>
-                <button id="cityBtn" class="bank-info-btn disabled" onclick="toggleCitySelection()">
+                <button id="cityBtn" class="sin-result bank-selection-btn disabled" onclick="toggleCitySelection()">
                     <span id="cityText">CITY</span> ▶
                 </button>
             </div>
 
-            <!-- Generate Button -->
-            <div class="generate-section">
-                <button id="generateBtn" class="generate-btn-large disabled" onclick="generateBankInfo()">
-                    Generate ▶
-                </button>
+            <!-- Bank Selection -->
+            <div class="advance-section">
+                <div id="bankOptions" class="advance-options">
+                    <label class="option-label">
+                        <input type="radio" name="bank-choice" value="RBC" onchange="selectBank('RBC')"> RBC
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="bank-choice" value="SCOTIA" onchange="selectBank('SCOTIA')"> SCOTIA
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="bank-choice" value="TD" onchange="selectBank('TD')"> TD
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="bank-choice" value="CIBC" onchange="selectBank('CIBC')"> CIBC
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="bank-choice" value="BMO" onchange="selectBank('BMO')"> BMO
+                    </label>
+                </div>
+            </div>
+
+            <!-- Province Selection -->
+            <div class="advance-section">
+                <div id="provinceOptions" class="advance-options">
+                    <div id="provinceOptionsContent">
+                        <!-- Province options will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- City Selection -->
+            <div class="advance-section">
+                <div id="cityOptions" class="advance-options">
+                    <div id="cityOptionsContent">
+                        <!-- City options will be populated dynamically -->
+                    </div>
+                </div>
             </div>
 
             <!-- Bank Info Display -->
-            <div id="bankInfoDisplay" class="result-display">
-                <!-- Results will show here -->
-            </div>
-        </div>
-
-        <!-- Bank Selection Options (Hidden by default) -->
-        <div id="bankOptions" class="advance-options">
-            <div class="option-row">
-                <label class="option-checkbox">
-                    <input type="radio" name="bank-choice" value="RBC" onchange="selectBank('RBC')">
-                    <span class="checkmark">RBC</span>
-                </label>
-                <label class="option-checkbox">
-                    <input type="radio" name="bank-choice" value="SCOTIA" onchange="selectBank('SCOTIA')">
-                    <span class="checkmark">SCOTIA</span>
-                </label>
-                <label class="option-checkbox">
-                    <input type="radio" name="bank-choice" value="TD" onchange="selectBank('TD')">
-                    <span class="checkmark">TD</span>
-                </label>
-                <label class="option-checkbox">
-                    <input type="radio" name="bank-choice" value="CIBC" onchange="selectBank('CIBC')">
-                    <span class="checkmark">CIBC</span>
-                </label>
-                <label class="option-checkbox">
-                    <input type="radio" name="bank-choice" value="BMO" onchange="selectBank('BMO')">
-                    <span class="checkmark">BMO</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Province Selection Options (Hidden by default) -->
-        <div id="provinceOptions" class="advance-options">
-            <div id="provinceOptionsContent" class="option-row">
-                <!-- Province options will be populated dynamically -->
-            </div>
-        </div>
-
-        <!-- City Selection Options (Hidden by default) -->
-        <div id="cityOptions" class="advance-options">
-            <div id="cityOptionsContent" class="option-row">
-                <!-- City options will be populated dynamically -->
+            <div id="bankInfoDisplay" class="bank-details" style="display: none;">
+                <div class="bank-info">
+                    <h3 id="displayBankName"></h3>
+                    <p id="displayBranchName"></p>
+                    <p id="displayBankAddress"></p>
+                    <p id="displayBankLocation"></p>
+                    <p id="displayAccountInfo"></p>
+                </div>
             </div>
         </div>
 
@@ -94,18 +93,24 @@
                     <button class="close-btn" onclick="toggleHistory()">&times;</button>
                 </div>
                 <div class="history-table">
-                    <table>
+                    <table id="historyTable">
                         <thead>
                             <tr>
                                 <th>Bank</th>
                                 <th>City</th>
                                 <th>Province</th>
+                                <th>Branch</th>
                                 <th>Date</th>
                                 <th>Time</th>
                             </tr>
                         </thead>
-                        <tbody id="historyTableBody"></tbody>
+                        <tbody id="historyTableBody">
+                            <!-- History entries will be populated here -->
+                        </tbody>
                     </table>
+                    <div id="noHistory" class="no-history" style="display: none;">
+                        <p>No searches performed yet.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,11 +118,13 @@
 
     <!-- Load Bank Data Scripts -->
     <script src="../../financial-institutions/major-banks-data/td-bank-data.js"></script>
-    <script src="../../financial-institutions/major-banks-data/scotia-data.js"></script>
     <script src="../../financial-institutions/major-banks-data/rbc-data.js"></script>
     <script src="../../financial-institutions/major-banks-data/bmo-data.js"></script>
+    <script src="../../financial-institutions/major-banks-data/scotia-data.js"></script>
     <script src="../../financial-institutions/major-banks-data/cibc-data.js"></script>
     
+    <!-- Bank Info Script -->
     <script src="bank-info.js"></script>
+
 </body>
 </html>
