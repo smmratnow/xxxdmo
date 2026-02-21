@@ -1,33 +1,21 @@
-/* FIXED: Make the outer container MUCH wider for longer names */
-.generation-area {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    width: 100%;
-    max-width: 800px; /* INCREASED from 600px - Much wider! */
-    background-color: white;
-    border: 3px solid #333;
-    border-radius: 8px;
-    padding: 40px;
-    margin: 0 auto; /* Center the container */
-}
-
-/* FIXED: Bank Selection Row - Now has room for longer names */
+/* FIXED: Bank Selection Row - Perfect Centering & Fixed Positions */
 .bank-selection-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Equal columns */
-    gap: 25px; /* Increased gap for better spacing */
-    margin-bottom: 15px;
+    grid-template-columns: 1fr 1fr 1fr; /* Equal columns for perfect centering */
+    gap: 20px;
+    margin-bottom: 15px; /* Reduced spacing */
     width: 100%;
-    justify-items: center;
+    max-width: 500px; /* Control total width */
+    margin-left: auto;
+    margin-right: auto;
+    justify-items: center; /* Center each button in its column */
 }
 
-/* Generate Button Section */
+/* FIXED: Generate Button Section - Much Closer */
 .generate-button-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 8px; /* REDUCED from 20px - Much closer to result */
     width: 100%;
 }
 
@@ -58,13 +46,13 @@
     cursor: not-allowed;
 }
 
-/* FIXED: Bank Selection Buttons - Wider to fit long names */
+/* FIXED: Bank Selection Buttons - Consistent Fixed Width */
 .bank-selection-btn {
     background-color: transparent;
     color: #333;
     border: 2px solid #333;
-    padding: 12px 15px;
-    font-size: 14px; /* Slightly smaller font for better fit */
+    padding: 12px 20px;
+    font-size: 16px;
     font-weight: normal;
     letter-spacing: 1px;
     cursor: pointer;
@@ -74,10 +62,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 180px; /* INCREASED from 140px - More room! */
-    min-width: 180px;
-    max-width: 180px;
-    text-align: center;
+    width: 140px; /* FIXED WIDTH - Prevents shifting */
+    min-width: 140px;
+    max-width: 140px;
 }
 
 .bank-selection-btn:hover:not(.disabled) {
@@ -103,14 +90,13 @@
 /* Options Display */
 .advance-options {
     display: none;
-    margin-top: 15px;
+    margin-top: 15px; /* Reduced spacing */
     background-color: #f9f9f9;
     border: 2px solid #333;
     border-radius: 5px;
     padding: 20px;
     max-height: 300px;
     overflow-y: auto;
-    width: 100%; /* Use full width of the wider container */
 }
 
 .advance-options.show {
@@ -139,9 +125,9 @@
     accent-color: #4CAF50;
 }
 
-/* Bank Info Display */
+/* FIXED: Bank Info Display - MUCH CLOSER TO GENERATE BUTTON */
 .bank-details {
-    margin-top: 15px;
+    margin-top: 8px; /* REDUCED from 20px - Much closer */
     padding: 25px;
     background-color: #f8f9fa;
     border: 2px solid #333;
@@ -306,40 +292,18 @@
     background: #868e96;
 }
 
-/* Responsive Design */
-@media (max-width: 900px) {
-    .generation-area {
-        max-width: 90%;
-        padding: 30px 20px;
-    }
-    
-    .bank-selection-row {
-        gap: 15px;
-    }
-    
-    .bank-selection-btn {
-        width: 160px;
-        min-width: 160px;
-        max-width: 160px;
-        font-size: 13px;
-    }
-}
-
+/* FIXED: Responsive Design - Maintain Grid Layout */
 @media (max-width: 768px) {
-    .generation-area {
-        max-width: 95%;
-        padding: 25px 15px;
-    }
-    
     .bank-selection-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Stack on mobile */
         gap: 10px;
+        max-width: 300px;
     }
     
     .bank-selection-btn {
-        width: 220px;
-        min-width: 220px;
-        max-width: 220px;
+        width: 200px; /* Wider on mobile */
+        min-width: 200px;
+        max-width: 200px;
         justify-self: center;
     }
     
@@ -365,17 +329,16 @@
 }
 
 @media (max-width: 480px) {
-    .generation-area {
-        max-width: 98%;
-        padding: 20px 10px;
+    .bank-selection-row {
+        max-width: 250px;
     }
     
     .bank-selection-btn {
-        width: 200px;
-        min-width: 200px;
-        max-width: 200px;
-        font-size: 12px;
-        padding: 10px 12px;
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
+        font-size: 14px;
+        padding: 10px 15px;
     }
     
     .bank-details {
