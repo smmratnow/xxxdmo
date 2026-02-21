@@ -20,7 +20,6 @@
     </header>
 
     <main class="sin-content">
-        <!-- Generation Area -->
         <div class="generation-area">
             <!-- Selection Row -->
             <div class="bank-selection-row">
@@ -35,7 +34,7 @@
                 </button>
             </div>
 
-            <!-- Generate Button - Positioned lower with CONSISTENT spacing -->
+            <!-- Generate Button -->
             <div class="generate-button-section">
                 <button id="generateBtn" class="generate-btn disabled" onclick="generateBankInfo()">Generate</button>
             </div>
@@ -64,52 +63,50 @@
             <!-- Province Selection Options -->
             <div class="advance-section">
                 <div id="provinceOptions" class="advance-options">
-                    <div id="provinceOptionsContent">
-                        <!-- Province options will be populated dynamically -->
-                    </div>
+                    <div id="provinceOptionsContent"></div>
                 </div>
             </div>
 
             <!-- City Selection Options -->
             <div class="advance-section">
                 <div id="cityOptions" class="advance-options">
-                    <div id="cityOptionsContent">
-                        <!-- City options will be populated dynamically -->
-                    </div>
+                    <div id="cityOptionsContent"></div>
                 </div>
             </div>
 
-            <!-- FIXED: Bank Info Display - Single Clean Box -->
+            <!-- FIXED: Single Clean Result Container -->
             <div id="bankInfoDisplay" class="bank-details" style="display: none;">
+                <!-- THIS IS THE ONLY CONTAINER - NO NESTED BOXES -->
                 <div class="bank-info-formatted">
-                    <h3 id="displayBankName" class="bank-title"></h3>
+                    <h3 id="displayBankName" class="bank-title">BANK NAME</h3>
                     
                     <div class="info-section">
                         <div class="info-label">ACCOUNT NUMBER</div>
-                        <div id="displayAccountNumber" class="info-value"></div>
+                        <div id="displayAccountNumber" class="info-value">1234567</div>
                     </div>
                     
                     <div class="info-section">
                         <div class="info-label">TRANSIT NUMBER</div>
-                        <div id="displayTransitNumber" class="info-value"></div>
+                        <div id="displayTransitNumber" class="info-value">12345</div>
                     </div>
                     
                     <div class="info-section">
                         <div class="info-label">INSTITUTION NUMBER</div>
-                        <div id="displayInstitutionNumber" class="info-value"></div>
+                        <div id="displayInstitutionNumber" class="info-value">001</div>
                     </div>
                     
                     <div class="info-section">
                         <div class="info-label">ADDRESS</div>
-                        <div id="displayBranchName" class="info-value"></div>
-                        <div id="displayBankAddress" class="info-value"></div>
-                        <div id="displayBankLocation" class="info-value"></div>
+                        <div id="displayBranchName" class="info-value">Branch Name</div>
+                        <div id="displayBankAddress" class="info-value">123 Main Street</div>
+                        <div id="displayBankLocation" class="info-value">City, Province</div>
                     </div>
                 </div>
+                <!-- NO OTHER CONTAINERS -->
             </div>
         </div>
 
-        <!-- FIXED: History Modal - Much Larger -->
+        <!-- History Modal -->
         <div id="historyModal" class="history-modal">
             <div class="history-content">
                 <div class="history-header">
@@ -131,9 +128,7 @@
                                 <th>Time</th>
                             </tr>
                         </thead>
-                        <tbody id="historyTableBody">
-                            <!-- History entries will be populated here -->
-                        </tbody>
+                        <tbody id="historyTableBody"></tbody>
                     </table>
                     <div id="noHistory" class="no-history" style="display: none;">
                         <p>No searches performed yet.</p>
@@ -143,14 +138,12 @@
         </div>
     </main>
 
-    <!-- Load Bank Data Scripts -->
+    <!-- Load Scripts -->
     <script src="../../financial-institutions/major-banks-data/td-bank-data.js"></script>
     <script src="../../financial-institutions/major-banks-data/rbc-data.js"></script>
     <script src="../../financial-institutions/major-banks-data/bmo-data.js"></script>
     <script src="../../financial-institutions/major-banks-data/scotia-data.js"></script>
     <script src="../../financial-institutions/major-banks-data/cibc-data.js"></script>
-    
-    <!-- Bank Info Script -->
     <script src="bank-info.js"></script>
 
 </body>
