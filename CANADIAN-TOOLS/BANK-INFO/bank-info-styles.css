@@ -3,15 +3,15 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 40px; /* More space before Generate button */
+    margin-bottom: 30px; /* Consistent spacing */
     flex-wrap: wrap;
 }
 
-/* Generate Button Section - Positioned Lower */
+/* Generate Button Section - Consistent Spacing */
 .generate-button-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 30px;
+    margin-bottom: 30px; /* SAME spacing as above */
     width: 100%;
 }
 
@@ -35,7 +35,7 @@
     justify-content: space-between !important;
     min-width: 120px !important;
     background-color: white !important;
-    color: #333 !important; /* Default: Black when available */
+    color: #333 !important;
 }
 
 /* Available state - Black text */
@@ -62,78 +62,6 @@
 .bank-selection-btn:hover:not(.disabled) {
     background-color: #f9f9f9 !important;
 }
-
-/* Bank Info Display - Image 2 Format */
-.bank-info-formatted {
-    padding: 30px;
-    background-color: white;
-    border: 2px solid #333;
-    border-radius: 8px;
-    margin-top: 30px;
-}
-
-.bank-title {
-    font-size: 20px;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center;
-    margin: 0 0 25px 0;
-    color: #333;
-    letter-spacing: 1px;
-}
-
-.info-section {
-    margin-bottom: 20px;
-}
-
-.info-label {
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #666;
-    margin-bottom: 5px;
-    letter-spacing: 0.5px;
-}
-
-.info-value {
-    font-size: 16px;
-    font-weight: normal;
-    color: #333;
-    margin-bottom: 3px;
-    font-family: monospace;
-}
-
-/* History table - Add more columns */
-.history-table th,
-.history-table td {
-    padding: 8px 6px;
-    text-align: left;
-    font-size: 12px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .bank-selection-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .bank-selection-btn {
-        width: 100% !important;
-        max-width: 250px !important;
-    }
-    
-    .bank-info-formatted {
-        padding: 20px;
-    }
-    
-    .history-table {
-        overflow-x: auto;
-    }
-}
-
-
 
 /* Options Display */
 .advance-options {
@@ -169,3 +97,200 @@
     margin-right: 10px;
 }
 
+/* FIXED: Bank Info Display - Single Clean Box */
+.bank-details {
+    margin-top: 30px; /* CONSISTENT spacing with generate button */
+}
+
+.bank-info-formatted {
+    padding: 25px;
+    background-color: white;
+    border: 2px solid #333;
+    border-radius: 8px;
+    /* REMOVED: No nested boxes, just one clean container */
+}
+
+.bank-title {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 25px 0;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+.info-section {
+    margin-bottom: 18px;
+}
+
+.info-label {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 16px;
+    font-weight: normal;
+    color: #333;
+    margin-bottom: 3px;
+    font-family: monospace;
+}
+
+/* FIXED: History Modal - Much Larger Size */
+.history-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.history-content {
+    background-color: white;
+    margin: 2% auto; /* Smaller margin = bigger modal */
+    padding: 0;
+    border: 2px solid #333;
+    border-radius: 8px;
+    width: 95%; /* Much wider */
+    height: 90%; /* Much taller */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 2px solid #333;
+    background-color: #f8f8f8;
+    border-radius: 6px 6px 0 0;
+}
+
+.history-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    color: #666;
+}
+
+/* FIXED: History Table - Larger and More Readable */
+.history-table {
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+}
+
+#historyTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px; /* Slightly larger font */
+}
+
+.history-table th,
+.history-table td {
+    padding: 12px 8px; /* More padding for readability */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.history-table th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    border-bottom: 2px solid #333;
+}
+
+.history-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Column widths for better data display */
+.history-table th:nth-child(1),
+.history-table td:nth-child(1) { width: 8%; } /* Bank */
+.history-table th:nth-child(2),
+.history-table td:nth-child(2) { width: 12%; } /* City */
+.history-table th:nth-child(3),
+.history-table td:nth-child(3) { width: 10%; } /* Province */
+.history-table th:nth-child(4),
+.history-table td:nth-child(4) { width: 20%; } /* Branch */
+.history-table th:nth-child(5),
+.history-table td:nth-child(5) { width: 12%; } /* Account */
+.history-table th:nth-child(6),
+.history-table td:nth-child(6) { width: 8%; } /* Transit */
+.history-table th:nth-child(7),
+.history-table td:nth-child(7) { width: 8%; } /* Institution */
+.history-table th:nth-child(8),
+.history-table td:nth-child(8) { width: 10%; } /* Date */
+.history-table th:nth-child(9),
+.history-table td:nth-child(9) { width: 8%; } /* Time */
+
+.no-history {
+    text-align: center;
+    padding: 50px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .bank-selection-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .bank-selection-btn {
+        width: 100% !important;
+        max-width: 250px !important;
+    }
+    
+    .bank-info-formatted {
+        padding: 20px;
+    }
+    
+    .history-content {
+        width: 98%;
+        height: 95%;
+        margin: 1% auto;
+    }
+    
+    .history-table {
+        padding: 10px;
+    }
+    
+    .history-table th,
+    .history-table td {
+        padding: 8px 4px;
+        font-size: 11px;
+    }
+}
