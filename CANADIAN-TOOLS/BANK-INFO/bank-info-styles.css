@@ -25,11 +25,10 @@
 
 /* ELIMINATE ALL SPACING FROM ADVANCE SECTIONS */
 .advance-section {
-    margin: 0 !important;
-    padding: 0 !important;
-    height: 0; /* Collapse when hidden */
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
+
 
 /* WHEN OPTIONS ARE VISIBLE, ALLOW HEIGHT */
 .advance-section .advance-options.show {
@@ -118,24 +117,25 @@
     background-color: white;
 }
 
-/* Options Display - HIDE BY DEFAULT */
+/* Options Display - FIXED VISIBILITY */
 .advance-options {
     display: none;
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0;
+    padding: 0;
     background-color: #f9f9f9;
     border: 2px solid #333;
     border-radius: 5px;
     max-height: 300px;
     overflow-y: auto;
-    width: 100%; /* Use full width of the wider container */
+    width: 100%;
 }
 
 .advance-options.show {
     display: block;
-    margin-top: 15px !important;
-    padding: 20px !important;
+    margin-top: 15px;
+    padding: 20px;
 }
+
 
 .option-label {
     display: block;
