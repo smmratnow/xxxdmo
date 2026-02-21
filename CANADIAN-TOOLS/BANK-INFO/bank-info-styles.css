@@ -3,111 +3,109 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 20px; /* Same as your generate-row */
     flex-wrap: wrap;
 }
 
-/* Generate Button Section */
+/* Generate Button Section - SAME STYLING AS SIN GENERATOR */
 .generate-button-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 25px; /* SAME spacing as above */
+    margin-bottom: 20px; /* CONSISTENT with bank-selection-row */
     width: 100%;
 }
 
 .generate-button-section .generate-btn {
-    width: 100%;
-    max-width: 300px;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    border: 2px solid #333;
-    border-radius: 5px;
-    background-color: white;
+    background-color: transparent;
     color: #333;
+    border: 3px solid #333;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: normal;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 5px;
+    min-width: 150px;
 }
 
 .generate-button-section .generate-btn:hover:not(.disabled) {
-    background-color: #f0f0f0;
+    background-color: #333;
+    color: white;
 }
 
 .generate-button-section .generate-btn.disabled {
+    background-color: #f0f0f0;
     color: #ccc;
-    border-color: #ddd;
+    border-color: #ccc;
     cursor: not-allowed;
-    background-color: #f9f9f9;
 }
 
-/* Bank Selection Button Styling */
+/* Bank Selection Button Styling - MATCHING YOUR ADVANCE-BTN */
 .bank-selection-btn {
-    padding: 12px 20px !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    text-transform: uppercase !important;
-    border: 2px solid #333 !important;
-    border-radius: 5px !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    min-width: 120px !important;
-    background-color: white !important;
-    color: #333 !important;
-}
-
-/* Available state - Black text */
-.bank-selection-btn:not(.disabled):not(.selected) {
-    color: #333 !important;
-    background-color: white !important;
-}
-
-/* Disabled state - Grey text */
-.bank-selection-btn.disabled {
-    color: #ccc !important;
-    background-color: #f0f0f0 !important;
-    border-color: #ddd !important;
-    cursor: not-allowed !important;
-}
-
-/* Selected state - Green text */
-.bank-selection-btn.selected {
-    color: #4CAF50 !important;
-    border-color: #4CAF50 !important;
-    background-color: white !important;
+    background-color: transparent;
+    color: #333;
+    border: 2px solid #333;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 120px;
 }
 
 .bank-selection-btn:hover:not(.disabled) {
-    background-color: #f9f9f9 !important;
+    background-color: #333;
+    color: white;
 }
 
-/* Options Display */
+/* Disabled state - Grey */
+.bank-selection-btn.disabled {
+    color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+}
+
+/* Selected state - Green */
+.bank-selection-btn.selected {
+    color: #4CAF50;
+    border-color: #4CAF50;
+    background-color: white;
+}
+
+/* Options Display - MATCHING YOUR ADVANCE-OPTIONS */
 .advance-options {
     display: none;
-    background-color: white;
+    margin-top: 20px;
+    background-color: #f9f9f9;
     border: 2px solid #333;
-    border-radius: 8px;
+    border-radius: 5px;
     padding: 20px;
-    margin: 10px 0;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .advance-options.show {
-    display: block !important;
+    display: block;
 }
 
 .option-label {
     display: block;
-    padding: 8px 12px;
-    margin: 5px 0;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #333;
     cursor: pointer;
-    transition: background-color 0.2s;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
 }
 
 .option-label:hover {
@@ -115,62 +113,61 @@
 }
 
 .option-label input[type="radio"] {
-    margin-right: 10px;
+    margin-right: 12px;
+    transform: scale(1.2);
+    cursor: pointer;
+    accent-color: #4CAF50;
 }
 
-/* FIXED: Bank Info Display - SINGLE BOX, PROPER THEME, CLOSE TO GENERATE */
+/* FIXED: Bank Info Display - SINGLE BOX, MATCHING YOUR BANK-DETAILS */
 .bank-details {
-    margin-top: 25px; /* Same spacing as other sections */
-}
-
-/* SINGLE CLEAN RESULT BOX - NO NESTED BOXES */
-.bank-info-formatted {
-    background-color: white;
+    margin-top: 20px; /* SAME spacing as other sections */
+    padding: 25px;
+    background-color: #f8f9fa;
     border: 2px solid #333;
     border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    /* NO NESTED DIVS - This is the ONLY container */
+    width: 100%;
+    /* NO NESTED CONTAINERS */
 }
 
-.bank-title {
-    font-size: 24px;
+.bank-info h3 {
+    margin: 0 0 15px 0;
+    font-size: 20px;
+    color: #333;
     font-weight: bold;
     text-transform: uppercase;
+    letter-spacing: 1px;
     text-align: center;
-    margin: 0 0 30px 0;
-    color: #333;
-    letter-spacing: 2px;
-    border-bottom: 2px solid #333;
     padding-bottom: 15px;
+    border-bottom: 2px solid #ddd;
 }
 
 .info-section {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .info-label {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     text-transform: uppercase;
     color: #666;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
 }
 
 .info-value {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 16px;
     color: #333;
-    margin-bottom: 5px;
-    font-family: 'Courier New', monospace;
-    background-color: #f8f8f8;
+    margin-bottom: 3px;
+    font-family: monospace;
+    font-weight: bold;
+    background-color: #f9f9f9;
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
-/* History Modal - Perfect Size */
+/* FIXED: History Modal - EXACT COPY OF YOUR SIN-STYLES.CSS */
 .history-modal {
     display: none;
     position: fixed;
@@ -179,46 +176,47 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.history-modal.show {
+    display: block;
 }
 
 .history-content {
     background-color: white;
-    margin: 2% auto;
+    margin: 5% auto;
     padding: 0;
-    border: 2px solid #333;
     border-radius: 8px;
-    width: 95%;
-    height: 90%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
+    width: 90%;
+    max-width: 900px; /* Slightly wider for more columns */
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .history-header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 30px;
-    border-bottom: 2px solid #333;
-    background-color: #f8f8f8;
-    border-radius: 6px 6px 0 0;
 }
 
 .history-header h3 {
     margin: 0;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .close-btn {
     background: none;
     border: none;
-    font-size: 28px;
-    font-weight: bold;
+    color: white;
+    font-size: 24px;
     cursor: pointer;
-    color: #333;
-    padding: 0;
     width: 30px;
     height: 30px;
     display: flex;
@@ -227,79 +225,69 @@
 }
 
 .close-btn:hover {
-    color: #666;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
 }
 
-/* History Table */
 .history-table {
-    flex: 1;
-    overflow: auto;
+    max-height: 400px;
+    overflow-y: auto;
     padding: 20px;
 }
 
-#historyTable {
+.history-table table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
-}
-
-.history-table th,
-.history-table td {
-    padding: 12px 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    white-space: nowrap;
 }
 
 .history-table th {
-    background-color: #f8f8f8;
+    background-color: #f5f5f5;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
     font-weight: bold;
-    position: sticky;
-    top: 0;
-    border-bottom: 2px solid #333;
+    color: #333;
+    font-size: 14px;
+}
+
+.history-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    color: #666;
+    font-size: 14px;
 }
 
 .history-table tr:hover {
     background-color: #f9f9f9;
 }
 
-/* Column widths */
-.history-table th:nth-child(1),
-.history-table td:nth-child(1) { width: 8%; }
-.history-table th:nth-child(2),
-.history-table td:nth-child(2) { width: 12%; }
-.history-table th:nth-child(3),
-.history-table td:nth-child(3) { width: 10%; }
-.history-table th:nth-child(4),
-.history-table td:nth-child(4) { width: 20%; }
-.history-table th:nth-child(5),
-.history-table td:nth-child(5) { width: 12%; }
-.history-table th:nth-child(6),
-.history-table td:nth-child(6) { width: 8%; }
-.history-table th:nth-child(7),
-.history-table td:nth-child(7) { width: 8%; }
-.history-table th:nth-child(8),
-.history-table td:nth-child(8) { width: 10%; }
-.history-table th:nth-child(9),
-.history-table td:nth-child(9) { width: 8%; }
-
 .no-history {
     text-align: center;
-    padding: 50px;
+    padding: 40px;
     color: #666;
     font-style: italic;
 }
 
-/* Remove any extra bottom margins/padding */
-.sin-content {
-    padding-bottom: 20px !important;
+/* Custom scrollbar styles - COPIED FROM YOUR SIN-STYLES */
+.advance-options::-webkit-scrollbar {
+    width: 8px;
 }
 
-.generation-area {
-    margin-bottom: 0 !important;
+.advance-options::-webkit-scrollbar-track {
+    background: #e9ecef;
+    border-radius: 4px;
 }
 
-/* Responsive Design */
+.advance-options::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 4px;
+}
+
+.advance-options::-webkit-scrollbar-thumb:hover {
+    background: #868e96;
+}
+
+/* Responsive Design - MATCHING YOUR PATTERNS */
 @media (max-width: 768px) {
     .bank-selection-row {
         flex-direction: column;
@@ -308,27 +296,37 @@
     }
     
     .bank-selection-btn {
-        width: 100% !important;
-        max-width: 250px !important;
+        width: 100%;
+        max-width: 250px;
     }
     
-    .bank-info-formatted {
+    .bank-details {
         padding: 20px;
     }
     
     .history-content {
-        width: 98%;
-        height: 95%;
-        margin: 1% auto;
+        width: 95%;
+        margin: 2% auto;
+        max-height: 90vh;
     }
     
     .history-table {
-        padding: 10px;
+        padding: 15px;
     }
     
     .history-table th,
     .history-table td {
-        padding: 8px 4px;
-        font-size: 11px;
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bank-details {
+        padding: 15px;
+    }
+    
+    .history-content {
+        width: 95%;
     }
 }
