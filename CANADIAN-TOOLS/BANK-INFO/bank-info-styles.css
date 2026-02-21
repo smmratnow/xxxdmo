@@ -27,7 +27,7 @@
 .generate-button-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 0px;                                      /* THIS ONE WAS 15PX */
+    margin-bottom: 0px;                                                                                              /* THIS ONE WAS 15PX */
     width: 100%;
 }
 
@@ -139,9 +139,41 @@
     accent-color: #4CAF50;
 }
 
+
+
+/* FORCE ZERO SPACING - Generate Button Section */
+.generate-button-section {
+    display: flex;
+    justify-content: center;
+    margin: 0 !important;          /* Zero all margins */
+    margin-bottom: 0 !important;   /* Specifically zero bottom */
+    padding: 0 !important;         /* Zero all padding */
+    width: 100%;
+}
+
+/* FORCE ZERO SPACING - Generate Button Itself */
+#generateBtn {
+    margin: 0 !important;          /* Zero all button margins */
+    margin-bottom: 0 !important;   /* Specifically zero bottom */
+}
+
+/* FORCE ZERO SPACING - Result Box */
+.bank-details {
+    margin: 0 !important;          /* Zero all margins */
+    margin-top: 0 !important;      /* Specifically zero top */
+    padding: 25px;                 /* Keep internal padding only */
+    background-color: #f8f9fa;
+    border: 2px solid #333;
+    border-radius: 8px;
+    width: 100%;
+}
+
+
+
+
 /* Bank Info Display */
 .bank-details {
-    margin-top: 0px;                                      /* THIS ONE WAS 15PX */
+    margin-top: 0px;                                                                                              /* THIS ONE WAS 15PX */
     padding: 25px;
     background-color: #f8f9fa;
     border: 2px solid #333;
