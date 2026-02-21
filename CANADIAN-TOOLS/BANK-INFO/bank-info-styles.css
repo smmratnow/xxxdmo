@@ -57,7 +57,7 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    border-radius: 5px;
+    border-radius: 3px;
     min-width: 300px;
     margin: 0 !important;          /* Zero all button margins */
     margin-bottom: 0 !important;   /* Specifically zero bottom */
