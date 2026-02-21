@@ -23,11 +23,27 @@
     justify-items: center;
 }
 
-/* Generate Button Section */
+/* ELIMINATE ALL SPACING FROM ADVANCE SECTIONS */
+.advance-section {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0; /* Collapse when hidden */
+    overflow: hidden;
+}
+
+/* WHEN OPTIONS ARE VISIBLE, ALLOW HEIGHT */
+.advance-section .advance-options.show {
+    height: auto;
+    margin-bottom: 10px; /* Small gap only when visible */
+}
+
+/* FORCE ZERO SPACING - Generate Button Section */
 .generate-button-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 0px;                                                                                              /* THIS ONE WAS 15PX */
+    margin: 0 !important;          /* Zero all margins */
+    margin-bottom: 0 !important;   /* Specifically zero bottom */
+    padding: 0 !important;         /* Zero all padding */
     width: 100%;
 }
 
@@ -44,6 +60,8 @@
     letter-spacing: 1px;
     border-radius: 5px;
     min-width: 150px;
+    margin: 0 !important;          /* Zero all button margins */
+    margin-bottom: 0 !important;   /* Specifically zero bottom */
 }
 
 .generate-button-section .generate-btn:hover:not(.disabled) {
@@ -100,14 +118,14 @@
     background-color: white;
 }
 
-/* Options Display */
+/* Options Display - HIDE BY DEFAULT */
 .advance-options {
     display: none;
-    margin-top: 15px;
+    margin: 0 !important;
+    padding: 0 !important;
     background-color: #f9f9f9;
     border: 2px solid #333;
     border-radius: 5px;
-    padding: 20px;
     max-height: 300px;
     overflow-y: auto;
     width: 100%; /* Use full width of the wider container */
@@ -115,6 +133,8 @@
 
 .advance-options.show {
     display: block;
+    margin-top: 15px !important;
+    padding: 20px !important;
 }
 
 .option-label {
@@ -139,42 +159,11 @@
     accent-color: #4CAF50;
 }
 
-
-
-/* FORCE ZERO SPACING - Generate Button Section */
-.generate-button-section {
-    display: flex;
-    justify-content: center;
-    margin: 0 !important;          /* Zero all margins */
-    margin-bottom: 0 !important;   /* Specifically zero bottom */
-    padding: 0 !important;         /* Zero all padding */
-    width: 100%;
-}
-
-/* FORCE ZERO SPACING - Generate Button Itself */
-#generateBtn {
-    margin: 0 !important;          /* Zero all button margins */
-    margin-bottom: 0 !important;   /* Specifically zero bottom */
-}
-
 /* FORCE ZERO SPACING - Result Box */
 .bank-details {
     margin: 0 !important;          /* Zero all margins */
     margin-top: 0 !important;      /* Specifically zero top */
     padding: 25px;                 /* Keep internal padding only */
-    background-color: #f8f9fa;
-    border: 2px solid #333;
-    border-radius: 8px;
-    width: 100%;
-}
-
-
-
-
-/* Bank Info Display */
-.bank-details {
-    margin-top: 0px;                                                                                              /* THIS ONE WAS 15PX */
-    padding: 25px;
     background-color: #f8f9fa;
     border: 2px solid #333;
     border-radius: 8px;
