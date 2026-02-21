@@ -16,7 +16,7 @@ const provinceNames = {
     'SK': 'SASKATCHEWAN', 'YT': 'YUKON'
 };
 
-// Bank Data Mapping - Wait for data to load
+// Bank Data Mapping
 let bankDataMap = {};
 
 // Initialize when DOM is ready
@@ -27,13 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         initializeBankData();
         loadHistory();
-    }, 1000);
+    }, 1500);
 });
 
 function initializeBankData() {
     console.log('🔄 Initializing bank data...');
     
-    // Check what data is available
+    // Check what data is available and log structure
     console.log('🔍 Checking available data:');
     console.log('- tdBankData:', typeof window.tdBankData, window.tdBankData);
     console.log('- rbcData:', typeof window.rbcData, window.rbcData);
@@ -41,12 +41,13 @@ function initializeBankData() {
     console.log('- scotiaData:', typeof window.scotiaData, window.scotiaData);
     console.log('- cibcData:', typeof window.cibcData, window.cibcData);
     
+    // Map bank data - handle different data structures
     bankDataMap = {
-        'TD': window.tdBankData || [],
-        'RBC': window.rbcData || [],
-        'BMO': window.bmoData || [],
-        'SCOTIA': window.scotiaData || [],
-        'CIBC': window.cibcData || []
+        'TD': getBankDataArray(window.tdBankData),
+        'RBC': getBankDataArray(window.rbcData),
+        'BMO': getBankDataArray(window.bmoData),
+        'SCOTIA': getBankDataArray(window.scotiaData),
+        'CIBC': getBankDataArray(window.cibcData)
     };
     
     let totalBranches = 0;
@@ -55,6 +56,10 @@ function initializeBankData() {
         if (data && data.length > 0) {
             totalBranches += data.length;
             console.log(`✅ ${bank}: ${data.length} branches loaded`);
+            // Log sample record structure
+            if (data[0]) {
+                console.log(`📊 ${bank} sample record:`, data[0]);
+            }
         } else {
             console.warn(`⚠️ ${bank}: No data available`);
         }
@@ -63,7 +68,31 @@ function initializeBankData() {
     console.log(`📊 Total branches available: ${totalBranches}`);
 }
 
-// TOGGLE BANK SELECTION - Main function
+// Helper function to extract bank data array from different structures
+function getBankDataArray(dataObj) {
+    if (!dataObj) return [];
+    
+    // If it's already an array
+    if (Array.isArray(dataObj)) return dataObj;
+    
+    // Check common property names
+    if (dataObj.tdBank && Array.isArray(dataObj.tdBank)) return dataObj.tdBank;
+    if (dataObj.rbc && Array.isArray(dataObj.rbc)) return dataObj.rbc;
+    if (dataObj.bmo && Array.isArray(dataObj.bmo)) return dataObj.bmo;
+    if (dataObj.scotia && Array.isArray(dataObj.scotia)) return dataObj.scotia;
+    if (dataObj.cibc && Array.isArray(dataObj.cibc)) return dataObj.cibc;
+    
+    // If it has a data property
+    if (dataObj.data && Array.isArray(dataObj.data)) return dataObj.data;
+    
+    // Get first array property found
+    const firstArrayKey = Object.keys(dataObj).find(key => Array.isArray(dataObj[key]));
+    if (firstArrayKey) return dataObj[firstArrayKey];
+    
+    return [];
+}
+
+// TOGGLE BANK SELECTION
 function toggleBankSelection() {
     console.log('🏦 toggleBankSelection() called');
     
@@ -73,10 +102,8 @@ function toggleBankSelection() {
         return;
     }
     
-    // Hide other options first
     hideAllOptions();
     
-    // Toggle bank options
     const isVisible = bankOptions.classList.contains('show');
     
     if (isVisible) {
@@ -97,7 +124,11 @@ function selectBank(bank) {
     selectedCity = null;
     currentBankData = bankDataMap[bank];
     
-    if (!currentBankData || currentBankData.length === 0) {
+    console.log('📊 Current bank data:', currentBankData);
+    console.log('📊 Data length:', currentBankData ? currentBankData.length : 'null');
+    console.log('📊 Data is array:', Array.isArray(currentBankData));
+    
+    if (!currentBankData || !Array.isArray(currentBankData) || currentBankData.length === 0) {
         console.error('❌ No data available for bank:', bank);
         alert(`No data available for ${bank}. Please try refreshing the page.`);
         return;
@@ -203,30 +234,57 @@ function toggleProvinceSelection() {
     }
 }
 
-// POPULATE PROVINCES
+// POPULATE PROVINCES - FIXED VERSION
 function populateProvinces() {
-    if (!currentBankData) return;
+    console.log('🗺️ populateProvinces() called');
+    console.log('📊 Current bank data:', currentBankData);
+    console.log('📊 Is array:', Array.isArray(currentBankData));
+    
+    if (!currentBankData || !Array.isArray(currentBankData)) {
+        console.error('❌ currentBankData is not an array or is null');
+        return;
+    }
     
     const provincesSet = new Set();
-    currentBankData.forEach(branch => {
-        if (branch.state) {
-            provincesSet.add(branch.state);
-        }
-    });
+    
+    try {
+        currentBankData.forEach((branch, index) => {
+            console.log(`🔍 Checking branch ${index}:`, branch);
+            
+            // Check different possible field names for province/state
+            const province = branch.state || branch.province || branch.prov;
+            
+            if (province) {
+                provincesSet.add(province);
+                console.log(`✅ Found province: ${province}`);
+            } else {
+                console.warn(`⚠️ No province found in branch:`, branch);
+            }
+        });
+    } catch (error) {
+        console.error('❌ Error in forEach:', error);
+        return;
+    }
     
     const provinces = Array.from(provincesSet).sort();
+    console.log('🗺️ Final provinces list:', provinces);
+    
     const provinceContent = document.getElementById('provinceOptionsContent');
     
     if (provinceContent) {
-        provinceContent.innerHTML = provinces.map(province => 
-            `<label class="option-label">
-                <input type="radio" name="province-choice" value="${province}" onchange="selectProvince('${province}')">
-                ${provinceNames[province] || province}
-            </label>`
-        ).join('');
+        if (provinces.length === 0) {
+            provinceContent.innerHTML = '<p>No provinces found in data</p>';
+        } else {
+            provinceContent.innerHTML = provinces.map(province => 
+                `<label class="option-label">
+                    <input type="radio" name="province-choice" value="${province}" onchange="selectProvince('${province}')">
+                    ${provinceNames[province] || province}
+                </label>`
+            ).join('');
+        }
     }
     
-    console.log('🗺️ Populated provinces:', provinces);
+    console.log('✅ Populated provinces:', provinces);
 }
 
 // SELECT PROVINCE
@@ -280,30 +338,50 @@ function toggleCitySelection() {
     }
 }
 
-// POPULATE CITIES
+// POPULATE CITIES - FIXED VERSION
 function populateCities() {
-    if (!currentBankData || !selectedProvince) return;
+    console.log('🏙️ populateCities() called');
+    
+    if (!currentBankData || !Array.isArray(currentBankData) || !selectedProvince) {
+        console.error('❌ Missing data for populating cities');
+        return;
+    }
     
     const citiesSet = new Set();
-    currentBankData.forEach(branch => {
-        if (branch.state === selectedProvince && branch.city) {
-            citiesSet.add(branch.city);
-        }
-    });
+    
+    try {
+        currentBankData.forEach(branch => {
+            const branchProvince = branch.state || branch.province || branch.prov;
+            const branchCity = branch.city || branch.cityName;
+            
+            if (branchProvince === selectedProvince && branchCity) {
+                citiesSet.add(branchCity);
+            }
+        });
+    } catch (error) {
+        console.error('❌ Error in cities forEach:', error);
+        return;
+    }
     
     const cities = Array.from(citiesSet).sort();
+    console.log('🏙️ Final cities list:', cities);
+    
     const cityContent = document.getElementById('cityOptionsContent');
     
     if (cityContent) {
-        cityContent.innerHTML = cities.map(city => 
-            `<label class="option-label">
-                <input type="radio" name="city-choice" value="${city}" onchange="selectCity('${city}')">
-                ${city.toUpperCase()}
-            </label>`
-        ).join('');
+        if (cities.length === 0) {
+            cityContent.innerHTML = '<p>No cities found for selected province</p>';
+        } else {
+            cityContent.innerHTML = cities.map(city => 
+                `<label class="option-label">
+                    <input type="radio" name="city-choice" value="${city}" onchange="selectCity('${city}')">
+                    ${city.toUpperCase()}
+                </label>`
+            ).join('');
+        }
     }
     
-    console.log('🏙️ Populated cities:', cities);
+    console.log('✅ Populated cities:', cities);
 }
 
 // SELECT CITY
@@ -339,17 +417,23 @@ function generateBankInfo() {
     }
     
     // Find matching branches
-    const matchingBranches = currentBankData.filter(branch => 
-        branch.state === selectedProvince && branch.city === selectedCity
-    );
+    const matchingBranches = currentBankData.filter(branch => {
+        const branchProvince = branch.state || branch.province || branch.prov;
+        const branchCity = branch.city || branch.cityName;
+        return branchProvince === selectedProvince && branchCity === selectedCity;
+    });
+    
+    console.log('🔍 Matching branches found:', matchingBranches.length);
     
     if (matchingBranches.length === 0) {
         console.error('❌ No branches found for selection');
+        alert('No branches found for the selected combination. Please try different selections.');
         return;
     }
     
     // Pick random branch
     const branch = matchingBranches[Math.floor(Math.random() * matchingBranches.length)];
+    console.log('🎯 Selected branch:', branch);
     
     displayBankInfo(branch);
     saveToHistory(selectedBank, selectedCity, selectedProvince, branch);
@@ -378,9 +462,12 @@ function displayBankInfo(branch) {
         document.getElementById('displayAccountNumber').textContent = generatedAccount;
         document.getElementById('displayTransitNumber').textContent = generatedTransit;
         document.getElementById('displayInstitutionNumber').textContent = generatedInstitution;
-        document.getElementById('displayBranchName').textContent = branch.branch || 'Main Branch';
+        document.getElementById('displayBranchName').textContent = branch.branch || branch.name || 'Main Branch';
         document.getElementById('displayBankAddress').textContent = branch.address || 'Address not available';
-        document.getElementById('displayBankLocation').textContent = `${branch.city}, ${branch.state}`;
+        
+        const branchCity = branch.city || branch.cityName || 'Unknown City';
+        const branchProvince = branch.state || branch.province || branch.prov || 'Unknown Province';
+        document.getElementById('displayBankLocation').textContent = `${branchCity}, ${branchProvince}`;
         
         display.style.display = 'block';
     }
@@ -417,7 +504,7 @@ function saveToHistory(bank, city, province, branch) {
         bank: bank,
         city: city,
         province: provinceNames[province] || province,
-        branch: branch.branch || 'Main Branch',
+        branch: branch.branch || branch.name || 'Main Branch',
         account: currentGeneratedData.account,
         transit: currentGeneratedData.transit,
         institution: currentGeneratedData.institution,
