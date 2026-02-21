@@ -27,7 +27,7 @@
 .generate-button-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 5px;                                      /* THIS ONE WAS 15PX */
+    margin-bottom: 1px;                                      /* THIS ONE WAS 15PX */
     width: 100%;
 }
 
@@ -141,7 +141,7 @@
 
 /* Bank Info Display */
 .bank-details {
-    margin-top: 5px;                                      /* THIS ONE WAS 15PX */
+    margin-top: 1px;                                      /* THIS ONE WAS 15PX */
     padding: 25px;
     background-color: #f8f9fa;
     border: 2px solid #333;
