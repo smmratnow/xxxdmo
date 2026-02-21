@@ -34,7 +34,7 @@
                 </button>
             </div>
 
-            <!-- Generate Button -->
+            <!-- Generate Button - SAME SPACING AS OTHER SECTIONS -->
             <div class="generate-button-section">
                 <button id="generateBtn" class="generate-btn disabled" onclick="generateBankInfo()">Generate</button>
             </div>
@@ -74,11 +74,10 @@
                 </div>
             </div>
 
-            <!-- FIXED: Single Clean Result Container -->
+            <!-- FIXED: Single Result Container - NO NESTED DIVS -->
             <div id="bankInfoDisplay" class="bank-details" style="display: none;">
-                <!-- THIS IS THE ONLY CONTAINER - NO NESTED BOXES -->
-                <div class="bank-info-formatted">
-                    <h3 id="displayBankName" class="bank-title">BANK NAME</h3>
+                <div class="bank-info">
+                    <h3 id="displayBankName">BANK NAME</h3>
                     
                     <div class="info-section">
                         <div class="info-label">ACCOUNT NUMBER</div>
@@ -102,11 +101,10 @@
                         <div id="displayBankLocation" class="info-value">City, Province</div>
                     </div>
                 </div>
-                <!-- NO OTHER CONTAINERS -->
             </div>
         </div>
 
-        <!-- History Modal -->
+        <!-- History Modal - EXACT COPY FROM SIN-STYLES -->
         <div id="historyModal" class="history-modal">
             <div class="history-content">
                 <div class="history-header">
