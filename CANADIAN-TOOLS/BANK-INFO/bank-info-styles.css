@@ -3,24 +3,45 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 30px; /* Consistent spacing */
+    margin-bottom: 25px;
     flex-wrap: wrap;
 }
 
-/* Generate Button Section - Consistent Spacing */
+/* Generate Button Section */
 .generate-button-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 30px; /* SAME spacing as above */
+    margin-bottom: 25px; /* SAME spacing as above */
     width: 100%;
 }
 
 .generate-button-section .generate-btn {
     width: 100%;
     max-width: 300px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 2px solid #333;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* Bank Selection Button Styling - Color States */
+.generate-button-section .generate-btn:hover:not(.disabled) {
+    background-color: #f0f0f0;
+}
+
+.generate-button-section .generate-btn.disabled {
+    color: #ccc;
+    border-color: #ddd;
+    cursor: not-allowed;
+    background-color: #f9f9f9;
+}
+
+/* Bank Selection Button Styling */
 .bank-selection-btn {
     padding: 12px 20px !important;
     font-size: 16px !important;
@@ -97,51 +118,59 @@
     margin-right: 10px;
 }
 
-/* FIXED: Bank Info Display - Single Clean Box */
+/* FIXED: Bank Info Display - SINGLE BOX, PROPER THEME, CLOSE TO GENERATE */
 .bank-details {
-    margin-top: 30px; /* CONSISTENT spacing with generate button */
+    margin-top: 25px; /* Same spacing as other sections */
 }
 
+/* SINGLE CLEAN RESULT BOX - NO NESTED BOXES */
 .bank-info-formatted {
-    padding: 25px;
     background-color: white;
     border: 2px solid #333;
     border-radius: 8px;
-    /* REMOVED: No nested boxes, just one clean container */
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    /* NO NESTED DIVS - This is the ONLY container */
 }
 
 .bank-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     text-transform: uppercase;
     text-align: center;
-    margin: 0 0 25px 0;
+    margin: 0 0 30px 0;
     color: #333;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 15px;
 }
 
 .info-section {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .info-label {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     text-transform: uppercase;
     color: #666;
-    margin-bottom: 5px;
-    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
 }
 
 .info-value {
-    font-size: 16px;
-    font-weight: normal;
+    font-size: 18px;
+    font-weight: bold;
     color: #333;
-    margin-bottom: 3px;
-    font-family: monospace;
+    margin-bottom: 5px;
+    font-family: 'Courier New', monospace;
+    background-color: #f8f8f8;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
-/* FIXED: History Modal - Much Larger Size */
+/* History Modal - Perfect Size */
 .history-modal {
     display: none;
     position: fixed;
@@ -155,12 +184,12 @@
 
 .history-content {
     background-color: white;
-    margin: 2% auto; /* Smaller margin = bigger modal */
+    margin: 2% auto;
     padding: 0;
     border: 2px solid #333;
     border-radius: 8px;
-    width: 95%; /* Much wider */
-    height: 90%; /* Much taller */
+    width: 95%;
+    height: 90%;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -201,7 +230,7 @@
     color: #666;
 }
 
-/* FIXED: History Table - Larger and More Readable */
+/* History Table */
 .history-table {
     flex: 1;
     overflow: auto;
@@ -211,15 +240,15 @@
 #historyTable {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px; /* Slightly larger font */
+    font-size: 13px;
 }
 
 .history-table th,
 .history-table td {
-    padding: 12px 8px; /* More padding for readability */
+    padding: 12px 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: nowrap;
 }
 
 .history-table th {
@@ -234,31 +263,40 @@
     background-color: #f9f9f9;
 }
 
-/* Column widths for better data display */
+/* Column widths */
 .history-table th:nth-child(1),
-.history-table td:nth-child(1) { width: 8%; } /* Bank */
+.history-table td:nth-child(1) { width: 8%; }
 .history-table th:nth-child(2),
-.history-table td:nth-child(2) { width: 12%; } /* City */
+.history-table td:nth-child(2) { width: 12%; }
 .history-table th:nth-child(3),
-.history-table td:nth-child(3) { width: 10%; } /* Province */
+.history-table td:nth-child(3) { width: 10%; }
 .history-table th:nth-child(4),
-.history-table td:nth-child(4) { width: 20%; } /* Branch */
+.history-table td:nth-child(4) { width: 20%; }
 .history-table th:nth-child(5),
-.history-table td:nth-child(5) { width: 12%; } /* Account */
+.history-table td:nth-child(5) { width: 12%; }
 .history-table th:nth-child(6),
-.history-table td:nth-child(6) { width: 8%; } /* Transit */
+.history-table td:nth-child(6) { width: 8%; }
 .history-table th:nth-child(7),
-.history-table td:nth-child(7) { width: 8%; } /* Institution */
+.history-table td:nth-child(7) { width: 8%; }
 .history-table th:nth-child(8),
-.history-table td:nth-child(8) { width: 10%; } /* Date */
+.history-table td:nth-child(8) { width: 10%; }
 .history-table th:nth-child(9),
-.history-table td:nth-child(9) { width: 8%; } /* Time */
+.history-table td:nth-child(9) { width: 8%; }
 
 .no-history {
     text-align: center;
     padding: 50px;
     color: #666;
     font-style: italic;
+}
+
+/* Remove any extra bottom margins/padding */
+.sin-content {
+    padding-bottom: 20px !important;
+}
+
+.generation-area {
+    margin-bottom: 0 !important;
 }
 
 /* Responsive Design */
