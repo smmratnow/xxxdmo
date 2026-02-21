@@ -503,9 +503,8 @@ function saveToHistory(bank, city, province, branch) {
     const historyEntry = {
         bank: bank,
         city: city,
-        province: provinceNames[province] || province,
-        branch: branch.branch || branch.name || 'Main Branch',
-        account: currentGeneratedData.account,
+        province: provinceNames[province] || province,               /*   branch: branch.branch || branch.name || 'Main Branch',    */
+        account: currentGeneratedData.account,                                     /* <td>${entry.branch}</td>             THIS AT LINE 559  */
         transit: currentGeneratedData.transit,
         institution: currentGeneratedData.institution,
         date: now.toLocaleDateString(),
@@ -557,8 +556,7 @@ function loadHistory() {
             row.innerHTML = `
                 <td>${entry.bank}</td>
                 <td>${entry.city}</td>
-                <td>${entry.province}</td>
-                <td>${entry.branch}</td>
+                <td>${entry.province}</td>                                  
                 <td>${entry.account || 'N/A'}</td>
                 <td>${entry.transit || 'N/A'}</td>
                 <td>${entry.institution || 'N/A'}</td>
