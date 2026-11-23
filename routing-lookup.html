@@ -4,15 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Routing Lookup</title>
-
 <link rel="stylesheet" href="styles.css">
 
 <style>
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 .routing-content {
     background: #f5f5f5;
@@ -54,8 +50,8 @@
     border-radius: 5px;
     margin-bottom: 20px;
     outline: none;
-    color: #333;
     background: white;
+    color: #333;
 }
 
 .routing-input:focus {
@@ -71,7 +67,7 @@
     border-radius: 5px;
     font-size: 17px;
     cursor: pointer;
-    transition: background .2s, color .2s;
+    transition: .2s;
 }
 
 .routing-button:hover:not(:disabled) {
@@ -90,9 +86,7 @@
     line-height: 1.6;
 }
 
-.routing-results:empty {
-    display: none;
-}
+.routing-results:empty { display: none; }
 
 .routing-card {
     background: #f8f9fa;
@@ -136,9 +130,7 @@
     color: #666;
 }
 
-.routing-error {
-    color: #c62828;
-}
+.routing-error { color: #c62828; }
 
 .routing-result-count {
     margin-bottom: 18px;
@@ -147,11 +139,9 @@
     text-align: center;
 }
 
-.routing-load-more {
-    margin-top: 10px;
-}
+.routing-load-more { margin-top: 10px; }
 
-/* HISTORY BUTTON */
+/* HEADER HISTORY BUTTON */
 
 .routing-history-btn {
     background: none;
@@ -164,11 +154,9 @@
     letter-spacing: 1px;
 }
 
-.routing-history-btn:hover {
-    color: #81c784;
-}
+.routing-history-btn:hover { color: #81c784; }
 
-/* HISTORY POPUP */
+/* HISTORY MODAL */
 
 .routing-history-modal {
     display: none;
@@ -180,9 +168,7 @@
     background: rgba(0,0,0,.55);
 }
 
-.routing-history-modal.show {
-    display: block;
-}
+.routing-history-modal.show { display: block; }
 
 .routing-history-content {
     width: 100%;
@@ -253,46 +239,29 @@
     color: #666;
 }
 
-@media (max-width: 768px) {
-    .routing-panel {
-        padding: 25px 20px;
-    }
-
-    .routing-panel h2 {
-        font-size: 20px;
-    }
-
+@media(max-width: 768px) {
+    .routing-panel { padding: 25px 20px; }
+    .routing-panel h2 { font-size: 20px; }
     .routing-history-btn {
         font-size: 13px;
         padding: 8px;
     }
-
-    .routing-history-header {
-        padding: 20px;
-    }
-
-    .routing-history-header h3 {
-        font-size: 17px;
-    }
-
-    .routing-history-body {
-        padding: 12px;
-    }
-
+    .routing-history-header { padding: 20px; }
+    .routing-history-header h3 { font-size: 17px; }
+    .routing-history-body { padding: 12px; }
     .routing-history-table {
         min-width: 500px;
         font-size: 13px;
     }
+    .routing-history-table th,
+    .routing-history-table td { padding: 10px; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-
 <header class="header">
-
     <button
         class="home-btn"
         type="button"
@@ -302,7 +271,6 @@
         <svg class="home-icon" viewBox="0 0 24 24">
             <path d="M10 20V14H14V20H19V12H22L12 3 2 12H5V20H10Z"/>
         </svg>
-
     </button>
 
     <h1 class="page-title">Routing Lookup</h1>
@@ -313,23 +281,15 @@
         type="button">
         HISTORY
     </button>
-
 </header>
 
-<!-- MAIN SEARCH -->
-
 <main class="routing-content">
-
     <section class="routing-panel">
-
         <h2>US Routing Number Lookup</h2>
 
         <form id="routing-form">
-
-            <label
-                class="routing-label"
-                for="routing-input">
-                Bank Name or Routing Number
+            <label class="routing-label" for="routing-input">
+                Bank Name, City or Routing Number
             </label>
 
             <input
@@ -337,7 +297,7 @@
                 class="routing-input"
                 type="text"
                 maxlength="100"
-                placeholder="Enter bank name or routing number"
+                placeholder="Enter bank name, city or routing number"
                 autocomplete="off"
                 spellcheck="false"
                 required
@@ -349,7 +309,6 @@
                 type="submit">
                 SEARCH
             </button>
-
         </form>
 
         <div
@@ -357,12 +316,10 @@
             class="routing-results"
             aria-live="polite">
         </div>
-
     </section>
-
 </main>
 
-<!-- HISTORY MODAL -->
+<!-- HISTORY -->
 
 <div
     id="routing-history-modal"
@@ -372,12 +329,8 @@
     aria-labelledby="history-title">
 
     <div class="routing-history-content">
-
         <div class="routing-history-header">
-
-            <h3 id="history-title">
-                SEARCH HISTORY
-            </h3>
+            <h3 id="history-title">SEARCH HISTORY</h3>
 
             <button
                 class="routing-close-btn"
@@ -386,13 +339,10 @@
                 aria-label="Close history">
                 &times;
             </button>
-
         </div>
 
         <div class="routing-history-body">
-
             <table class="routing-history-table">
-
                 <thead>
                     <tr>
                         <th>Routing Number</th>
@@ -402,9 +352,7 @@
                     </tr>
                 </thead>
 
-                <tbody id="routing-history-list">
-                </tbody>
-
+                <tbody id="routing-history-list"></tbody>
             </table>
 
             <div
@@ -413,105 +361,59 @@
                 style="display:none;">
                 No search history yet.
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 <script>
 "use strict";
 
-/* ========================================
-   CONFIGURATION
-======================================== */
+/* CONFIGURATION */
 
-const DATABASE_URL =
-    "US-TOOLS/BANK-INFO/routing-data.json";
-
+const DATABASE_URL = "US-TOOLS/BANK-INFO/routing-data.json";
 const STORAGE_KEY = "routingLookupHistoryV1";
-
 const RESULTS_PER_PAGE = 50;
+const MAX_HISTORY = 100;
 
-/* ========================================
-   ELEMENTS
-======================================== */
+/* ELEMENTS */
 
 const form = document.getElementById("routing-form");
 const input = document.getElementById("routing-input");
 const results = document.getElementById("routing-results");
 const searchButton = document.getElementById("search-button");
-
-const historyModal =
-    document.getElementById("routing-history-modal");
-
-const historyList =
-    document.getElementById("routing-history-list");
-
-const noHistory =
-    document.getElementById("routing-no-history");
-
-const openHistory =
-    document.getElementById("open-history");
-
-const closeHistory =
-    document.getElementById("close-history");
-
-/* ========================================
-   DATABASE STATE
-======================================== */
+const historyModal = document.getElementById("routing-history-modal");
+const historyList = document.getElementById("routing-history-list");
+const noHistory = document.getElementById("routing-no-history");
+const openHistory = document.getElementById("open-history");
+const closeHistory = document.getElementById("close-history");
 
 let routingDatabase = null;
 let databasePromise = null;
-
 let currentMatches = [];
 let displayedCount = 0;
 let previousFocus = null;
 
-/* ========================================
-   LOAD LOCAL JSON DATABASE
-======================================== */
+/* DATABASE LOADER */
 
 async function loadDatabase() {
-
-    if (routingDatabase !== null) {
-        return routingDatabase;
-    }
-
-    if (databasePromise) {
-        return databasePromise;
-    }
+    if (routingDatabase) return routingDatabase;
+    if (databasePromise) return databasePromise;
 
     databasePromise = (async () => {
-
-        const response = await fetch(DATABASE_URL, {
-            method: "GET",
-            cache: "default"
-        });
+        const response = await fetch(DATABASE_URL);
 
         if (!response.ok) {
-            throw new Error(
-                "Unable to load bank database (HTTP " +
-                response.status + ")."
-            );
+            throw new Error("Database HTTP " + response.status);
         }
 
         const data = await response.json();
 
-        if (
-            !data ||
-            !Array.isArray(data.records)
-        ) {
-            throw new Error(
-                "Invalid routing database format."
-            );
+        if (!data || !Array.isArray(data.records)) {
+            throw new Error("Invalid database format");
         }
 
         routingDatabase = data.records;
-
         return routingDatabase;
-
     })();
 
     try {
@@ -522,15 +424,10 @@ async function loadDatabase() {
     }
 }
 
-/* ========================================
-   ABA CHECKSUM VALIDATION
-======================================== */
+/* ABA VALIDATION */
 
 function validateRoutingNumber(number) {
-
-    if (!/^\d{9}$/.test(number)) {
-        return false;
-    }
+    if (!/^\d{9}$/.test(number)) return false;
 
     const d = number.split("").map(Number);
 
@@ -542,125 +439,86 @@ function validateRoutingNumber(number) {
     return sum % 10 === 0;
 }
 
-/* ========================================
-   SAFE ELEMENT CREATION
-======================================== */
+/* SAFE TEXT */
 
 function addText(parent, tag, value) {
-
     const element = document.createElement(tag);
-
     element.textContent = String(value ?? "");
-
     parent.appendChild(element);
-
     return element;
 }
 
 function showMessage(message, isError = false) {
-
     results.replaceChildren();
 
-    const element = addText(
-        results,
-        "p",
-        message
-    );
-
+    const element = addText(results, "p", message);
     element.className = isError
         ? "routing-message routing-error"
         : "routing-message";
 }
 
-/* ========================================
-   NORMALIZE BANK RECORD
-======================================== */
+/* NORMALIZE BANK */
 
 function normalizeBank(record) {
-
     const ach = record.ach || {};
-    const fedwire = record.fedwire || {};
+    const wire = record.fedwire || {};
 
     return {
-        routing_number:
-            String(record.routingNumber || ""),
-
+        routing_number: String(record.routingNumber || ""),
         bank_name:
             record.bankName ||
             ach.bankName ||
-            fedwire.bankName ||
+            wire.bankName ||
             "Unknown Bank",
-
         city:
             record.city ||
             ach.city ||
-            fedwire.city ||
+            wire.city ||
             "",
-
         state:
             record.state ||
             ach.state ||
-            fedwire.state ||
+            wire.state ||
             "",
-
-        ach_name:
-            ach.bankName || "",
-
-        fedwire_name:
-            fedwire.bankName || "",
-
-        supports_ach:
-            Boolean(record.supportsACH),
-
-        listed_in_fedwire:
-            Boolean(record.listedInFedwire),
-
-        funds_eligibility:
-            fedwire.fundsEligibility || ""
+        ach_name: ach.bankName || "",
+        fedwire_name: wire.bankName || "",
+        supports_ach: Boolean(record.supportsACH),
+        listed_in_fedwire: Boolean(record.listedInFedwire)
     };
 }
 
-/* ========================================
-   SEARCH BANK DATABASE
-======================================== */
+/* SEARCH BY ROUTING NUMBER, BANK OR CITY */
 
 function searchDatabase(query) {
-
     const term = query.trim().toLowerCase();
-
     const exactRouting = /^\d{9}$/.test(term);
-
     const matches = [];
 
     for (const record of routingDatabase) {
-
-        const number =
-            String(record.routingNumber || "");
+        const number = String(record.routingNumber || "");
 
         if (exactRouting) {
-
-            if (number === term) {
-                matches.push(record);
-            }
-
+            if (number === term) matches.push(record);
             continue;
         }
 
-        const names = [
+        const fields = [
             record.bankName,
+            record.city,
+            record.state,
             record.ach?.bankName,
-            record.fedwire?.bankName
+            record.ach?.city,
+            record.ach?.state,
+            record.fedwire?.bankName,
+            record.fedwire?.city,
+            record.fedwire?.state
         ];
 
-        const nameMatch = names.some(name =>
-            String(name || "")
-                .toLowerCase()
-                .includes(term)
+        const fieldMatch = fields.some(value =>
+            String(value || "").toLowerCase().includes(term)
         );
 
-        const numberMatch = number.includes(term);
-
-        if (nameMatch || numberMatch) {
+        if (fieldMatch || number.includes(term)) {
             matches.push(record);
         }
     }
@@ -668,12 +526,128 @@ function searchDatabase(query) {
     return matches;
 }
 
-/* ========================================
-   COPY ROUTING NUMBER
-======================================== */
+/* HISTORY */
+
+function getHistory() {
+    try {
+        const data = JSON.parse(
+            localStorage.getItem(STORAGE_KEY) || "[]"
+        );
+        return Array.isArray(data) ? data : [];
+    } catch {
+        return [];
+    }
+}
+
+/*
+ Save all matching records in one operation.
+ Preserve old entries and update duplicates.
+*/
+
+function saveSearchHistory(records) {
+    if (!records.length) return;
+
+    const oldHistory = getHistory();
+    const today = new Date().toLocaleDateString("en-CA");
+
+    const newEntries = [];
+    const seen = new Set();
+
+    for (const record of records) {
+        const bank = normalizeBank(record);
+        const number = bank.routing_number;
+
+        if (!/^\d{9}$/.test(number) || seen.has(number)) {
+            continue;
+        }
+
+        seen.add(number);
+
+        newEntries.push({
+            routing_number: number,
+            bank: bank.bank_name,
+            state: bank.state || "—",
+            date: today
+        });
+    }
+
+    const remainingOld = oldHistory.filter(item =>
+        !seen.has(item.routing_number)
+    );
+
+    const combined = [
+        ...newEntries,
+        ...remainingOld
+    ].slice(0, MAX_HISTORY);
+
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(combined)
+        );
+    } catch (error) {
+        console.warn("History could not be saved", error);
+    }
+}
+
+/* HISTORY DISPLAY */
+
+function displayHistory() {
+    const history = getHistory();
+
+    historyList.replaceChildren();
+    noHistory.style.display =
+        history.length ? "none" : "block";
+
+    history.forEach(item => {
+        const row = document.createElement("tr");
+
+        addText(row, "td", item.routing_number || "—");
+        addText(row, "td", item.bank || "—");
+        addText(row, "td", item.state || "—");
+        addText(row, "td", item.date || "—");
+
+        historyList.appendChild(row);
+    });
+}
+
+/* HISTORY MODAL */
+
+function showHistory() {
+    previousFocus = document.activeElement;
+    displayHistory();
+    historyModal.classList.add("show");
+    closeHistory.focus();
+}
+
+function hideHistory() {
+    historyModal.classList.remove("show");
+    if (previousFocus) previousFocus.focus();
+}
+
+openHistory.addEventListener("click", showHistory);
+closeHistory.addEventListener("click", hideHistory);
+
+historyModal.addEventListener("click", event => {
+    if (event.target === historyModal) hideHistory();
+});
+
+document.addEventListener("keydown", event => {
+    if (!historyModal.classList.contains("show")) return;
+
+    if (event.key === "Escape") {
+        hideHistory();
+    }
+
+    if (event.key === "Tab") {
+        event.preventDefault();
+        closeHistory.focus();
+    }
+});
+
+/* COPY ROUTING NUMBER */
 
 function createCopyButton(parent, number) {
-
     const button = document.createElement("button");
 
     button.type = "button";
@@ -681,35 +655,25 @@ function createCopyButton(parent, number) {
     button.textContent = "COPY ROUTING NUMBER";
 
     button.addEventListener("click", async () => {
-
         try {
-
             await navigator.clipboard.writeText(number);
-
             button.textContent = "COPIED!";
 
             setTimeout(() => {
                 button.textContent = "COPY ROUTING NUMBER";
             }, 2000);
-
-        } catch (error) {
-
+        } catch {
             button.textContent = "COPY UNAVAILABLE";
-
         }
     });
 
     parent.appendChild(button);
 }
 
-/* ========================================
-   DISPLAY BANK RESULT
-======================================== */
+/* BANK RESULT */
 
 function displayBank(record) {
-
     const bank = normalizeBank(record);
-
     const card = document.createElement("div");
 
     card.className = "routing-card";
@@ -717,35 +681,23 @@ function displayBank(record) {
     addText(card, "h3", bank.bank_name);
 
     const routing = addText(
-        card,
-        "p",
+        card, "p",
         "Routing Number: " + bank.routing_number
     );
 
     routing.className = "routing-number";
 
-    addText(
-        card,
-        "p",
-        "City: " + (bank.city || "—")
-    );
+    addText(card, "p", "City: " + (bank.city || "—"));
+    addText(card, "p", "State: " + (bank.state || "—"));
 
     addText(
-        card,
-        "p",
-        "State: " + (bank.state || "—")
-    );
-
-    addText(
-        card,
-        "p",
+        card, "p",
         "ACH Directory: " +
         (bank.supports_ach ? "Listed" : "Not listed")
     );
 
     addText(
-        card,
-        "p",
+        card, "p",
         "Fedwire Directory: " +
         (bank.listed_in_fedwire ? "Listed" : "Not listed")
     );
@@ -755,48 +707,35 @@ function displayBank(record) {
         bank.fedwire_name &&
         bank.ach_name !== bank.fedwire_name
     ) {
-
         addText(
-            card,
-            "p",
+            card, "p",
             "ACH Bank Name: " + bank.ach_name
         );
 
         addText(
-            card,
-            "p",
+            card, "p",
             "Fedwire Bank Name: " + bank.fedwire_name
         );
     }
 
     const note = addText(
-        card,
-        "p",
+        card, "p",
         "Historical directory record"
     );
 
     note.className = "routing-status";
 
-    createCopyButton(
-        card,
-        bank.routing_number
-    );
-
+    createCopyButton(card, bank.routing_number);
     results.appendChild(card);
 }
 
-/* ========================================
-   PAGINATED RESULTS
-======================================== */
+/* SHOW MORE RESULTS */
 
 function displayNextResults() {
-
-    const existingButton =
+    const oldButton =
         document.getElementById("routing-load-more");
 
-    if (existingButton) {
-        existingButton.remove();
-    }
+    if (oldButton) oldButton.remove();
 
     const next = currentMatches.slice(
         displayedCount,
@@ -804,11 +743,9 @@ function displayNextResults() {
     );
 
     next.forEach(displayBank);
-
     displayedCount += next.length;
 
     if (displayedCount < currentMatches.length) {
-
         const button = document.createElement("button");
 
         button.id = "routing-load-more";
@@ -822,8 +759,7 @@ function displayNextResults() {
             " REMAINING)";
 
         button.addEventListener(
-            "click",
-            displayNextResults
+            "click", displayNextResults
         );
 
         results.appendChild(button);
@@ -831,24 +767,19 @@ function displayNextResults() {
 }
 
 function displayMatches(matches) {
-
     results.replaceChildren();
 
     currentMatches = matches;
     displayedCount = 0;
 
     if (!matches.length) {
-
         showMessage("No matching bank found.");
-
         return;
     }
 
     if (matches.length > 1) {
-
         const count = addText(
-            results,
-            "p",
+            results, "p",
             matches.length + " matching records found."
         );
 
@@ -858,201 +789,25 @@ function displayMatches(matches) {
     displayNextResults();
 }
 
-/* ========================================
-   HISTORY STORAGE
-======================================== */
-
-function getHistory() {
-
-    try {
-
-        const saved = localStorage.getItem(STORAGE_KEY);
-
-        const parsed = saved
-            ? JSON.parse(saved)
-            : [];
-
-        return Array.isArray(parsed) ? parsed : [];
-
-    } catch (error) {
-
-        return [];
-    }
-}
-
-function saveHistory(record) {
-
-    const bank = normalizeBank(record);
-
-    if (!/^\d{9}$/.test(bank.routing_number)) {
-        return;
-    }
-
-    const history = getHistory();
-
-    const entry = {
-        routing_number: bank.routing_number,
-        bank: bank.bank_name,
-        state: bank.state || "—",
-        date: new Date().toLocaleDateString("en-CA")
-    };
-
-    const updated = history.filter(item =>
-        item.routing_number !== entry.routing_number
-    );
-
-    updated.unshift(entry);
-
-    try {
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(updated.slice(0, 100))
-        );
-
-    } catch (error) {
-        // Browser storage unavailable.
-    }
-}
-
-/* ========================================
-   DISPLAY HISTORY
-======================================== */
-
-function displayHistory() {
-
-    const history = getHistory();
-
-    historyList.replaceChildren();
-
-    noHistory.style.display =
-        history.length ? "none" : "block";
-
-    history.forEach(item => {
-
-        const row = document.createElement("tr");
-
-        addText(
-            row,
-            "td",
-            item.routing_number || "—"
-        );
-
-        addText(
-            row,
-            "td",
-            item.bank || "—"
-        );
-
-        addText(
-            row,
-            "td",
-            item.state || "—"
-        );
-
-        addText(
-            row,
-            "td",
-            item.date || "—"
-        );
-
-        historyList.appendChild(row);
-    });
-}
-
-/* ========================================
-   HISTORY MODAL
-======================================== */
-
-function showHistory() {
-
-    previousFocus = document.activeElement;
-
-    displayHistory();
-
-    historyModal.classList.add("show");
-
-    closeHistory.focus();
-}
-
-function hideHistory() {
-
-    historyModal.classList.remove("show");
-
-    if (previousFocus) {
-        previousFocus.focus();
-    }
-}
-
-openHistory.addEventListener(
-    "click",
-    showHistory
-);
-
-closeHistory.addEventListener(
-    "click",
-    hideHistory
-);
-
-historyModal.addEventListener("click", event => {
-
-    if (event.target === historyModal) {
-        hideHistory();
-    }
-});
-
-document.addEventListener("keydown", event => {
-
-    if (!historyModal.classList.contains("show")) {
-        return;
-    }
-
-    if (event.key === "Escape") {
-        hideHistory();
-    }
-
-    if (event.key === "Tab") {
-        event.preventDefault();
-        closeHistory.focus();
-    }
-});
-
-/* ========================================
-   MAIN SEARCH
-======================================== */
+/* MAIN SEARCH */
 
 form.addEventListener("submit", async event => {
-
     event.preventDefault();
 
     const search = input.value.trim();
 
-    results.replaceChildren();
+    if (!search) return;
 
-    if (!search) {
+    if (/^\d{9}$/.test(search) &&
+        !validateRoutingNumber(search)) {
+        showMessage("Invalid routing number.", true);
         return;
-    }
-
-    const isNumeric = /^\d+$/.test(search);
-
-    if (isNumeric && search.length === 9) {
-
-        if (!validateRoutingNumber(search)) {
-
-            showMessage(
-                "Invalid routing number.",
-                true
-            );
-
-            return;
-        }
     }
 
     searchButton.disabled = true;
     searchButton.textContent = "SEARCHING...";
 
     try {
-
         await loadDatabase();
 
         const matches = searchDatabase(search);
@@ -1060,21 +815,15 @@ form.addEventListener("submit", async event => {
         displayMatches(matches);
 
         /*
-         * Save only exact routing-number
-         * searches automatically.
-         *
-         * For bank-name searches, save the
-         * specific record when its copy
-         * button is clicked.
-         */
-
-        if (/^\d{9}$/.test(search) && matches.length) {
-
-            saveHistory(matches[0]);
+         Automatically save every matching record,
+         whether searched by routing number,
+         bank name, city or state.
+        */
+        if (matches.length) {
+            saveSearchHistory(matches);
         }
 
     } catch (error) {
-
         console.error("Routing database error:", error);
 
         showMessage(
@@ -1082,54 +831,12 @@ form.addEventListener("submit", async event => {
             "Check the JSON file location.",
             true
         );
-
     } finally {
-
         searchButton.disabled = false;
         searchButton.textContent = "SEARCH";
     }
 });
 
-/* ========================================
-   SAVE SELECTED BANK-NAME RESULTS
-======================================== */
-
-results.addEventListener("click", event => {
-
-    const button = event.target.closest("button");
-
-    if (!button) return;
-
-    if (!button.classList.contains("routing-button")) {
-        return;
-    }
-
-    if (button.id === "routing-load-more") {
-        return;
-    }
-
-    const card = button.closest(".routing-card");
-
-    if (!card) return;
-
-    const numberText = card.querySelector(".routing-number");
-
-    if (!numberText) return;
-
-    const number = numberText.textContent
-        .replace("Routing Number:", "")
-        .trim();
-
-    const record = currentMatches.find(item =>
-        String(item.routingNumber) === number
-    );
-
-    if (record) {
-        saveHistory(record);
-    }
-});
-
 </script>
-
 </body>
 </html>
