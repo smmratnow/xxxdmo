@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Routing Lookup | US Tools</title>
+
+    <!-- Your existing website styling -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .routing-panel {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            color: #333;
+            padding: 35px;
+            border: 3px solid #333;
+            border-radius: 8px;
+        }
+
+        .routing-panel h2 {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .routing-description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .routing-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .routing-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            font-size: 17px;
+            margin-bottom: 15px;
+        }
+
+        .routing-button {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #333;
+            background: transparent;
+            color: #333;
+            font-size: 17px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .routing-button:hover {
+            background: #333;
+            color: white;
+        }
+
+        .routing-results {
+            margin-top: 25px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .routing-card {
+            background: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .routing-card h3 {
+            margin-bottom: 12px;
+        }
+
+        .routing-card p {
+            margin-bottom: 8px;
+        }
+
+        .routing-note {
+            font-size: 13px;
+            color: #666;
+            margin-top: 25px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .routing-panel {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Website header -->
+    <header class="header">
+        <button class="home-btn"
+                onclick="window.location.href='us-tools.html'"
+                aria-label="Back to US Tools">
+
+            <svg class="home-icon" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </button>
+
+        <h1 class="page-title">Routing Lookup</h1>
+        <div style="width:40px;"></div>
+    </header>
+
+    <!-- Main tool -->
+    <main class="content">
+
+        <section class="routing-panel">
+
+            <h2>US Routing Number Lookup</h2>
+
+            <p class="routing-description">
+                Search by bank name or 9-digit routing number.
+            </p>
+
+            <form id="routing-form">
+
+                <label class="routing-label"
+                       for="routing-input">
+                    Bank Name or Routing Number
+                </label>
+
+                <input
+                    type="text"
+                    id="routing-input"
+                    class="routing-input"
+                    placeholder="Enter bank name or routing number"
+                    maxlength="100"
+                    autocomplete="off"
+                    required
+                >
+
+                <button type="submit"
+                        class="routing-button">
+                    SEARCH
+                </button>
+
+            </form>
+
+            <div id="routing-results"
+                 class="routing-results"
+                 aria-live="polite">
+            </div>
+
+            <p class="routing-note">
+                A valid routing number checksum does not
+                guarantee that a routing number is assigned
+                or active. Always verify payment information
+                with your financial institution.
+            </p>
+
+        </section>
+
+    </main>
+
+    <script>
+        "use strict";
+
+        // Add properly licensed, verified bank records here.
+        // This starts empty intentionally.
+        const routingDatabase = [];
+
+        const form = document.getElementById("routing-form");
+        const input = document.getElementById("routing-input");
+        const results = document.getElementById("routing-results");
+
+        function validateRoutingNumber(number) {
+            if (!/^\d{9}$/.test(number)) {
+                return false;
+            }
+
+            const d = number.split("").map(Number);
+
+            const sum =
+                3 * (d[0] + d[3] + d[6]) +
+                7 * (d[1] + d[4] + d[7]) +
+                (d[2] + d[5] + d[8]);
+
+            return sum % 10 === 0;
+        }
+
+        function addText(parent, tag, text) {
+            const element = document.createElement(tag);
+            element.textContent = text;
+            parent.appendChild(element);
+            return element;
+        }
+
+        function displayBank(bank) {
+            const card = document.createElement("div");
+            card.className = "routing-card";
+
+            addText(card, "h3", bank.bank_name);
+            addText(
+                card,
+                "p",
+                "Routing Number: " + bank.routing_number
+            );
+
+            addText(
+                card,
+                "p",
+                "Location: " +
+                [bank.city, bank.state].filter(Boolean).join(", ")
+            );
+
+            if (bank.last_verified) {
+                addText(
+                    card,
+                    "p",
+                    "Last Verified: " + bank.last_verified
+                );
+            }
+
+            const copyButton = document.createElement("button");
+            copyButton.className = "routing-button";
+            copyButton.type = "button";
+            copyButton.textContent = "COPY ROUTING NUMBER";
+
+            copyButton.addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(
+                        bank.routing_number
+                    );
+                    copyButton.textContent = "COPIED!";
+                } catch {
+                    copyButton.textContent = "COPY UNAVAILABLE";
+                }
+            });
+
+            card.appendChild(copyButton);
+            results.appendChild(card);
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const search = input.value.trim();
+            results.replaceChildren();
+
+            if (!search) {
+                addText(results, "p", "Please enter a search.");
+                return;
+            }
+
+            const isNumber = /^\d+$/.test(search);
+            const isRouting = /^\d{9}$/.test(search);
+
+            if (isNumber && !isRouting) {
+                addText(
+                    results,
+                    "p",
+                    "A US routing number must have exactly 9 digits."
+                );
+                return;
+            }
+
+            if (isRouting) {
+                const valid = validateRoutingNumber(search);
+
+                addText(
+                    results,
+                    "p",
+                    valid
+                        ? "Checksum valid. This does not confirm the number is assigned or active."
+                        : "Invalid routing number checksum."
+                );
+            }
+
+            const matches = routingDatabase.filter(bank => {
+                if (isRouting) {
+                    return bank.routing_number === search;
+                }
+
+                return bank.bank_name
+                    .toLowerCase()
+                    .includes(search.toLowerCase());
+            }).slice(0, 50);
+
+            if (matches.length > 0) {
+                addText(
+                    results,
+                    "p",
+                    matches.length + " matching records found."
+                );
+
+                matches.forEach(displayBank);
+            } else {
+                addText(
+                    results,
+                    "p",
+                    routingDatabase.length === 0
+                        ? "Bank directory not installed yet. Routing number checksum validation is available."
+                        : "No matching bank found in the installed database."
+                );
+            }
+        });
+    </script>
+
+</body>
+</html>
